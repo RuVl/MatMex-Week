@@ -105,7 +105,7 @@ How to launch bot
 
 ### Prerequisites
 
-* docker [https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository](Instruction for Ubuntu)
+* docker [https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository](Instruction_for_Ubuntu)
 
 ### Installation
 
