@@ -1,5 +1,5 @@
 from aiogram.fsm.state import StatesGroup, State
 
-class States_help(StatesGroup):
-    message_or_cancel = State()
+class HelpActions(StatesGroup):
+    MESSAGE_OR_CANCEL = State()
 

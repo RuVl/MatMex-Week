@@ -1,7 +1,7 @@
 from aiogram.fsm.state import StatesGroup, State
 
-class States_purchases(StatesGroup):
-    choose_category = State()
-    choose_size = State()
-    choose_product = State()
-    confirm_purchase = State()
+class PurchasesActions(StatesGroup):
+    CHOOSE_CATEGORY = State()
+    CHOOSE_SIZE = State()
+    CHOOSE_PRODUCT = State()
+    CONFIRM_PURCHASE = State()
