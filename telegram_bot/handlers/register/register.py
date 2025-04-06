@@ -13,5 +13,5 @@ register_router = Router()
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("hi"))
 	await msg.answer(l10n.format_value("ask-name"))
-	await msg.answer(l10n.format_value("talk_about_pc"))
+	await msg.answer(l10n.format_value("talk-about-pc"))
 	await state.set_state(RegistrationsActions.NAME_WAITING)
