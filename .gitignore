@@ -6,6 +6,7 @@
 
 # Compiled files
 **/*.mo
+
 # alembic migrations
 **/migrations/versions/
 !**/migrations/versions/__init__.py
@@ -14,7 +15,11 @@
 **/*venv/
 
 # All .env files
+config.toml
 **/.env
 
 # Logging files
 *.log
+
+# Test docker
+test*.yaml

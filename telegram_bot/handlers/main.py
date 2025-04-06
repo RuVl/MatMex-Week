@@ -1,11 +1,14 @@
 from aiogram import Dispatcher, Router
+from aiogram.types import Message
 
-from .register import register_router
+test_router = Router()
 
 
-def register_all_handlers(dp: Dispatcher) -> None:
-    main_router = Router()
+@test_router.message()
+async def echo(msg: Message):
+	await msg.reply(msg.text)
 
-    main_router.include_routers(register_router)
-    
-    dp.include_router(main_router)
+
+def register_handlers(dp: Dispatcher):
+	# Register your handlers and routers here
+	dp.include_router(test_router)

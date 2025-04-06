@@ -1,12 +1,23 @@
 FROM python:3.12
+LABEL authors="MatMex-Week"
 
-WORKDIR /app
+# Update packages
+RUN apt-get update && apt-get upgrade -y
 
-COPY requirements.txt .
+# Set enviroment variables
+ENV TZ Europe/Moscow
+ENV PIP_ROOT_USER_ACTION=ignore
 
-RUN pip3 install -r requirements.txt
+# Prepare project directory
+CMD mkdir -p /usr/src/app/
+WORKDIR /usr/src/app/
 
-COPY run.py .
+# Copy and install requirements
+COPY ./requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-CMD ["python3", "run.py"]
+# Copy project to directory
+COPY . ./
 
+# Run api
+ENTRYPOINT python3 run.py
