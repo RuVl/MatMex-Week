@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, Router
 
-from register import register_router
+from .register import register_router
 
 
 def register_all_handlers(dp: Dispatcher) -> None:
