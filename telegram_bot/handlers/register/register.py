@@ -18,38 +18,30 @@ register_router.message.filter(
 # '/start'
 @register_router.message(CommandStart())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("hi"), 
-        parse_mode=ParseMode.MARKDOWN_V2)
-	await msg.answer(l10n.format_value("ask-name"), 
-        parse_mode=ParseMode.MARKDOWN_V2)
-	await msg.answer(l10n.format_value("talk-about-pc"), 
-        parse_mode=ParseMode.MARKDOWN_V2)
+	await msg.answer(l10n.format_value("hi"))
+	await msg.answer(l10n.format_value("ask-name"))
+	await msg.answer(l10n.format_value("talk-about-pc"))
 	await state.set_state(RegistrationsActions.NAME_WAITING)
 
 @register_router.message(RegistrationsActions.NAME_WAITING,
                                 FIO_filter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("thanks-FIO") +", " + msg.text.strip() +"\!", 
-        parse_mode=ParseMode.MARKDOWN_V2)
-	await msg.answer(l10n.format_value("ask-pc"), 
-        parse_mode=ParseMode.MARKDOWN_V2, reply_markup=yes_no_kb())
+	await msg.answer(l10n.format_value("thanks-FIO") +", " + msg.text.strip() +"\!")
+	await msg.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 @register_router.message(RegistrationsActions.NAME_WAITING)
 async def wrong_FIO_format(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer(l10n.format_value("wrong-FIO"), 
-        parse_mode=ParseMode.MARKDOWN_V2)
+    await msg.answer(l10n.format_value("wrong-FIO"))
     await state.set_state(RegistrationsActions.NAME_WAITING)
     
 
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
                          F.text == 'Да')
 async def in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer("Круто", 
-        parse_mode=ParseMode.MARKDOWN_V2)
+    await msg.answer("Круто")
  
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
                                F.text == 'Нет')
 async def not_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer("Не круто", 
-        parse_mode=ParseMode.MARKDOWN_V2)
+    await msg.answer("Не круто")
