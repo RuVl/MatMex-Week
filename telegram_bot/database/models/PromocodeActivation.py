@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from aiogram.types import DateTime
-from sqlalchemy import ForeignKey, Integer, func
+from sqlalchemy import DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import mapped_column, Mapped
 
 from database.models import Base

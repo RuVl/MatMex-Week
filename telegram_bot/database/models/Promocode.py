@@ -1,7 +1,6 @@
 from datetime import datetime
-from xmlrpc.client import Boolean
 
-from sqlalchemy import DateTime, ForeignKey, func, String, Integer
+from sqlalchemy import Boolean, DateTime, ForeignKey, func, String, Integer
 from sqlalchemy.orm import mapped_column, Mapped
 
 from database.models import Base

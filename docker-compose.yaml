@@ -7,7 +7,6 @@ services:
     env_file:
       - postgres/.env
       - redis/.env
-      - telegram_bot/.env
     depends_on:
       - postgres
 

@@ -1,17 +1,11 @@
 from .Base import Base
+from .Event import Event
+from .EventPrivilegeGrant import EventPrivilegeGrant
+from .MerchCategory import MerchCategory
+from .MerchItem import MerchItem
+from .PkApply import PkApply
 from .Privilege import Privilege
+from .Promocode import Promocode
+from .PromocodeActivation import PromocodeActivation
+from .Purchase import Purchase
 from .User import User
-
-__all__ = (
-    "Base",
-    "User",
-    "Privilege",
-    "Event",
-    "EventPrivilege",
-    "MerchCategory",
-    "MerchItem",
-    "Purchase",
-    "PkApply",
-    "PromoCode",
-    "PromoActivation",
-)

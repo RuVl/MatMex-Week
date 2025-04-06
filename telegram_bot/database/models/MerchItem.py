@@ -1,6 +1,4 @@
-from xmlrpc.client import Boolean
-
-from sqlalchemy import String, ForeignKey, Integer, Float
+from sqlalchemy import Boolean, String, ForeignKey, Integer, Float
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database.enums import MerchSize
