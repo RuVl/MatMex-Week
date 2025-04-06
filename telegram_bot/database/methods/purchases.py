@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import func
-from models import Purchase
+
+from database.models import Purchase
 
 
 async def record_purchase(session: AsyncSession, user_id: int, merch_id: int, quantity: int, total_cost: int):

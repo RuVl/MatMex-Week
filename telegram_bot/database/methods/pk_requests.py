@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, UTC
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import PKRequests
+from database.models import PKRequests
 
 
 async def create_privilege_request(session: AsyncSession, user_id: int):
@@ -18,7 +18,7 @@ async def update_request_status(session: AsyncSession, request_id: int, status: 
 	await session.execute(
 		update(PKRequests)
 			.where(PKRequests.id == request_id)
-			.values(status=status, reviewed_at=datetime.utcnow(), reviewed_by=reviewed_by)
+		.values(status=status, reviewed_at=datetime.now(UTC), reviewed_by=reviewed_by)
 	)
 	await session.commit()
 

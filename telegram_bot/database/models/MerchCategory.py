@@ -1,14 +1,12 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import String, Integer
+from sqlalchemy.orm import mapped_column, Mapped
 
-
-# Таблица merch_categories
-from models import Base
+from database.models import Base
 
 
 class MerchCategory(Base):
-    __tablename__ = "merch_categories"
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
+	__tablename__ = "merch_categories"
+	__table_args__ = {"comment": "Категория мерча (Футболки)"}
 
-    items = relationship("MerchItem", back_populates="category")
+	id: Mapped[int] = mapped_column(Integer, primary_key=True)
+	name: Mapped[str] = mapped_column(String(250), nullable=False, comment="название группы товаров")

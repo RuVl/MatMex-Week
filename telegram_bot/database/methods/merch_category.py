@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import MerchCategory, MerchItem
+from database.models import MerchCategory, MerchItem
 
 
 async def create_merch_category(session: AsyncSession, name: str) -> MerchCategory:

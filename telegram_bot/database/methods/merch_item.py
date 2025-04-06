@@ -1,7 +1,7 @@
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import MerchItem
+from database.models import MerchItem
 
 
 async def create_merch_item(session: AsyncSession, merch_name: str, price: int, stock: int,

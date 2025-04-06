@@ -1,17 +1,24 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+from xmlrpc.client import Boolean
 
-from models import Base
+from sqlalchemy import String, ForeignKey, Integer, Float
+from sqlalchemy.orm import Mapped, mapped_column
+
+from database.enums import MerchSize
+from database.models import Base
 
 
 class MerchItem(Base):
-    __tablename__ = "merch_items"
-    id = Column(Integer, primary_key=True)
-    merch_name = Column(String(255), nullable=False)
-    price = Column(Integer, nullable=False)
-    stock = Column(Integer, default=0, nullable=False)
-    is_available = Column(Boolean, default=True, nullable=False)
-    category_id = Column(Integer, ForeignKey("merch_categories.id"), nullable=True)
+	__tablename__ = "merch_items"
+	__table_args__ = {"comment": "Товарная единица определенного размера (Футболка черная XL)"}
 
-    category = relationship("MerchCategory", back_populates="items")
-    purchases = relationship("Purchase", back_populates="merch")
+	id: Mapped[int] = mapped_column(Integer, primary_key=True)
+	name: Mapped[str] = mapped_column(String(250), nullable=False, comment="название товара")
+	size: Mapped[MerchSize] = mapped_column(MerchSize, nullable=False, comment="размер товара")
+
+	full_price: Mapped[float] = mapped_column(Float, nullable=False, comment="цена без скидки")
+	discount_price: Mapped[float] = mapped_column(Float, nullable=False, comment="стоимость со скидкой")
+
+	available_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="сколько доступно")
+	in_stock: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False, comment="активна ли продажа")
+
+	category_id: Mapped[int] = mapped_column(Integer, ForeignKey("merch_categories.id"), nullable=False, comment="к какой категории относится")
