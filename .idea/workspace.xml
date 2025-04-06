@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="20b4cd3d-f96e-4553-9256-5212344c9a1a" name="Changes" comment="feats: добавлен gitignore">
-      <change beforePath="$PROJECT_DIR$/telegram_bot/state_machines/states_promocode.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram_bot/state_machines/states_promocode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram_bot/state_machines/states_purchases.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram_bot/state_machines/states_purchases.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram_bot/state_machines/states_registration.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram_bot/state_machines/states_registration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
