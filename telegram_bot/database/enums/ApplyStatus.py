@@ -1,7 +1,8 @@
-from sqlalchemy import Enum
+import enum
 
 
-class ApplyStatus(Enum):
+@enum.verify(enum.NAMED_FLAGS)
+class ApplyStatus(enum.StrEnum, boundary=enum.STRICT):
 	pending = "pending"
 	approved = "approved"
 	rejected = "rejected"

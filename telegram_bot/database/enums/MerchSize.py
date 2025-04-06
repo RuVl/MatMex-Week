@@ -1,7 +1,8 @@
-from sqlalchemy import Enum
+import enum
 
 
-class MerchSize(Enum):
+@enum.verify(enum.NAMED_FLAGS)
+class MerchSize(enum.StrEnum, boundary=enum.STRICT):
 	XXS = "XXS"
 	XS = "XS"
 	S = "S"

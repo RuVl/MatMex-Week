@@ -17,7 +17,6 @@ from database.env import PostgresKeys
 # access to the values within the .ini file in use.
 config = context.config
 config.set_main_option('sqlalchemy.url', PostgresKeys.URL)
-print(PostgresKeys.URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

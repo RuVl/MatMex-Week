@@ -1,8 +1,9 @@
-from sqlalchemy import Enum
+import enum
 
 
-class EventPrivilege(Enum):
-	TODO1 = "TODO1"
-	TODO2 = "TODO2"
-	TODO3 = "TODO3"
-	TODO4 = "TODO4"
+@enum.verify(enum.NAMED_FLAGS)
+class EventPrivilege(enum.IntFlag, boundary=enum.STRICT):
+	TODO1 = 0b000
+	TODO2 = 0b001
+	TODO3 = 0b010
+	TODO4 = 0b100
