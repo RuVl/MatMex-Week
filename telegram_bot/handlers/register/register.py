@@ -13,4 +13,4 @@ async def start(msg: types.Message, state: FSMContext):
     await msg.answer(l10n.hi())
     await msg.answer(l10n.ask_name())
     await msg.answer(l10n.talk_about_pc())
-    await state.set_state(States_registration.name_waiting)
+    await state.set_state(States_registration.NAME_WAITING)
