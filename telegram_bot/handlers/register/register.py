@@ -33,8 +33,6 @@ async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalizat
 @register_router.message(RegistrationsActions.NAME_WAITING)
 async def wrong_FIO_format(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
     await msg.answer(l10n.format_value("wrong-FIO"))
-    await state.set_state(RegistrationsActions.NAME_WAITING)
-    
 
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
                          F.text == 'Да')
