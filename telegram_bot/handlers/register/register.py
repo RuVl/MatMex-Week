@@ -1,16 +1,14 @@
 from aiogram import Router, types
 from aiogram.filters import CommandStart
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
-from aiogram.enums import ParseMode
 from aiogram import F
 from aiogram.types import ReplyKeyboardRemove
 
 from keyboards import get_menu_keyboard
 from state_machines.states_registration import RegistrationsActions
 from filters import FIO_filter
-from keyboards import yes_no_kb, manual_check_kb
+from keyboards import get_yes_no_kb, manual_check_kb
 
 register_router = Router()
 register_router.message.filter(
@@ -19,7 +17,7 @@ register_router.message.filter(
 
 @register_router.message(CommandStart())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("hi"))
+	await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
 	await msg.answer(l10n.format_value("ask-name"))
 	await msg.answer(l10n.format_value("talk-about-pc"))
 	await state.set_state(RegistrationsActions.NAME_WAITING)
@@ -28,7 +26,7 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
                                 FIO_filter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("thanks-FIO") +", " + msg.text.strip() +"\!")
-	await msg.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb())
+	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 @register_router.message(RegistrationsActions.NAME_WAITING)
