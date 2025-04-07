@@ -38,7 +38,7 @@ async def wrong_event_or_no_rights(msg: types.Message, state: FSMContext, l10n: 
 @code_scanner_router.message(AccrualOfPointsActions.ID_WAITING) #todo фильтр существоваия кода
 async def give_points(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("give-points"), reply_markup=get_admin_keyboard())
-	await state.set_state(AccrualOfPointsActions.ADMIN_PANEL)
+	await state.set_state(AdminActions.ADMIN_PANEL)
 
 @code_scanner_router.message(AccrualOfPointsActions.ID_WAITING)
 async def wrong_id(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
