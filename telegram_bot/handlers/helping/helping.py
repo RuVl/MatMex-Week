@@ -20,7 +20,7 @@ async def help_button_pressed(message: types.Message, state: FSMContext, l10n: F
 @help_router.message(HelpActions.MESSAGE_OR_CANCEL, F.text == "Отмена")
 async def cancel_help(message: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await message.answer(l10n.format_value("cancel_message"),
-	                     reply_markup=get_menu_keyboard())
+						 reply_markup=get_menu_keyboard())
 	await state.clear()
 
 
