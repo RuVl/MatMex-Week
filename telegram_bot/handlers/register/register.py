@@ -9,12 +9,13 @@ from filters import FIO_filter, is_not_registered_filter
 from keyboards import get_menu_keyboard
 from keyboards import get_yes_no_kb, manual_check_kb
 from state_machines.states_registration import RegistrationsActions
+from database.methods import create_user
+from database import async_session
 
 register_router = Router()
 register_router.message.filter(
 	F.text
 )
-
 
 @register_router.message(CommandStart(),
                          is_not_registered_filter())
@@ -33,6 +34,8 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
                          FIO_filter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + "\!")
+	async with async_session() as session:
+		await create_user(session, msg.from_user.id, msg)
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
