@@ -83,7 +83,7 @@
 Сам бот обернут в докер и сопровождается postgres и redis.
 Trello: [https://trello.com/b/rDOuwQsR/matmex-week](https://trello.com/b/rDOuwQsR/matmex-week)
 Схема базы данных:
-<iframe width="560" height="315" src='https://dbdiagram.io/e/67ee67894f7afba184376c28/67f1c3b34f7afba1847c0171'> </iframe> 
+<iframe> width="560" height="315" src='https://dbdiagram.io/e/67ee67894f7afba184376c28/67f1c3b34f7afba1847c0171' </iframe> 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
