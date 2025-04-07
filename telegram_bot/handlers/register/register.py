@@ -6,24 +6,29 @@ from fluent.runtime import FluentLocalization
 from aiogram import F
 from aiogram.types import ReplyKeyboardRemove
 
-from filters import FIO_filter
+from filters import FIO_filter, is_not_registered_filter
 from keyboards import get_menu_keyboard
 from keyboards import get_yes_no_kb, manual_check_kb
 from state_machines.states_registration import RegistrationsActions
 
 register_router = Router()
 register_router.message.filter(
-	F.text  # add is registered filter
+	F.text
 )
 
 
-@register_router.message(CommandStart())
+@register_router.message(CommandStart(),
+                         is_not_registered_filter())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
 	await msg.answer(l10n.format_value("ask-name"))
 	await msg.answer(l10n.format_value("talk-about-pc"))
 	await state.set_state(RegistrationsActions.NAME_WAITING)
 
+@register_router.message(CommandStart())
+async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("hi"), reply_markup=get_menu_keyboard())
+	await state.clear()
 
 @register_router.message(RegistrationsActions.NAME_WAITING,
 								FIO_filter())
