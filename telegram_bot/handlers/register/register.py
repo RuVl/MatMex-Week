@@ -7,6 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram import F
 from aiogram.types import ReplyKeyboardRemove
 
+from keyboards import get_menu_keyboard
 from state_machines.states_registration import RegistrationsActions
 from filters import FIO_filter
 from keyboards import yes_no_kb, manual_check_kb
