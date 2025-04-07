@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 
 from state_machines.states_help import HelpActions
-from keyboards import create_keyboard
+from keyboards import get_menu_keyboard, get_cancel_keyboard
 
 help_router = Router()
 
@@ -20,8 +20,9 @@ async def help_button_pressed(message: types.Message, state: FSMContext, l10n: F
 @help_router.message(HelpActions.MESSAGE_OR_CANCEL, F.text == "Отмена")
 async def cancel_help(message: types.Message, state: FSMContext, l10n: FluentLocalization):
     await message.answer(l10n.format_value("cancel_message"),
-                         reply_markup=create_keyboard())
+                         reply_markup=get_menu_keyboard())
     await state.clear()
+
 
 @help_router.message(HelpActions.MESSAGE_OR_CANCEL)
 async def process_help_message(message: types.Message, state: FSMContext, l10n: FluentLocalization):
@@ -30,14 +31,6 @@ async def process_help_message(message: types.Message, state: FSMContext, l10n: 
     # TODO отправить в чат админов
     await message.answer(
         l10n.format_value("send_helping"),
-        reply_markup=create_keyboard()
+        reply_markup=get_menu_keyboard()
     )
     await state.clear()
-
-
-# TODO перенести в класс клавиатур
-def get_cancel_keyboard():
-    keyboard = types.ReplyKeyboardMarkup(keyboard=[
-        [types.KeyboardButton(text="Отмена", callback_data="cancel")]
-    ])
-    return keyboard

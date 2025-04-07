@@ -1,14 +1,14 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 
 
-def create_keyboard():
+def get_menu_keyboard():
     buttons_data = [
         ("Магазин", "shop"),
         ("Профиль", "profile"),
         ("Поддержка", "help"),
         ("Расписание", "schedule"),
         ("Мой код", "my_code"),
-        ("Промокод", "promo_code")
+        ("Ввести Промокод", "promo_code")
     ]
 
     buttons = [
@@ -19,6 +19,6 @@ def create_keyboard():
     keyboard = ReplyKeyboardMarkup(keyboard=[
         buttons[:3],
         buttons[3:],
-    ])
+    ], resize_keyboard=True, input_field_placeholder="Выберите элемент меню")
 
     return keyboard
