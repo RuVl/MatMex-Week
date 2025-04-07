@@ -6,11 +6,13 @@ from aiogram import F
 from keyboards import get_admin_keyboard, get_menu_keyboard
 from state_machines.states_admin import AdminActions
 from .code_scanner import code_scanner_router
+from .edit_shop import edit_shop_router
 main_admin_router = Router()
 main_admin_router.message.filter(
 	F.text #todo добавить чек на права из датабазы
 )
 main_admin_router.include_router(code_scanner_router)
+main_admin_router.include_router(edit_shop_router)
 
 @main_admin_router.message(F.text == "Админ панель")
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):

@@ -1,14 +1,11 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 
 
-def get_admin_keyboard():
+def get_edit_shop_keyboard():
 	buttons_data = [
-		("Сканер кодов", "code_scanner"),
-		("Создание промокода", "profile"),
-		("Список промокодов", "help"),
-		("Выдать права", "schedule"),
-		("Редактировать магазин","edit_shop"),
-		("В меню", "schedule")
+		("Добавить категорию", "add_category"),
+		("Редактировать категорию", "edit_category"),
+		("Назад", "back")
 	]
 
 	buttons = [
@@ -18,10 +15,8 @@ def get_admin_keyboard():
 
 	keyboard = ReplyKeyboardMarkup(keyboard=[
 		buttons[:1],
-		buttons[1:3],
-		buttons[3:4],
-        buttons[4:5],
-  		buttons[5:]
+		buttons[1:2],
+		buttons[2:]
 	], resize_keyboard=True, input_field_placeholder="Выберите элемент меню")
 
 	return keyboard
