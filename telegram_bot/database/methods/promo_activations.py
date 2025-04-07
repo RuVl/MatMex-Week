@@ -1,8 +1,9 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from sqlalchemy.exc import IntegrityError
 from datetime import datetime
+
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from database.models import PromocodeActivation, Promocode, User
 
@@ -21,13 +22,13 @@ async def create_activation(session: AsyncSession, promocode_id: int, recipient_
 
 
 async def get_activation_by_ids(session: AsyncSession, promocode_id: int,
-								recipient_id: int) -> PromocodeActivation | None:
+                                recipient_id: int) -> PromocodeActivation | None:
 	"""Возвращает запись об активации для промокода и пользователя."""
 	result = await session.execute(
 		select(PromocodeActivation)
-			.where(PromocodeActivation.promocode_id == promocode_id)
-			.where(PromocodeActivation.recipient_id == recipient_id)
-			.options(
+		.where(PromocodeActivation.promocode_id == promocode_id)
+		.where(PromocodeActivation.recipient_id == recipient_id)
+		.options(
 			selectinload(PromocodeActivation.promocode),
 			selectinload(PromocodeActivation.recipient)
 		)
@@ -39,8 +40,8 @@ async def get_user_activations(session: AsyncSession, recipient_id: int) -> list
 	"""Возвращает список активаций промокодов для пользователя."""
 	result = await session.execute(
 		select(PromocodeActivation)
-			.where(PromocodeActivation.recipient_id == recipient_id)
-			.options(selectinload(PromocodeActivation.promocode))
+		.where(PromocodeActivation.recipient_id == recipient_id)
+		.options(selectinload(PromocodeActivation.promocode))
 	)
 	return result.scalars().all()
 
@@ -49,8 +50,8 @@ async def get_promocode_activations(session: AsyncSession, promocode_id: int) ->
 	"""Возвращает список активаций указанного промокода."""
 	result = await session.execute(
 		select(PromocodeActivation)
-			.where(PromocodeActivation.promocode_id == promocode_id)
-			.options(selectinload(PromocodeActivation.recipient))
+		.where(PromocodeActivation.promocode_id == promocode_id)
+		.options(selectinload(PromocodeActivation.recipient))
 	)
 	return result.scalars().all()
 

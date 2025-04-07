@@ -7,7 +7,7 @@ profile_router = Router()
 
 @profile_router.message(F.text == 'Профиль')
 async def profile_button_pressed(message: types.Message, state: FSMContext, l10n: FluentLocalization):
-	#TODO научиться выдавать профиль, запрос из Б/Д
+	# TODO научиться выдавать профиль, запрос из Б/Д
 	await message.answer(
 		l10n.format_value("phrase_profile")
 	)
