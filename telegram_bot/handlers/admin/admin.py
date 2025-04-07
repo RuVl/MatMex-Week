@@ -18,7 +18,7 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await state.set_state(AdminActions.ADMIN_PANEL)
 
 @main_admin_router.message(AdminActions.ADMIN_PANEL, 
-                           F.text == "В меню")
+						   F.text == "В меню")
 async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=get_menu_keyboard())
 	await state.clear()

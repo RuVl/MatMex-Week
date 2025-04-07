@@ -16,6 +16,6 @@ class Privilege(Base):
 
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="дата выдачи привилегий")
 	updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, 
-	                                             comment="дата обновления привилегий")
+												 comment="дата обновления привилегий")
 
 	provider_id: Mapped[int] = mapped_column(ForeignKey("privileges.id"), nullable=False, comment="кем выданы")
