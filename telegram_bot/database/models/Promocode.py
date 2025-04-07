@@ -17,6 +17,6 @@ class Promocode(Base):
 	is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False, comment="активен ли")
 	max_uses: Mapped[int | None] = mapped_column(Integer, nullable=True, comment="максимальное количество использований")
 
-	creator_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False, comment="кто создал")
+	creator_id: Mapped[int] = mapped_column(Integer, ForeignKey("privileges.id"), nullable=False, comment="кто создал")
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="когда был создан")
 	expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, comment="когда истекает")
