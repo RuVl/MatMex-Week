@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import func, ForeignKey, DateTime, Enum
+from sqlalchemy import func, ForeignKey, DateTime, Enum, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models import Base
@@ -11,7 +11,7 @@ class Privilege(Base):
 	__table_args__ = {"comment": "Привилегии пользователя (o2o)"}
 
 	id: Mapped[int] = mapped_column(primary_key=True)
-	privilege: Mapped[int] = mapped_column(int, nullable=False, comment="привилегии администрирования")
+	privilege: Mapped[int] = mapped_column(Integer, nullable=False, comment="привилегии администрирования")
 
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="дата выдачи привилегий")
 	updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, 
