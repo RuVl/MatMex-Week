@@ -17,3 +17,4 @@ class DropEmptyCallbackMiddleware(BaseMiddleware):
 			return CancelHandler()
 
 		return await handler(event, data)
+

@@ -2,8 +2,8 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 
-from state_machines.states_help import HelpActions
 from keyboards import get_menu_keyboard, get_cancel_keyboard
+from state_machines.states_help import HelpActions
 
 help_router = Router()
 
