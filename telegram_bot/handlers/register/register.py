@@ -1,3 +1,4 @@
+from aiogram import F
 from aiogram import Router, types
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
@@ -5,15 +6,16 @@ from fluent.runtime import FluentLocalization
 from aiogram import F
 from aiogram.types import ReplyKeyboardRemove
 
-from keyboards import get_menu_keyboard
-from state_machines.states_registration import RegistrationsActions
 from filters import FIO_filter
+from keyboards import get_menu_keyboard
 from keyboards import get_yes_no_kb, manual_check_kb
+from state_machines.states_registration import RegistrationsActions
 
 register_router = Router()
 register_router.message.filter(
-	F.text #add is registered filter
+	F.text  # add is registered filter
 )
+
 
 @register_router.message(CommandStart())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
@@ -22,12 +24,14 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await msg.answer(l10n.format_value("talk-about-pc"))
 	await state.set_state(RegistrationsActions.NAME_WAITING)
 
+
 @register_router.message(RegistrationsActions.NAME_WAITING,
 								FIO_filter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("thanks-FIO") +", " + msg.text.strip() +"\!")
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
+
 
 @register_router.message(RegistrationsActions.NAME_WAITING)
 async def wrong_FIO_format(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
@@ -36,6 +40,7 @@ async def wrong_FIO_format(msg: types.Message, state: FSMContext, l10n: FluentLo
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
 						 F.text == 'Да')
 async def in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+
 	await msg.answer(l10n.format_value("send-for-manual-check"), reply_markup = manual_check_kb()) #todo отправить на ручную проверку
 	await state.set_state(RegistrationsActions.MANUAL_MEMBER_CHECK)
 

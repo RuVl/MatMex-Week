@@ -10,7 +10,9 @@ class MerchItem(Base):
 	__table_args__ = {"comment": "Товарная единица определенного размера (Футболка черная XL)"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	name: Mapped[str] = mapped_column(String(250), nullable=False, comment="название товара")
+	image_path: Mapped[str] = mapped_column(String(255), nullable=False)
+
+	name: Mapped[str] = mapped_column(String(255), nullable=False, comment="название товара")
 	size: Mapped[MerchSize] = mapped_column(Enum(MerchSize), nullable=False, comment="размер товара")
 
 	full_price: Mapped[float] = mapped_column(Float, nullable=False, comment="цена без скидки")

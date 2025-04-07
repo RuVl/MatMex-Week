@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
 def get_menu_keyboard():
@@ -17,6 +17,7 @@ def get_menu_keyboard():
 		KeyboardButton(text=text, callback_data=callback_data)
 		for text, callback_data in buttons_data
 	]
+
 	if isAdmin:
 		keyboard = ReplyKeyboardMarkup(keyboard=[
 			buttons[:3],

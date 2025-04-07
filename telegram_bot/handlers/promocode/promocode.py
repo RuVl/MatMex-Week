@@ -2,10 +2,11 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 
-from state_machines.states_promocode import PromocodeActions
 from keyboards import get_menu_keyboard, get_cancel_keyboard
+from state_machines.states_promocode import PromocodeActions
 
 promo_router = Router()
+
 
 @promo_router.message(F.text == 'Ввести Промокод')
 async def promocode_button_pressed(message: types.Message, state: FSMContext, l10n: FluentLocalization):
