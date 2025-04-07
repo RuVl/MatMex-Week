@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, func, UniqueConstraint
+from sqlalchemy import DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from database.models import Base
@@ -8,9 +8,7 @@ from database.models import Base
 
 class PromocodeActivation(Base):
 	__tablename__ = "promocode_activations"
-	__table_args__ = (
-		{"comment": "Активация промокодов (m2m)"}
-	)
+	__table_args__ = {"comment": "Активация промокодов (m2m)"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
 

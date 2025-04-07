@@ -1,7 +1,8 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
-from sqlalchemy.orm import selectinload
 from datetime import datetime
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from database.models import Privilege, User
 
@@ -94,7 +95,7 @@ async def get_privileges_by_provider(session: AsyncSession, provider_id: int) ->
 	"""Возвращает список привилегий, выданных указанным пользователем."""
 	result = await session.execute(
 		select(Privilege)
-			.where(Privilege.provider_id == provider_id)
-			.options(selectinload(Privilege.user))
+		.where(Privilege.provider_id == provider_id)
+		.options(selectinload(Privilege.user))
 	)
 	return result.scalars().all()

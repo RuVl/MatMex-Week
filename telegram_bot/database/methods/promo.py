@@ -1,7 +1,8 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func as sql_func
-from sqlalchemy.orm import selectinload
 from datetime import datetime
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from database.models import Promocode, PromocodeActivation, User
 
@@ -32,7 +33,7 @@ async def get_promocode_by_code(session: AsyncSession, code: str) -> Promocode |
 	"""Возвращает промокод по его коду или None, если не найден."""
 	result = await session.execute(
 		select(Promocode)
-			.where(Promocode.code == code)
+		.where(Promocode.code == code)
 	)
 	return result.scalar_one_or_none()
 
@@ -80,8 +81,8 @@ async def get_promocodes_by_creator(session: AsyncSession, creator_id: int) -> l
 	"""Возвращает список промокодов, созданных указанной привилегией."""
 	result = await session.execute(
 		select(Promocode)
-			.where(Promocode.creator_id == creator_id)
-			.options(selectinload(Promocode.activations))
+		.where(Promocode.creator_id == creator_id)
+		.options(selectinload(Promocode.activations))
 	)
 	return result.scalars().all()
 
@@ -90,8 +91,8 @@ async def get_active_promocodes(session: AsyncSession) -> list[Promocode]:
 	"""Возвращает список активных промокодов, которые ещё не истекли."""
 	result = await session.execute(
 		select(Promocode)
-			.where(Promocode.is_active == True)
-			.where((Promocode.expires_at == None) | (Promocode.expires_at > datetime.utcnow()))
-			.options(selectinload(Promocode.activations))
+		.where(Promocode.is_active == True)
+		.where((Promocode.expires_at == None) | (Promocode.expires_at > datetime.utcnow()))
+		.options(selectinload(Promocode.activations))
 	)
 	return result.scalars().all()

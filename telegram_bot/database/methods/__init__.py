@@ -1,9 +1,3 @@
-from .user import (
-	create_user,
-	get_user_by_telegram_id,
-	update_user_balance
-)
-
 from .pk_apply import (
 	create_privilege_request,
 	update_request_status,
@@ -11,7 +5,6 @@ from .pk_apply import (
 	get_user_request,
 	get_requests_by_reviewer,
 )
-
 from .privilege import (
 	get_privilege_by_user,
 	add_privilege,
@@ -19,7 +12,6 @@ from .privilege import (
 	remove_all_privileges,
 	get_privileges_by_provider,
 )
-
 from .promo import (
 	create_promocode,
 	get_promocode_by_code,
@@ -28,12 +20,16 @@ from .promo import (
 	get_promocodes_by_creator,
 	get_active_promocodes,
 )
-
 from .promo_activations import (
 	create_activation,
 	get_activation_by_ids,
 	get_user_activations,
 	get_promocode_activations,
+)
+from .user import (
+	create_user,
+	get_user_by_telegram_id,
+	update_user_balance
 )
 
 __all__ = [
