@@ -5,17 +5,17 @@ from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from aiogram.enums import ParseMode
 from aiogram import F
+from aiogram.types import ReplyKeyboardRemove
 
 from state_machines.states_registration import RegistrationsActions
 from filters import FIO_filter
-from keyboards import yes_no_kb
+from keyboards import yes_no_kb, manual_check_kb
 
 register_router = Router()
 register_router.message.filter(
-    F.text
+    F.text #add is registered filter
 )
 
-# '/start'
 @register_router.message(CommandStart())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("hi"))
@@ -37,9 +37,23 @@ async def wrong_FIO_format(msg: types.Message, state: FSMContext, l10n: FluentLo
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
                          F.text == 'Да')
 async def in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer("Круто")
- 
+    await msg.answer(l10n.format_value("send-for-manual-check"), reply_markup = manual_check_kb()) #todo отправить на ручную проверку
+    await state.set_state(RegistrationsActions.MANUAL_MEMBER_CHECK)
+
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
-                               F.text == 'Нет')
+                            F.text == 'Нет')
 async def not_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer("Не круто")
+    await msg.answer(l10n.format_value("ask-to-join")) #todo зарегистрировать
+    await state.clear()
+
+@register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK,
+                                F.text == 'Отправить на ручную проверку')
+async def sent_for_manual_check(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+    await msg.answer(l10n.format_value("wait-until-checked")) #todo зарегистрировать
+    await state.clear()
+    
+@register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK,
+                                F.text == 'Нет, я пошутил')
+async def sent_for_manual_check(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+    await msg.answer(l10n.format_value("ask-to-join")) #todo зарегистрировать
+    await state.clear()

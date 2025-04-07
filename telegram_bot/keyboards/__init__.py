@@ -1,1 +1,1 @@
-from .register import yes_no_kb
+from .register import yes_no_kb, manual_check_kb
