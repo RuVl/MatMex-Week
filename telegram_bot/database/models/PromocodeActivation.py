@@ -9,11 +9,10 @@ from database.models import Base
 class PromocodeActivation(Base):
 	__tablename__ = "promocode_activations"
 	__table_args__ = (
-		{"comment": "Активация промокодов (m2m)"},
-		UniqueConstraint("promocode_id", "recipient_id", name="uq_promocode_recipient")
+		{"comment": "Активация промокодов (m2m)"}
 	)
 
-	id: Mapped[int] = mapped_column(primary_key=True)
+	id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
 	promocode_id: Mapped[int] = mapped_column(Integer, ForeignKey("promocodes.id"), nullable=False, comment="какой промокод активировали")
 	recipient_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False, comment="кто активировал")
