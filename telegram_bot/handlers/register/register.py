@@ -44,17 +44,17 @@ async def in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
                             F.text == 'Нет')
 async def not_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer(l10n.format_value("ask-to-join")) #todo зарегистрировать
+    await msg.answer(l10n.format_value("ask-to-join"), reply_markup = get_menu_keyboard()) #todo зарегистрировать
     await state.clear()
 
 @register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK,
                                 F.text == 'Отправить на ручную проверку')
 async def sent_for_manual_check(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer(l10n.format_value("wait-until-checked")) #todo зарегистрировать
+    await msg.answer(l10n.format_value("wait-until-checked"), reply_markup = get_menu_keyboard()) #todo зарегистрировать
     await state.clear()
     
 @register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK,
                                 F.text == 'Нет, я пошутил')
 async def sent_for_manual_check(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-    await msg.answer(l10n.format_value("ask-to-join")) #todo зарегистрировать
+    await msg.answer(l10n.format_value("ask-to-join"), reply_markup = get_menu_keyboard()) #todo зарегистрировать
     await state.clear()
