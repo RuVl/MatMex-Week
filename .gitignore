@@ -1,0 +1,25 @@
+# IDE's folders
+.idea/
+
+# python local cache
+**/__pycache__/
+
+# Compiled files
+**/*.mo
+
+# alembic migrations
+**/migrations/versions/
+!**/migrations/versions/__init__.py
+
+# All virtual enviroments
+**/*venv/
+
+# All .env files
+config.toml
+**/.env
+
+# Logging files
+*.log
+
+# Test docker
+test*.yaml
