@@ -4,7 +4,7 @@ from fluent.runtime import FluentLocalization
 from aiogram import F
 from aiogram.filters import or_f
 
-from keyboards import get_edit_shop_keyboard, get_cancel_keyboard, get_admin_keyboard
+from keyboards import get_edit_shop_keyboard, get_cancel_keyboard, get_admin_keyboard, get_edit_item_keyboard
 from state_machines.states_admin import AdminActions
 from state_machines.states_edit_shop import EditShopActions
 
@@ -49,5 +49,54 @@ async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocal
 
 @edit_shop_router.message(EditShopActions.EDIT_CATEGORY)
 async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("edit-category"), reply_markup=get_edit_shop_keyboard())
-	await state.set_state(EditShopActions.EDIT_SHOP)
+	await msg.answer(l10n.format_value("edit-category"), reply_markup=get_edit_item_keyboard())
+	await state.set_state(EditShopActions.IN_CATEGORY)
+
+
+@edit_shop_router.message(EditShopActions.IN_CATEGORY, F.text == "Удалить товар")
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("ask-for-name-item"), reply_markup=get_cancel_keyboard())
+	await state.set_state(EditShopActions.DELETE_ITEM)
+
+
+@edit_shop_router.message(EditShopActions.IN_CATEGORY, F.text == "Добавить товар")
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("ask-for-name-item"), reply_markup=get_cancel_keyboard())
+	await state.set_state(EditShopActions.CREATE_ITEM)
+
+
+@edit_shop_router.message(or_f(EditShopActions.CREATE_ITEM, EditShopActions.DELETE_ITEM, EditShopActions.SET_SIZE, EditShopActions.SET_PRICE, EditShopActions.SET_COUNT),
+                            F.text == "Отмена")
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("cancel-edit-item"), reply_markup=get_edit_item_keyboard())
+	await state.set_state(EditShopActions.IN_CATEGORY)
+
+
+@edit_shop_router.message(EditShopActions.DELETE_ITEM)
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("delete-item"), reply_markup=get_edit_item_keyboard())
+	await state.set_state(EditShopActions.IN_CATEGORY)
+
+
+@edit_shop_router.message(EditShopActions.CREATE_ITEM)
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("ask-for-size"), reply_markup=get_cancel_keyboard())
+	await state.set_state(EditShopActions.SET_SIZE)
+
+
+@edit_shop_router.message(EditShopActions.SET_SIZE)
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("ask-for-price"), reply_markup=get_cancel_keyboard())
+	await state.set_state(EditShopActions.SET_PRICE)
+
+
+@edit_shop_router.message(EditShopActions.SET_PRICE)
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("ask-for-count"), reply_markup=get_cancel_keyboard())
+	await state.set_state(EditShopActions.SET_COUNT)
+
+
+@edit_shop_router.message(EditShopActions.SET_COUNT)
+async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("create-item"), reply_markup=get_edit_item_keyboard())
+	await state.set_state(EditShopActions.IN_CATEGORY)

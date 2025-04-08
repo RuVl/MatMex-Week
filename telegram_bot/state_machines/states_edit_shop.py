@@ -4,9 +4,9 @@ class EditShopActions(StatesGroup):
 	EDIT_SHOP = State()
 
 	CREATE_CATEGORY = State()
-	CATEGORY_NAME_WAITING =State()    
 
 	EDIT_CATEGORY = State()
+	IN_CATEGORY = State()
 
 	CREATE_ITEM = State()
 	DELETE_ITEM = State()
