@@ -17,8 +17,7 @@ register_router.message.filter(
 	F.text
 )
 
-@register_router.message(CommandStart(),
-                         is_not_registered_filter())
+@register_router.message(CommandStart()) #is_not_registered_filter
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
 	await msg.answer(l10n.format_value("ask-name"))
@@ -34,8 +33,8 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
                          FIO_filter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + "\\!")
-	async with async_session() as session:
-		await create_user(session, msg.from_user.id, msg)
+	#async with async_session() as session:
+	#	await create_user(session, msg.from_user.id, msg)
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 

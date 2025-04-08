@@ -51,3 +51,10 @@ give-points = Баллы успешно начислены
 wrong-id = Участника с таким кодом не существует, попробуйте еще раз
 cancel-code-scanner-message = Сакнирование кода отменено 
 back-to-menu = Возвращаю обратно в меню
+
+#account messages
+account-temp = Мой аккаунт
+input-new-name = Введите новое ФИО
+cancel-change-name = Редактирование ФИО отменено
+name-changed = ФИО успешо изменено\! Приятно познакомиться
+already-in-pc = Мы знаем\) Это отмечено в твоем профиле
