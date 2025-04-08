@@ -11,7 +11,8 @@ class FIO_filter(BaseFilter):
 		fio_pattern = re.compile(r'^[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*\s+[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*\s*(?:[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*)?$')
 		return fio_pattern.match(message.text.strip())
 
-class is_not_registered_filter():
+class is_not_registered_filter(BaseFilter):
 	async def __call__(self, message: Message) -> bool:
 		async with async_session() as session:
-			return await get_user_by_telegram_id(session, message.from_user.id) == None
+			user = await get_user_by_telegram_id(session, message.from_user.id)
+			return user is None
