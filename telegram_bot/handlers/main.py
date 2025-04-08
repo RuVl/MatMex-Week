@@ -1,12 +1,13 @@
-from aiogram import Dispatcher, Router
-from aiogram.types import Message
-from .register import register_router
-from .helping import help_router
-from .code import code_router
-from .promocode import promo_router
-from .profile import profile_router
-from .schedule import schedule_router
+from aiogram import Dispatcher
+
 from .admin import main_admin_router
+from .code import code_router
+from .helping import help_router
+from .profile import profile_router
+from .promocode import promo_router
+from .register import register_router
+from .schedule import schedule_router
+
 
 def register_handlers(dp: Dispatcher):
 	# Register your handlers and routers here

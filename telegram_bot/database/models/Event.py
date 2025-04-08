@@ -11,7 +11,7 @@ class Event(Base):
 	__table_args__ = {"comment": "Проводимые мероприятия"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	name: Mapped[str] = mapped_column(String(250), nullable=False, comment="название мероприятия")
+	name: Mapped[str] = mapped_column(String(255), nullable=False, comment="название мероприятия")
 
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="когда создан")
 	created_by_id: Mapped[int] = mapped_column(Integer, ForeignKey("privileges.id"), nullable=False, comment="кем создан")

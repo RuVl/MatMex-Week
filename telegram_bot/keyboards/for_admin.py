@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
 def get_admin_keyboard():
@@ -20,8 +20,8 @@ def get_admin_keyboard():
 		buttons[:1],
 		buttons[1:3],
 		buttons[3:4],
-        buttons[4:5],
-  		buttons[5:]
+    buttons[4:5],
+    buttons[5:]
 	], resize_keyboard=True, input_field_placeholder="Выберите элемент меню")
 
 	return keyboard
