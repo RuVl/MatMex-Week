@@ -15,7 +15,7 @@ class PkApply(Base):
 	status: Mapped[ApplyStatus] = mapped_column(Enum(ApplyStatus), default=ApplyStatus.pending, nullable=False, comment="статус заявки")
 
 	reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, comment="когда рассмотрена")
-	reviewed_by_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("privileges.id"), nullable=True, comment="кем рассмотрена")
+	reviewed_by_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("users.id"), nullable=True, comment="кем рассмотрена")
 
 	created_by_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False, comment="кто подал заявку")
 

@@ -7,6 +7,7 @@ from .profile import profile_router
 from .promocode import promo_router
 from .register import register_router
 from .schedule import schedule_router
+from .shop import shop_router
 
 
 def register_handlers(dp: Dispatcher):
@@ -18,3 +19,4 @@ def register_handlers(dp: Dispatcher):
 	dp.include_router(profile_router)
 	dp.include_router(schedule_router)
 	dp.include_router(main_admin_router)
+	dp.include_router(shop_router)

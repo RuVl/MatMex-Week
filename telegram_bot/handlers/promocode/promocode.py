@@ -34,6 +34,11 @@ async def promocode_input(message: types.Message, state: FSMContext, l10n: Fluen
     async with async_session() as session:
         promocode = await get_promocode_by_code(session, user_promocode)
         user = await get_user_by_telegram_id(session, telegram_id)
+        if promocode is None:
+            await message.answer(l10n.format_value("sad-promo-message"),
+                                 reply_markup=get_menu_keyboard())
+            await state.clear()
+            return
         is_active = await activate_promocode(session, promocode.id, user.id)
 
     if is_active:

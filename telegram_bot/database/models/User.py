@@ -19,7 +19,7 @@ class User(Base):
 	code: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), unique=True, nullable=False, default=uuid.uuid4, comment="код человека (для qr)")
 	privileges_id = mapped_column(Integer, ForeignKey("privileges.id"), nullable=True, comment="привилегии пользователя (null - их нет)")
 
-	privileges = relationship("Privileges", back_populates="user", uselist=False)
+	privileges = relationship("Privilege", back_populates="user", uselist=False)
 	created_applies = relationship("PkApply", back_populates="created_by", foreign_keys="[PkApply.created_by_id]")
 	reviewed_applies = relationship("PkApply", back_populates="reviewed_by", foreign_keys="[PkApply.reviewed_by_id]")
 	promocode_activations = relationship("PromocodeActivation", back_populates="recipient")
