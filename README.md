@@ -82,7 +82,7 @@
 Данный бот предназначен для недели Матмеха. В его функции входят регистрация новых участников недели, начисление валюты за участие в событиях, магазин мерча, администрирование пользователей.
 Сам бот обернут в докер и сопровождается postgres и redis.
 Trello: [https://trello.com/b/rDOuwQsR/matmex-week](https://trello.com/b/rDOuwQsR/matmex-week)
-Схема базы данных: [https://dbdiagram.io/d/67f003894f7afba184640672](https://dbdiagram.io/d/67f003894f7afba184640672)
+Схема базы данных: [https://dbdiagram.io/d/MatMex-Week-67ee67894f7afba184376c28](https://dbdiagram.io/d/MatMex-Week-67ee67894f7afba184376c28)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 

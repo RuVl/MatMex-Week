@@ -49,5 +49,19 @@ ask-for-id = Введите код участника
 wrong-event-or-no-rights = У вас нет прав начисления баллов за это меро, либо такого меро не существует
 give-points = Баллы успешно начислены
 wrong-id = Участника с таким кодом не существует, попробуйте еще раз
-cancel-code-scanner-message = Сакнирование кода отменено 
+cancel-code-scanner-message = Сканирование кода отменено 
 back-to-menu = Возвращаю обратно в меню
+
+#edit shop messages
+edit-shop-menu = Редактирование магазина
+ask-for-category-create = Название категории
+creating-category-cancelled = Создание категории отменено
+create-category = Категория создана
+edit-category = Редактирование категории
+ask-for-name-item = Введите название
+ask-for-size = Введите размер
+ask-for-price = Введите цену
+ask-for-count = Введите количество
+delete-item = Товар удален
+cancel-edit-item = Отменено
+create-item = Товар создан
