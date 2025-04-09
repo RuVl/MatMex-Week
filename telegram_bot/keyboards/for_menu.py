@@ -2,23 +2,31 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
 def get_menu_keyboard():
+	isAdmin = True  # todo чек на права из датабазы
 	buttons_data = [
-		("Магазин", "shop"),
-		("Профиль", "profile"),
-		("Поддержка", "help"),
-		("Расписание", "schedule"),
-		("Мой код", "my_code"),
-		("Ввести Промокод", "promo_code")
+		"Магазин",
+		"Профиль",
+		"Поддержка",
+		"Расписание",
+		"Мой код",
+		"Ввести Промокод",
+		"Админ панель",
 	]
 
 	buttons = [
-		KeyboardButton(text=text, callback_data=callback_data)
-		for text, callback_data in buttons_data
+		KeyboardButton(text=text)
+		for text in buttons_data
 	]
 
-	keyboard = ReplyKeyboardMarkup(keyboard=[
-		buttons[:3],
-		buttons[3:],
-	], resize_keyboard=True, input_field_placeholder="Выберите элемент меню")
-
+	if isAdmin:
+		keyboard = ReplyKeyboardMarkup(keyboard=[
+			buttons[:3],
+			buttons[3:6],
+			buttons[6:]
+		], resize_keyboard=True, input_field_placeholder="Выберите элемент меню")
+	else:
+		keyboard = ReplyKeyboardMarkup(keyboard=[
+			buttons[:3],
+			buttons[3:6],
+		], resize_keyboard=True, input_field_placeholder="Выберите элемент меню")
 	return keyboard

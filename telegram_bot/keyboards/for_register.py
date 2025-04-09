@@ -3,7 +3,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from aiogram.utils.keyboard import ReplyKeyboardMarkup
 
 
-def yes_no_kb() -> ReplyKeyboardMarkup:
+def get_yes_no_kb() -> ReplyKeyboardMarkup:
 	kb = ReplyKeyboardBuilder()
 	kb.row(KeyboardButton(text="Да"),
 	       KeyboardButton(text="Нет"))

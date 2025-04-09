@@ -8,8 +8,7 @@ from fluent.runtime import FluentLocalization
 from database import async_session
 from database.methods import create_user
 from filters import FIOFilter, IsNotRegisteredFilter
-from keyboards import get_menu_keyboard
-from keyboards import yes_no_kb, manual_check_kb
+from keyboards import get_yes_no_kb, get_menu_keyboard, manual_check_kb
 from state_machines.states_registration import RegistrationsActions
 
 register_router = Router()
@@ -32,6 +31,7 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await msg.answer(l10n.format_value("hi"), reply_markup=get_menu_keyboard())
 	await state.clear()
 
+
 @register_router.message(RegistrationsActions.NAME_WAITING,
                          FIOFilter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
@@ -39,8 +39,8 @@ async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalizat
 
 	async with async_session() as session:
 		await create_user(session, msg.from_user.id, msg.text)
-	
-	await msg.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb())
+
+	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 

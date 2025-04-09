@@ -16,4 +16,5 @@ class L10nMiddleware(BaseMiddleware):
 			data: Dict[str, Any]
 	) -> Any:
 		data["l10n"] = self.locale
+
 		return await handler(event, data)
