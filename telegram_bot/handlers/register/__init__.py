@@ -1,1 +1,1 @@
-from .register import register_router
+from .main import register_router

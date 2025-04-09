@@ -1,1 +1,1 @@
-from .profile import profile_router
+from .main import profile_router
