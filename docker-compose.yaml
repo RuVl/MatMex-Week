@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     env_file:
+      - telegram_bot/.env
       - postgres/.env
       - redis/.env
     depends_on:

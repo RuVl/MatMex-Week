@@ -4,31 +4,30 @@ from json import dumps
 import structlog
 from structlog import WriteLoggerFactory
 
-from utils.config_reader import LogConfig, LogRenderer
+from env import LoggerKeys
 
 
-def get_structlog_config(log_config: LogConfig) -> dict:
+def get_structlog_config() -> dict:
 	"""
 	Get config for a structlog
-	:param log_config: LogConfig object with log parameters
 	:return: dict with structlog config
 	"""
 
 	# Show debug level logs?
-	if log_config.show_debug_logs is True:
+	if LoggerKeys.SHOW_DEBUG_LOGS is True:
 		min_level = logging.DEBUG
 	else:
 		min_level = logging.INFO
 
 	return {
-		"processors": get_processors(log_config),
+		"processors": get_processors(LoggerKeys),
 		"cache_logger_on_first_use": True,
 		"wrapper_class": structlog.make_filtering_bound_logger(min_level),
 		"logger_factory": WriteLoggerFactory()
 	}
 
 
-def get_processors(log_config: LogConfig) -> list:
+def get_processors(log_config: LoggerKeys) -> list:
 	"""
 	Returns processors list for structlog
 	:param log_config: LogConfig object with log parameters
@@ -41,7 +40,7 @@ def get_processors(log_config: LogConfig) -> list:
 		"""
 		result = dict()
 
-		if log_config.show_datetime is True:
+		if log_config.SHOW_DATETIME is True:
 			result["timestamp"] = data.pop("timestamp")
 
 		# Other two keys goes in this order
@@ -57,21 +56,21 @@ def get_processors(log_config: LogConfig) -> list:
 
 	# In some cases, there is no need to print a timestamp,
 	# because it is already added by an upstream service, such as systemd
-	if log_config.show_datetime is True:
+	if log_config.SHOW_DATETIME is True:
 		processors.append(structlog.processors.TimeStamper(
-			fmt=log_config.datetime_format,
-			utc=log_config.time_in_utc
+			fmt=log_config.DATETIME_FORMAT,
+			utc=log_config.TIME_IN_UTC
 		))
 
 	# Always add a log level
 	processors.append(structlog.processors.add_log_level)
 
-	match log_config.renderer:
-		case LogRenderer.JSON:
+	match log_config.RENDERER:
+		case 'json':
 			processors.append(structlog.processors.JSONRenderer(serializer=custom_json_serializer))
-		case LogRenderer.CONSOLE:
+		case 'console':
 			processors.append(structlog.dev.ConsoleRenderer(
-				colors=log_config.use_colors_in_console,
+				colors=log_config.USE_COLORS_IN_CONSOLE,
 				pad_level=True,
 			))
 
