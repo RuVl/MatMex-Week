@@ -12,7 +12,6 @@ class FIOFilter(BaseFilter):
 		fio_pattern = re.compile(r'^[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*\s+[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*\s*(?:[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*)?$')
 		return fio_pattern.match(message.text.strip())
 
-
 class IsNotRegisteredFilter(BaseFilter):
 	async def __call__(self, message: Message) -> bool:
 		async with async_session() as session:

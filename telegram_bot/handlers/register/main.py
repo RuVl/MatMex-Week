@@ -36,7 +36,7 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
                          FIOFilter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + r"\!")
-
+ 
 	async with async_session() as session:
 		await create_user(session, msg.from_user.id, msg.text)
 
