@@ -35,11 +35,9 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 @register_router.message(RegistrationsActions.NAME_WAITING,
                          FIOFilter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + r"\!")
- 
+	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + "\\!")
 	async with async_session() as session:
-		await create_user(session, msg.from_user.id, msg.text)
-
+		await create_user(session, msg.from_user.id, msg)
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 

@@ -67,3 +67,10 @@ ask-for-count = Введите количество
 delete-item = Товар удален
 cancel-edit-item = Отменено
 create-item = Товар создан
+
+#account messages
+account-temp = Мой аккаунт
+input-new-name = Введите новое ФИО
+cancel-change-name = Редактирование ФИО отменено
+name-changed = ФИО успешо изменено\! Приятно познакомиться
+already-in-pc = Мы знаем\) Это отмечено в твоем профиле
