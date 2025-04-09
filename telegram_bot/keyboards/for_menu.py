@@ -2,7 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
 def get_menu_keyboard():
-	isAdmin = True  # todo чек на права из датабазы
+	isAdmin = True  # todo чек на права из базы данных
 	buttons_data = [
 		"Магазин",
 		"Профиль",

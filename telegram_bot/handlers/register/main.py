@@ -9,7 +9,7 @@ from database import async_session
 from database.methods import create_user
 from filters import FIOFilter, IsNotRegisteredFilter
 from keyboards import get_menu_keyboard
-from keyboards import yes_no_kb, manual_check_kb
+from keyboards import get_yes_no_kb, manual_check_kb
 from state_machines.states_registration import RegistrationsActions
 
 register_router = Router()
@@ -39,8 +39,8 @@ async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalizat
 
 	async with async_session() as session:
 		await create_user(session, msg.from_user.id, msg.text)
-	
-	await msg.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb())
+
+	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 
