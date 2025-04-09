@@ -8,9 +8,9 @@ from database.enums import ApplyStatus
 from database.models import PkApply
 
 
-async def create_privilege_request(session: AsyncSession, created_by_id: int) -> PkApply:
+async def create_privilege_request(session: AsyncSession, creator_id: int) -> PkApply:
 	"""Создаёт заявку на привилегированный статус."""
-	request = PkApply(created_by_id=created_by_id)
+	request = PkApply(creator_id=creator_id)
 	session.add(request)
 	await session.commit()
 	await session.refresh(request)
@@ -20,7 +20,7 @@ async def create_privilege_request(session: AsyncSession, created_by_id: int) ->
 async def update_request_status(session: AsyncSession, request_id: int, status: ApplyStatus, reviewed_by_id: int) -> PkApply:
 	"""Обновляет статус заявки."""
 	request = await session.get(PkApply, request_id, options=[
-		selectinload(PkApply.created_by),
+		selectinload(PkApply.creator),
 		selectinload(PkApply.reviewed_by)
 	])
 	if request:
@@ -38,7 +38,7 @@ async def get_pending_requests(session: AsyncSession) -> list[PkApply]:
 	result = await session.execute(
 		select(PkApply)
 		.where(PkApply.status == ApplyStatus.pending)
-		.options(selectinload(PkApply.created_by))
+		.options(selectinload(PkApply.creator))
 	)
 	return result.scalars().all()
 
@@ -47,9 +47,9 @@ async def get_user_request(session: AsyncSession, created_by_id: int) -> PkApply
 	"""Возвращает последнюю заявку пользователя или None, если не найдена."""
 	result = await session.execute(
 		select(PkApply)
-		.where(PkApply.created_by_id == created_by_id)
+		.where(PkApply.creator_id == created_by_id)
 		.options(
-			selectinload(PkApply.created_by),
+			selectinload(PkApply.creator),
 			selectinload(PkApply.reviewed_by)
 		)
 		.order_by(PkApply.id.desc())  # Последняя заявка по ID
@@ -63,7 +63,7 @@ async def get_requests_by_reviewer(session: AsyncSession, reviewed_by_id: int) -
 		select(PkApply)
 		.where(PkApply.reviewed_by_id == reviewed_by_id)
 		.options(
-			selectinload(PkApply.created_by),
+			selectinload(PkApply.creator),
 			selectinload(PkApply.reviewed_by)
 		)
 	)

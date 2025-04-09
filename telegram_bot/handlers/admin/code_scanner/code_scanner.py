@@ -10,7 +10,7 @@ from state_machines.states_admin import AdminActions
 
 code_scanner_router = Router()
 code_scanner_router.message.filter(
-	F.text  # todo добавить чек на права из датабазы
+	F.text  # todo добавить чек на права из базы данных
 )
 
 
@@ -28,7 +28,7 @@ async def wrong_id(msg: types.Message, state: FSMContext, l10n: FluentLocalizati
 	await state.set_state(AdminActions.ADMIN_PANEL)
 
 
-@code_scanner_router.message(AccrualOfPointsActions.EVENT_WAITING)  # todo фильтр доступа к меро
+@code_scanner_router.message(AccrualOfPointsActions.EVENT_WAITING)  # todo фильтр доступа к мероприятию
 async def ask_for_id(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("ask-for-id"), reply_markup=get_cancel_keyboard())
 	await state.set_state(AccrualOfPointsActions.ID_WAITING)
@@ -40,7 +40,7 @@ async def wrong_event_or_no_rights(msg: types.Message, state: FSMContext, l10n: 
 	await state.set_state(AccrualOfPointsActions.EVENT_WAITING)
 
 
-@code_scanner_router.message(AccrualOfPointsActions.ID_WAITING)  # todo фильтр существоваия кода
+@code_scanner_router.message(AccrualOfPointsActions.ID_WAITING)  # todo фильтр существования кода
 async def give_points(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("give-points"), reply_markup=get_admin_keyboard())
 	await state.set_state(AdminActions.ADMIN_PANEL)

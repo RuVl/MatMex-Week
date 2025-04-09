@@ -1,8 +1,8 @@
+from aiogram import F
 from aiogram import Router, types
+from aiogram.filters import or_f
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
-from aiogram import F
-from aiogram.filters import or_f
 
 from keyboards import get_edit_shop_keyboard, get_cancel_keyboard, get_admin_keyboard, get_edit_item_keyboard
 from state_machines.states_admin import AdminActions
@@ -10,7 +10,7 @@ from state_machines.states_edit_shop import EditShopActions
 
 edit_shop_router = Router()
 edit_shop_router.message.filter(
-    F.text #todo добавить чек на права из датабазы
+	F.text  # todo добавить чек на права из базы данных
 )
 
 @edit_shop_router.message(AdminActions.ADMIN_PANEL,

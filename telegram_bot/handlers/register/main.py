@@ -5,25 +5,27 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 from fluent.runtime import FluentLocalization
 
-from filters import FIO_filter, is_not_registered_filter
+from database import async_session
+from database.methods import create_user
+from filters import FIOFilter, IsNotRegisteredFilter
 from keyboards import get_menu_keyboard
 from keyboards import get_yes_no_kb, manual_check_kb
 from state_machines.states_registration import RegistrationsActions
-from database.methods import create_user
-from database import async_session
 
 register_router = Router()
 register_router.message.filter(
 	F.text
 )
 
+
 @register_router.message(CommandStart(),
-                         is_not_registered_filter())
+                         IsNotRegisteredFilter())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
 	await msg.answer(l10n.format_value("ask-name"))
 	await msg.answer(l10n.format_value("talk-about-pc"))
 	await state.set_state(RegistrationsActions.NAME_WAITING)
+
 
 @register_router.message(CommandStart())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
@@ -31,17 +33,19 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await state.clear()
 
 @register_router.message(RegistrationsActions.NAME_WAITING,
-                         FIO_filter())
+                         FIOFilter())
 async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + "\!")
+	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + r"\!")
+
 	async with async_session() as session:
-		await create_user(session, msg.from_user.id, msg)
+		await create_user(session, msg.from_user.id, msg.text)
+
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 
 @register_router.message(RegistrationsActions.NAME_WAITING)
-async def wrong_FIO_format(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+async def wrong_FIO_format(msg: types.Message, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("wrong-FIO"))
 
 

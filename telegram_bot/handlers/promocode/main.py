@@ -2,8 +2,6 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 
-from database import async_session
-from database.methods import get_promocode_by_code, activate_promocode, get_user_by_telegram_id
 from keyboards import get_menu_keyboard, get_cancel_keyboard
 from state_machines.states_promocode import PromocodeActions
 
