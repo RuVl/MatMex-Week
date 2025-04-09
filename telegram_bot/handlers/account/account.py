@@ -5,7 +5,7 @@ from fluent.runtime import FluentLocalization
 
 from keyboards import get_menu_keyboard, get_account_menu_keyboard, get_cancel_keyboard
 from state_machines.states_account import AccountActions
-from filters import FIO_filter
+from filters import NameFilter
 
 account_router = Router()
 account_router.message.filter(
@@ -30,14 +30,14 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
  
 @account_router.message(AccountActions.NAME_WAITING,
-                        FIO_filter())
+                        NameFilter())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("name-changed")  + ", " + msg.text.strip() + "\\!", reply_markup=get_account_menu_keyboard())
+	await msg.answer(l10n.format_value("name-changed")  + ", " + msg.text.strip() + r'\!', reply_markup=get_account_menu_keyboard())
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 
 @account_router.message(AccountActions.NAME_WAITING)
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("wrong-FIO"), reply_markup=get_cancel_keyboard())
+	await msg.answer(l10n.format_value("wrong-name"), reply_markup=get_cancel_keyboard())
 
 @account_router.message(AccountActions.ACCOUNT_PANEL,
 						F.text == "Я вообще-то в пк") #todo фильтр уже в пк

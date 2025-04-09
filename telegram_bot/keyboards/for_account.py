@@ -2,9 +2,9 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 def get_account_menu_keyboard():
 	buttons_data = [
-		("Редактировать ФИО", "edit_FIO"),
-		("Я вообще-то в пк", "pk_apply"),
-  		("В меню", "back_to_menu"),
+		("Редактировать ФИО"),
+		("Я вообще-то в пк"),
+  		("В меню"),
 	]
 
 	buttons = [
