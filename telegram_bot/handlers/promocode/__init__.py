@@ -1,1 +1,1 @@
-from .promocode import promo_router
+from .main import promo_router

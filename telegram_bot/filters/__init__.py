@@ -1,1 +1,1 @@
-from .register import FIO_filter
+from .register import FIOFilter, IsNotRegisteredFilter
