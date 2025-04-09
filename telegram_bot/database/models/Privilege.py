@@ -20,5 +20,6 @@ class Privilege(Base):
 
 	provider_id: Mapped[int] = mapped_column(ForeignKey("privileges.id"), nullable=False, comment="кем выданы")
 
-	provider = relationship("User", backref="issued_privileges")
 	user = relationship("User", back_populates="privileges", uselist=False)
+
+	reviewed_applies = relationship("PkApply", back_populates="reviewed_by", foreign_keys="[PkApply.reviewed_by_id]")

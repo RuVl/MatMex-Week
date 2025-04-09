@@ -19,5 +19,4 @@ class Promocode(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="когда был создан")
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, comment="когда истекает")
 
-    creator = relationship("Privilege", back_populates="created_promocodes")
     activations = relationship("PromocodeActivation", back_populates="promocode")

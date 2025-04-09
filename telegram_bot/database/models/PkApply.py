@@ -23,4 +23,4 @@ class PkApply(Base):
 	created_by = relationship("User", back_populates="created_applies", foreign_keys=[created_by_id])
 
 	# Связь с пользователем, рассмотревшим заявку
-	reviewed_by = relationship("User", back_populates="reviewed_applies", foreign_keys=[reviewed_by_id])
+	reviewed_by = relationship("Privilege", back_populates="reviewed_applies", foreign_keys=[reviewed_by_id])
