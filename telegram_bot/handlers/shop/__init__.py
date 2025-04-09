@@ -1,1 +1,1 @@
-from .shop import shop_router
+from .main import shop_router

@@ -1,13 +1,13 @@
 from aiogram import F
 from aiogram import Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
+from aiogram.filters import or_f
 from aiogram.fsm.context import FSMContext
-from aiogram.types import ReplyKeyboardRemove, FSInputFile
+from aiogram.types import FSInputFile
 from fluent.runtime import FluentLocalization
+
 from config import MEDIA_DIR
 from keyboards import get_category_keyboard, get_menu_keyboard
-
 from state_machines.states_purchases import PurchasesActions
 
 shop_router = Router()
@@ -38,7 +38,7 @@ async def schedule_button_pressed(message: types.Message, state: FSMContext, l10
 	await state.clear()
 
 
-@shop_router.message(PurchasesActions.CHOOSE_CATEGORY, F.text == 'Футболки' or F.text == 'Шопперы')
+@shop_router.message(PurchasesActions.CHOOSE_CATEGORY, or_f('Шопперы' == F.text, 'Футболки' == F.text))
 async def shirts_button_pressed(message: types.Message, state: FSMContext, l10n: FluentLocalization):
 	# todo сделать select-запрос и выяснить какие футболки есть и сколько
 	shirts_types = ['Матмех', 'Изоклины', 'Тетрис']  # todo select
