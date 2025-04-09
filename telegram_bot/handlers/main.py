@@ -10,11 +10,12 @@ from .schedule import schedule_router
 
 
 def register_handlers(dp: Dispatcher):
-	# Register your handlers and routers here
-	dp.include_router(register_router)
-	dp.include_router(help_router)
-	dp.include_router(code_router)
-	dp.include_router(promo_router)
-	dp.include_router(profile_router)
-	dp.include_router(schedule_router)
-	dp.include_router(main_admin_router)
+	dp.include_routers(
+		register_router,
+		help_router,
+		code_router,
+		promo_router,
+		profile_router,
+		schedule_router,
+		main_admin_router
+	)
