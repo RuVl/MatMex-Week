@@ -6,29 +6,28 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from structlog.typing import FilteringBoundLogger
 
+from env import TelegramKeys
 from handlers import register_handlers
-from logs import get_structlog_config
 from middlewares import register_middlewares
-from utils.config_reader import LogConfig, get_config, BotConfig
+from utils import get_structlog_config, get_storage
 
 
 async def main():
 	# Init logging
-	log_config: LogConfig = get_config(model=LogConfig)
-	structlog.configure(**get_structlog_config(log_config))
+	structlog.configure(**get_structlog_config())
 
 	# Init bot
-	bot_config: BotConfig = get_config(model=BotConfig)
 	bot = Bot(
-		token=bot_config.token.get_secret_value(),  # get token as secret, so it will be hidden in logs
+		token=TelegramKeys.API_TOKEN,
 		default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2)
 	)
 
 	# Init dispatcher
-	dp = Dispatcher()
+	dp = Dispatcher(storage=get_storage())
 	register_handlers(dp)
 	register_middlewares(dp)
 
+	# Start bot
 	logger: FilteringBoundLogger = structlog.get_logger()
 	await logger.ainfo("Starting the bot...")
 
