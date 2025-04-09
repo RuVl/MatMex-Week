@@ -37,7 +37,7 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 async def input_name(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("thanks-name") + ", " + msg.text.strip() + r'\!')
 	async with async_session() as session:
-		await create_user(session, msg.from_user.id, msg)
+		await create_user(session, msg.from_user.id, msg.text.strip())
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
