@@ -43,7 +43,7 @@ async def input_name(msg: types.Message, state: FSMContext, l10n: FluentLocaliza
 
 
 @register_router.message(RegistrationsActions.NAME_WAITING)
-async def wrong_name_format(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+async def wrong_name_format(msg: types.Message, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("wrong-name"))
 
 @register_router.message(RegistrationsActions.CHECK_MEMBER,

@@ -36,12 +36,12 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 
 @account_router.message(AccountActions.NAME_WAITING)
-async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+async def start(msg: types.Message, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("wrong-name"), reply_markup=get_cancel_keyboard())
 
 @account_router.message(AccountActions.ACCOUNT_PANEL,
 						F.text == "Я вообще-то в пк") #todo фильтр уже в пк
-async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+async def start(msg: types.Message, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("already-in-pc"), reply_markup=get_account_menu_keyboard())
 
 @account_router.message(AccountActions.ACCOUNT_PANEL,

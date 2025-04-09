@@ -3,7 +3,6 @@ from aiogram import Dispatcher
 from .admin import main_admin_router
 from .code import code_router
 from .helping import help_router
-from .profile import profile_router
 from .promocode import promo_router
 from .register import register_router
 from .schedule import schedule_router
