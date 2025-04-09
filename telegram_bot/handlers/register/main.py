@@ -7,7 +7,7 @@ from fluent.runtime import FluentLocalization
 
 from database import async_session
 from database.methods import create_user
-from filters import FIOFilter, IsNotRegisteredFilter
+from filters import NameFilter, IsNotRegisteredFilter
 from keyboards import get_menu_keyboard
 from keyboards import get_yes_no_kb, manual_check_kb
 from state_machines.states_registration import RegistrationsActions
@@ -33,21 +33,18 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await state.clear()
 
 @register_router.message(RegistrationsActions.NAME_WAITING,
-                         FIOFilter())
-async def input_FIO(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("thanks-FIO") + ", " + msg.text.strip() + r"\!")
-
+                         NameFilter())
+async def input_name(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("thanks-name") + ", " + msg.text.strip() + r'\!')
 	async with async_session() as session:
-		await create_user(session, msg.from_user.id, msg.text)
-
+		await create_user(session, msg.from_user.id, msg.text.strip())
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=get_yes_no_kb())
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 
 @register_router.message(RegistrationsActions.NAME_WAITING)
-async def wrong_FIO_format(msg: types.Message, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("wrong-FIO"))
-
+async def wrong_name_format(msg: types.Message, l10n: FluentLocalization):
+	await msg.answer(l10n.format_value("wrong-name"))
 
 @register_router.message(RegistrationsActions.CHECK_MEMBER,
                          F.text == 'Да')

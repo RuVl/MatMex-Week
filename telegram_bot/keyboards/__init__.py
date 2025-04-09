@@ -4,4 +4,7 @@ from .for_edit_item import get_edit_item_keyboard
 from .for_edit_shop import get_edit_shop_keyboard
 from .for_menu import get_menu_keyboard
 from .for_register import get_yes_no_kb, manual_check_kb
+from .for_edit_shop import get_edit_shop_keyboard
+from .for_edit_item import get_edit_item_keyboard
+from .for_account import get_account_menu_keyboard
 from .for_shop import get_category_keyboard

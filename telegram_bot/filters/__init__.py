@@ -1,1 +1,1 @@
-from .register import FIOFilter, IsNotRegisteredFilter
+from .register import NameFilter, IsNotRegisteredFilter

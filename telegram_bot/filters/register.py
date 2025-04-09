@@ -6,12 +6,10 @@ from aiogram.types import Message
 from database import async_session
 from database.methods import get_user_by_telegram_id
 
-
-class FIOFilter(BaseFilter):
+class NameFilter(BaseFilter):
 	async def __call__(self, message: Message) -> bool:
-		fio_pattern = re.compile(r'^[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*\s+[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*\s*(?:[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*)?$')
-		return fio_pattern.match(message.text.strip())
-
+		name_pattern = re.compile(r'^[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*\s+[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*\s*(?:[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*)?$')
+		return name_pattern.match(message.text.strip())
 
 class IsNotRegisteredFilter(BaseFilter):
 	async def __call__(self, message: Message) -> bool:
