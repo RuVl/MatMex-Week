@@ -7,7 +7,7 @@ from aiogram.filters import CommandStart, CommandObject
 from fluent.runtime import FluentLocalization
 
 from database import async_session
-from database.methods import get_user_by_telegram_id, update_user_balance
+from database.methods import get_user_by_telegram_id
 
 code_router = Router()
 
@@ -44,4 +44,4 @@ async def handle_start_deeplink(message: types.Message, command: CommandObject):
         f"Теперь я могу использовать эти данные для начисления ему баллов!"
     )
 
-    update_user_balance()  # todo подумать над тем как реализовать это начисление
+    # update_user_balance()  # todo подумать над тем как реализовать это начисление
