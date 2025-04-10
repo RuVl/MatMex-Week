@@ -1,27 +1,25 @@
 from aiogram import Dispatcher
 
 from includes import get_fluent_localization
-from middlewares import L10nMiddleware, DropEmptyCallbackMiddleware
-from middlewares.db_user import DBUserMiddleware
-from middlewares.logging import LoggingMiddleware
+from middlewares import L10nMw, DropEmptyCallbackMw, UserCacheMw, LoggingMw
 
 
 def register_middlewares(dp: Dispatcher):
 	# Drop callback data with only space symbol
-	dp.callback_query.outer_middleware(DropEmptyCallbackMiddleware())
+	dp.callback_query.outer_middleware(DropEmptyCallbackMw())
 
 	# Localization
 	locale = get_fluent_localization()
-	l10n_middleware = L10nMiddleware(locale)
-	dp.message.outer_middleware(l10n_middleware)
-	dp.callback_query.outer_middleware(l10n_middleware)
-
-	# Logging handlers
-	logging_middleware = LoggingMiddleware()
-	dp.message.middleware(logging_middleware)
-	dp.message.middleware(logging_middleware)
+	l10n_mw = L10nMw(locale)
+	dp.message.outer_middleware(l10n_mw)
+	dp.callback_query.outer_middleware(l10n_mw)
 
 	# Database user from cache or db
-	db_user_middleware = DBUserMiddleware()
-	dp.message.middleware(db_user_middleware)
-	dp.shutdown.register(db_user_middleware.close)  # close storage connection
+	user_cache_mw = UserCacheMw()
+	dp.message.middleware(user_cache_mw)
+	dp.shutdown.register(user_cache_mw.close)  # close storage connection
+
+	# Logging handlers (should be last)
+	logging_mw = LoggingMw()
+	dp.message.middleware(logging_mw)
+	dp.callback_query.middleware(logging_mw)

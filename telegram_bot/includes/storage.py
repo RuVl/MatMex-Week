@@ -27,3 +27,7 @@ def get_storage(
 		state_ttl=state_ttl,
 		data_ttl=data_ttl,
 	)
+
+
+def get_redis(**kwargs) -> Redis:
+	return Redis.from_url(RedisKeys.URL, **kwargs)
