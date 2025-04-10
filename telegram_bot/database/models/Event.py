@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, Integer, String, ForeignKey, func
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from database.models import Base, Privilege
+from database.models import Base, Privilege, EventAttendance, User
 from database.models import EventPrivilegeGrant
 
 
@@ -26,3 +26,8 @@ class Event(Base):
 
 	# Back ref events.created_by_id -> privileges.id
 	event_grants: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='event')
+
+	# Отношение к посещаемости мероприятий
+	event_attendances: Mapped[list["EventAttendance"]] = relationship(back_populates="event")
+	attendees: Mapped[list["User"]] = relationship(secondary="event_attendance",
+	                                               back_populates="events")  # Many to many relation

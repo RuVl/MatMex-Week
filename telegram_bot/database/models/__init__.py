@@ -1,5 +1,6 @@
 from .Base import Base
 from .Event import Event
+from .EventAttendance import EventAttendance
 from .EventPrivilegeGrant import EventPrivilegeGrant
 from .MerchCategory import MerchCategory
 from .MerchItem import MerchItem
