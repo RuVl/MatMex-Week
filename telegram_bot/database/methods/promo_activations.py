@@ -1,15 +1,22 @@
-from datetime import datetime
-
-from sqlalchemy import select
+from sqlalchemy import select, exists
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from database.models import PromocodeActivation, Promocode, User
+from database.models import PromocodeActivation
 
 
 async def create_activation(session: AsyncSession, promocode_id: int, recipient_id: int) -> PromocodeActivation | None:
 	"""Создаёт запись об активации промокода."""
+	# Проверяем, существует ли уже активация
+	query = select(exists().where(
+		(PromocodeActivation.promocode_id == promocode_id) &
+		(PromocodeActivation.recipient_id == recipient_id)
+	))
+	result = await session.execute(query)
+	if result.scalar_one():
+		return None  # Пользователь уже активировал этот промокод
+
 	activation = PromocodeActivation(promocode_id=promocode_id, recipient_id=recipient_id)
 	session.add(activation)
 	try:
@@ -18,13 +25,13 @@ async def create_activation(session: AsyncSession, promocode_id: int, recipient_
 		return activation
 	except IntegrityError:
 		await session.rollback()
-		return None  # Пользователь уже активировал этот промокод
+		return None  # Произошла ошибка при создании активации
 
 
 async def get_activation_by_ids(session: AsyncSession, promocode_id: int,
                                 recipient_id: int) -> PromocodeActivation | None:
 	"""Возвращает запись об активации для промокода и пользователя."""
-	result = await session.execute(
+	query = (
 		select(PromocodeActivation)
 		.where(PromocodeActivation.promocode_id == promocode_id)
 		.where(PromocodeActivation.recipient_id == recipient_id)
@@ -33,47 +40,50 @@ async def get_activation_by_ids(session: AsyncSession, promocode_id: int,
 			selectinload(PromocodeActivation.recipient)
 		)
 	)
+	result = await session.execute(query)
 	return result.scalar_one_or_none()
 
 
 async def get_user_activations(session: AsyncSession, recipient_id: int) -> list[PromocodeActivation]:
 	"""Возвращает список активаций промокодов для пользователя."""
-	result = await session.execute(
+	query = (
 		select(PromocodeActivation)
 		.where(PromocodeActivation.recipient_id == recipient_id)
 		.options(selectinload(PromocodeActivation.promocode))
 	)
+	result = await session.execute(query)
+	return result.scalars().all()
+
+
+async def get_recent_user_activations(session: AsyncSession, recipient_id: int, limit: int = 5) -> list[PromocodeActivation]:
+	"""Возвращает список последних активаций промокодов для пользователя."""
+	query = (
+		select(PromocodeActivation)
+		.where(PromocodeActivation.recipient_id == recipient_id)
+		.options(selectinload(PromocodeActivation.promocode))
+		.order_by(PromocodeActivation.activated_at.desc())
+		.limit(limit)
+	)
+	result = await session.execute(query)
 	return result.scalars().all()
 
 
 async def get_promocode_activations(session: AsyncSession, promocode_id: int) -> list[PromocodeActivation]:
 	"""Возвращает список активаций указанного промокода."""
-	result = await session.execute(
+	query = (
 		select(PromocodeActivation)
 		.where(PromocodeActivation.promocode_id == promocode_id)
 		.options(selectinload(PromocodeActivation.recipient))
 	)
+	result = await session.execute(query)
 	return result.scalars().all()
 
 
-async def activate_promocode(session: AsyncSession, promocode_id: int, recipient_id: int) -> bool:
-	"""Активирует промокод для пользователя с учётом всех условий."""
-	promocode = await session.get(Promocode, promocode_id, options=[selectinload(Promocode.activations)])
-	user = await session.get(User, recipient_id)
-
-	if not promocode or not user:
-		return False
-	if not promocode.is_active:
-		return False
-	if promocode.expires_at and promocode.expires_at < datetime.utcnow():
-		return False
-	if promocode.max_uses is not None and len(promocode.activations) >= promocode.max_uses:
-		return False
-
-	# Пробуем создать активацию
-	activation = await create_activation(session, promocode_id, recipient_id)
-	if activation:
-		user.balance += promocode.cost  # Начисляем баллы
-		await session.commit()
-		return True
-	return False  # Активация не удалась (например, уже активирован)
+async def get_user_activation_count(session: AsyncSession, recipient_id: int) -> int:
+	"""Возвращает количество активированных пользователем промокодов."""
+	query = (
+		select(PromocodeActivation)
+		.where(PromocodeActivation.recipient_id == recipient_id)
+	)
+	result = await session.execute(query)
+	return len(result.scalars().all())

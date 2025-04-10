@@ -13,11 +13,7 @@ def get_structlog_config() -> dict:
 	:return: dict with structlog config
 	"""
 
-	# Show debug level logs?
-	if LoggerKeys.SHOW_DEBUG_LOGS is True:
-		min_level = logging.DEBUG
-	else:
-		min_level = logging.INFO
+	min_level = logging.DEBUG if LoggerKeys.SHOW_DEBUG_LOGS else logging.INFO
 
 	return {
 		"processors": get_processors(LoggerKeys),
@@ -40,7 +36,7 @@ def get_processors(log_config: LoggerKeys) -> list:
 		"""
 		result = dict()
 
-		if log_config.SHOW_DATETIME is True:
+		if log_config.SHOW_DATETIME:
 			result["timestamp"] = data.pop("timestamp")
 
 		# Other two keys goes in this order
@@ -52,26 +48,29 @@ def get_processors(log_config: LoggerKeys) -> list:
 		result.update(**data)
 		return dumps(result, default=str)
 
-	processors = []
+	processors = [
+		structlog.contextvars.merge_contextvars
+	]
 
 	# In some cases, there is no need to print a timestamp,
 	# because it is already added by an upstream service, such as systemd
-	if log_config.SHOW_DATETIME is True:
+	if log_config.SHOW_DATETIME:
 		processors.append(structlog.processors.TimeStamper(
 			fmt=log_config.DATETIME_FORMAT,
 			utc=log_config.TIME_IN_UTC
 		))
 
 	# Always add a log level
-	processors.append(structlog.processors.add_log_level)
+	processors.extend([
+		structlog.processors.add_log_level,
+		structlog.processors.StackInfoRenderer(),
+		structlog.processors.format_exc_info,
+	])
 
 	match log_config.RENDERER:
 		case 'json':
 			processors.append(structlog.processors.JSONRenderer(serializer=custom_json_serializer))
 		case 'console':
-			processors.append(structlog.dev.ConsoleRenderer(
-				colors=log_config.USE_COLORS_IN_CONSOLE,
-				pad_level=True,
-			))
+			processors.append(structlog.dev.ConsoleRenderer(colors=log_config.USE_COLORS_IN_CONSOLE, pad_level=True))
 
 	return processors
