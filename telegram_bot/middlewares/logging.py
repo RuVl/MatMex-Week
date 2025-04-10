@@ -7,7 +7,7 @@ from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
 
-class LoggingMiddleware(BaseMiddleware):
+class LoggingMw(BaseMiddleware):
 	def __init__(self, middleware_key: str = 'log'):
 		self.logger: FilteringBoundLogger = get_logger()
 		self.middleware_key = middleware_key
@@ -37,12 +37,18 @@ class LoggingMiddleware(BaseMiddleware):
 		log = self.logger.bind(**user_context)
 		data[self.middleware_key] = log
 
-		handler_name = handler.__name__ if hasattr(handler, "__name__") else str(handler)
+		# Пытаемся получить настоящее имя хэндлера
+		handler_obj = data.get("handler")
+		handler_name = (
+			getattr(handler_obj.callback, "__name__", str(handler_obj.callback))
+			if handler_obj and hasattr(handler_obj, "callback") else
+			getattr(handler, "__name__", str(handler))
+		)
 		await log.adebug("handler-called", handler=handler_name)
 
 		try:
 			result = await handler(event, data)
-			await log.adebug("handler-completed")
+			await log.adebug("handler-completed", handler=handler_name)
 			return result
 		except Exception as e:
 			await log.aerror("handler-error", error=str(e), handler=handler_name)
