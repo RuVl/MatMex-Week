@@ -15,6 +15,7 @@ from .privilege import (
 from .promo import (
 	create_promocode,
 	get_promocode_by_code,
+	check_promocode_valid,
 	activate_promocode,
 	deactivate_promocode,
 	get_promocodes_by_creator,
@@ -24,19 +25,25 @@ from .promo_activations import (
 	create_activation,
 	get_activation_by_ids,
 	get_user_activations,
+	get_recent_user_activations,
 	get_promocode_activations,
+	get_user_activation_count,
 )
 from .user import (
 	create_user,
+	user_exist_with_telegram_id,
 	get_user_by_telegram_id,
-	update_user_balance
+	update_user_balance,
+	update_user_fullname,
 )
 
 __all__ = [
 	# User methods
 	"create_user",
+	"user_exist_with_telegram_id",
 	"get_user_by_telegram_id",
 	"update_user_balance",
+	"update_user_fullname",
 
 	# PkApply methods
 	"create_privilege_request",
@@ -55,6 +62,7 @@ __all__ = [
 	# Promocode methods
 	"create_promocode",
 	"get_promocode_by_code",
+	"check_promocode_valid",
 	"activate_promocode",
 	"deactivate_promocode",
 	"get_promocodes_by_creator",
@@ -64,5 +72,7 @@ __all__ = [
 	"create_activation",
 	"get_activation_by_ids",
 	"get_user_activations",
+	"get_recent_user_activations",
 	"get_promocode_activations",
+	"get_user_activation_count",
 ]

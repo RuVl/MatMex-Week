@@ -4,14 +4,20 @@ from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
 from database import async_session
-from database.methods import get_user_by_telegram_id
+from database.methods import user_exist_with_telegram_id
 
-class NameFilter(BaseFilter):
-	async def __call__(self, message: Message) -> bool:
-		name_pattern = re.compile(r'^[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*\s+[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*\s*(?:[А-ЯЁа-яё]+(?:[-][А-ЯЁа-яё]+)*)?$')
-		return name_pattern.match(message.text.strip())
 
 class IsNotRegisteredFilter(BaseFilter):
-	async def __call__(self, message: Message) -> bool:
+	async def __call__(self, msg: Message) -> bool:
 		async with async_session() as session:
-			return await get_user_by_telegram_id(session, message.from_user.id) is None
+			return not await user_exist_with_telegram_id(session, msg.from_user.id)
+
+
+class FullNameFilter(BaseFilter):
+	async def __call__(self, msg: Message) -> bool:
+		name_pattern = re.compile(
+			r'^[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*'  # Фамилия
+			r'\s+[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*'  # Имя
+			r'(?:\s+[А-ЯЁа-яё]+(?:-[А-ЯЁа-яё]+)*)?$'  # Отчество (опционально)
+		)
+		return name_pattern.match(msg.text.strip())

@@ -1,2 +1,1 @@
-from .logs import get_structlog_config
-from .storages import get_storage
+from .escape import escape_md_v2

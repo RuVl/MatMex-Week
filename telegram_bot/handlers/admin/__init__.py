@@ -1,1 +1,1 @@
-from .admin import main_admin_router
+from .admin import admin_router

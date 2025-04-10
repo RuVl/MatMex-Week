@@ -74,3 +74,63 @@ input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
 name-changed = ФИО успешо изменено\! Приятно познакомиться
 already-in-pc = Мы знаем\) Это отмечено в твоем профиле
+
+# Menu buttons
+btn-support = Поддержка
+btn-schedule = Расписание
+btn-my-code = Мой код
+btn-cancel = Отмена
+btn-enter-promocode = Ввести Промокод
+btn-profile = Профиль
+btn-shop = Магазин
+btn-yes = Да
+btn-no = Нет
+btn-back = Назад
+
+# Admin buttons
+btn-admin-panel = Админ панель
+btn-back-to-menu = В меню
+btn-edit-shop = Редактировать магазин
+btn-scan-code = Сканер кодов
+btn-create-promocode = Создание промокода
+btn-list-promocodes = Список промокодов
+btn-grant-rights = Выдать права
+btn-add-category = Добавить категорию
+btn-edit-category = Редактировать категорию
+btn-add-item = Добавить товар
+btn-edit-item = Редактировать товар
+btn-del-item = Удалить товар
+btn-delete-item = Удалить товар
+btn-add-custom-prize = Добавить приз
+
+# Account buttons
+btn-edit-name = Редактировать ФИО
+btn-already-in-pc = Я вообще-то в пк
+
+# Registration buttons
+btn-send-for-check = Отправить на ручную проверку
+btn-just-kidding = Нет, я пошутил
+
+# Shop category buttons
+btn-tshirts = Футболки
+btn-bracelets = Браслеты
+btn-id-covers = Обложки на студ.билеты
+btn-shoppers = Шопперы
+
+# Placeholders
+placeholder-menu = Выберите элемент меню
+placeholder-category = Выберите категорию
+
+# Log messages
+log-handler-called = Вызван обработчик
+log-handler-completed = Обработчик завершил работу
+log-user-message-received = Получено сообщение от пользователя
+log-state-changed = Изменено состояние пользователя
+log-command-executed = Выполнена команда
+log-promocode-entered = Введен промокод
+log-promocode-invalid = Недействительный промокод
+log-promocode-valid = Действительный промокод
+log-user-data-fetched = Получены данные пользователя
+log-admin-action = Выполнено действие администратора
+log-profile-action = Действие в профиле
+log-name-changed = Изменено имя пользователя

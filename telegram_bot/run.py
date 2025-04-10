@@ -8,8 +8,8 @@ from structlog.typing import FilteringBoundLogger
 
 from env import TelegramKeys
 from handlers import register_handlers
+from includes import get_structlog_config, get_storage
 from middlewares import register_middlewares
-from utils import get_structlog_config, get_storage
 
 
 async def main():

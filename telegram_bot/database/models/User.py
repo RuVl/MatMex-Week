@@ -14,7 +14,7 @@ class User(Base):
 	telegram_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False, comment="Telegram id пользователя")
 
 	full_name: Mapped[str] = mapped_column(String(255), nullable=False, comment="ФИО")
-	balance: Mapped[float] = mapped_column(Float, default=0, comment="баланс (мнимые единицы)")
+	balance: Mapped[float] = mapped_column(Float, nullable=False, default=0, comment="баланс (мнимые единицы)")
 
 	code: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), unique=True, nullable=False, default=uuid.uuid4, comment="код человека (для qr)")
 

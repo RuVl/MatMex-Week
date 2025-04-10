@@ -1,6 +1,6 @@
 from aiogram import Dispatcher
 
-from includes.fluent import get_fluent_localization
+from includes import get_fluent_localization
 from middlewares import L10nMiddleware, DropEmptyCallbackMiddleware
 
 
