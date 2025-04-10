@@ -18,7 +18,7 @@ register_router.message.filter(
 )
 
 
-@register_router.message(CommandStart(),
+@register_router.message(CommandStart(deep_link=False),
                          IsNotRegisteredFilter())
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
@@ -27,7 +27,7 @@ async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization)
 	await state.set_state(RegistrationsActions.NAME_WAITING)
 
 
-@register_router.message(CommandStart())
+@register_router.message(CommandStart(deep_link=False))
 async def start(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("hi"), reply_markup=get_menu_keyboard())
 	await state.clear()
