@@ -140,3 +140,5 @@ log-name-changed = Изменено имя пользователя
 #profile messages
 user_is = Пользователь:
 balance_is = Баланс:
+deeplink-valid = Баллы начислены
+deeplink-invalid = Баллы не начислены Ошибка на стороне сервера

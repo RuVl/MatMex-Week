@@ -10,27 +10,27 @@ from database import async_session
 from database.methods import create_user
 from database.models import User
 from filters import FullNameFilter
-from handlers.typing import send_typing, with_typing
+from handlers.typing import send_typing
 from keyboards.common import get_menu_kb, get_yes_no_kb, manual_check_kb
 from state_machines.states_registration import RegistrationsActions
 
 register_router = Router()
 
 
-@with_typing
 @register_router.message(CommandStart(deep_link=False))
 async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger, cached_user: User):
-	if cached_user is None:
-		await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
-		await msg.answer(l10n.format_value("ask-name"))
-		await msg.answer(l10n.format_value("tell-about-pc"))
+	async with send_typing(msg) as m:
+		if cached_user is None:
+			await m.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
+			await m.answer(l10n.format_value("ask-name"))
+			await m.answer(l10n.format_value("tell-about-pc"))
 
-		await state.set_state(RegistrationsActions.NAME_WAITING)
-		await log.ainfo("state-changed", state=RegistrationsActions.NAME_WAITING.state)
-	else:
-		await msg.answer(l10n.format_value("hi"), reply_markup=get_menu_kb(l10n))
-		await state.clear()
-		await log.ainfo("state-changed", state="cleared")
+			await state.set_state(RegistrationsActions.NAME_WAITING)
+			await log.ainfo("state-changed", state=RegistrationsActions.NAME_WAITING.state)
+		else:
+			await m.answer(l10n.format_value("hi"), reply_markup=get_menu_kb(l10n))
+			await state.clear()
+			await log.ainfo("state-changed", state="cleared")
 
 
 @register_router.message(RegistrationsActions.NAME_WAITING, FullNameFilter())
