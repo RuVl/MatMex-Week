@@ -3,7 +3,7 @@ from aiogram.types import Message
 from fluent.runtime import FluentLocalization
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
-
+from config import SUPPORT_CHAT_ID
 
 class LocalizedTextFilter(BaseFilter):
 	def __init__(self, l10n_key: str):
@@ -17,3 +17,12 @@ class LocalizedTextFilter(BaseFilter):
 			return False
 
 		return message.text == l10n.format_value(self.l10n_key)
+
+class ReplyToSupportMessageFilter(BaseFilter):
+    async def __call__(self, message: Message) -> bool:
+        if not message.reply_to_message:
+            return False
+        if message.chat.id != SUPPORT_CHAT_ID:
+            return False
+
+        return message.reply_to_message.text.startswith("support")
