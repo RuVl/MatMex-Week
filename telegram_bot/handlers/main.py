@@ -1,6 +1,6 @@
 from aiogram import Dispatcher
 
-from .admin_menu import admin_router
+from .admin import admin_router
 from .promocode import promocode_router
 from .user import user_router
 
