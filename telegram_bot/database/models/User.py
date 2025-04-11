@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import Uuid, String, ForeignKey, Float, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models import Base, Privilege, PkApply, Purchase, PromocodeActivation, EventAttendance, Event
+from database.models import Base, Privilege, PkApply, Purchase, PromocodeActivation, EventAttendance
 
 
 class User(Base):
@@ -31,6 +31,4 @@ class User(Base):
 	promocode_activations: Mapped[list['PromocodeActivation']] = relationship("PromocodeActivation", back_populates="recipient")
 
 	# Отношение к посещаемости мероприятий
-	event_attendances: Mapped[list["EventAttendance"]] = relationship(back_populates="user")
-	events: Mapped[list["Event"]] = relationship(secondary="event_attendance",
-	                                             back_populates="attendees")  # Many to many relation
+	event_attendances: Mapped[list["EventAttendance"]] = relationship("EventAttendance", back_populates="user")

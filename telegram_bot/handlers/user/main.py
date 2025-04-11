@@ -12,6 +12,7 @@ from structlog.typing import FilteringBoundLogger
 from config import MEDIA_DIR
 from database import async_session
 from database.methods import get_user_by_telegram_id
+from database.methods.user import mark_user_attended_event_by_code, update_user_balance, get_user_by_code
 from filters import LocalizedTextFilter
 from handlers.user.account import account_router
 from handlers.user.help import support_router
@@ -62,12 +63,22 @@ async def handle_start_deeplink(message: types.Message, command: CommandObject, 
 	payload = command.args
 	await log.ainfo(payload)
 	try:
-		await log.ainfo("What is happened?")
-		uuid.UUID(payload)
-		await message.answer(
-			l10n.format_value("deeplink-valid", {"uuid": payload})
-			# todo начислить баллы
-		)
+		alo = uuid.UUID(payload)
+		async with async_session() as session:
+			# todo доработать с event_id, не хардкодно
+			result = await mark_user_attended_event_by_code(session, payload, 3, log)
+			await log.adebug("Result is" + str(result))
+			if result:
+				user = await get_user_by_code(session, alo)
+				await update_user_balance(session, user.id, 500)
+				await message.answer(
+					l10n.format_value("deeplink-valid", {"uuid": payload})
+				)
+			else:
+				await message.answer(
+					l10n.format_value("deeplink-badrequest")
+				)
+
 
 
 	except ValueError:

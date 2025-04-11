@@ -142,3 +142,4 @@ user_is = Пользователь:
 balance_is = Баланс:
 deeplink-valid = Баллы начислены
 deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
+deeplink-badrequest = Вы уже получали данные за это мероприятие
