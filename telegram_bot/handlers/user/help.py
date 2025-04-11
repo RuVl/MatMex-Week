@@ -27,13 +27,10 @@ async def handle_support_cancel(msg: types.Message, state: FSMContext, l10n: Flu
 
 @support_router.message(HelpActions.MESSAGE_OR_CANCEL)
 async def handle_support_message(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	# user_question = msg.text
-	# user_id = msg.from_user.id
-	# TODO отправить в чат админов
 	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID, 
                             text=l10n.format_value("new-support-question"))
 	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID,
-                            text = SupportFactory(user_id = msg.from_user.id, message_id=msg.message_id).pack() + "\n"+ msg.text)
+                            text = msg.text + "\n||" + SupportFactory(user_id = msg.from_user.id, message_id=msg.message_id).pack() + "||")
 	await msg.answer(l10n.format_value("send-helping"), reply_markup=get_menu_kb(l10n))
 	await state.clear()
 	log.info("log-state-changed", state="cleared")
