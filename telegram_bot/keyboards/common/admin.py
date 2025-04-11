@@ -22,7 +22,7 @@ def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
 def get_edit_item_kb(l10n):
 	builder = ReplyKeyboardBuilder()
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-add-item")),
+		KeyboardButton(text=l10n.format_value("btn-add-category")),
 		KeyboardButton(text=l10n.format_value("btn-del-item")),
 		KeyboardButton(text=l10n.format_value("btn-back"))
 	)
@@ -31,6 +31,9 @@ def get_edit_item_kb(l10n):
 
 def get_edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-add-category")),
+	)
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-add-item")),
 	)
