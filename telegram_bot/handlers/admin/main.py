@@ -19,8 +19,6 @@ async def handle_send_support(msg: types.Message, l10n: FluentLocalization, log:
 	await log.adebug("log-admin-action", action="send_support")
 	original = msg.reply_to_message
 	data = SupportFactory.unpack(original.text.split('\n')[-1])
-	user_id  = data.user_id
-	message_id = data.message_id
-	await msg.bot.send_message(chat_id = user_id, text = msg.text, reply_to_message_id=message_id)
+	await msg.bot.send_message(chat_id = data.user_id, text = msg.text, reply_to_message_id=data.message_id)
 	await msg.answer(l10n.format_value("support-sent"))
 	await log.adebug("log-state-changed", state="cleared")
