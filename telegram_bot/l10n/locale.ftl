@@ -62,6 +62,7 @@ support-answer = Ответ на вопрос:
 
 #edit shop messages
 edit-shop-menu = Редактирование магазина
+cancel_edit_shop = Редактирование отменено
 ask-for-category-create = Название категории
 creating-category-cancelled = Создание категории отменено
 create-category = Категория создана

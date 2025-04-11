@@ -10,11 +10,12 @@ from structlog.typing import FilteringBoundLogger
 from config import MEDIA_DIR
 from keyboards.common import get_category_kb, get_menu_kb
 from state_machines.states_purchases import PurchasesActions
+from filters import LocalizedTextFilter
 
 shop_router = Router()
 
 
-@shop_router.message(F.text == 'Магазин')
+@shop_router.message(LocalizedTextFilter("btn-edit-shop"))
 async def handle_shop_button(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	text = l10n.format_value("shop_hello")
 
@@ -29,9 +30,9 @@ async def handle_shop_button(msg: types.Message, state: FSMContext, l10n: Fluent
 	await log.adebug("log-state-changed", state=PurchasesActions.CHOOSE_CATEGORY.state)
 
 
-@shop_router.message(PurchasesActions.CHOOSE_CATEGORY, F.text == 'Отмена')
+@shop_router.message(PurchasesActions.CHOOSE_CATEGORY, LocalizedTextFilter("btn-back"))
 async def handle_shop_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	text = l10n.format_value("cancel_message")
+	text = l10n.format_value("cancel_edit_shop")
 
 	await msg.answer(
 		text,
@@ -41,7 +42,10 @@ async def handle_shop_cancel(msg: types.Message, state: FSMContext, l10n: Fluent
 	await log.adebug("log-state-changed", state="cleared")
 
 
-@shop_router.message(PurchasesActions.CHOOSE_CATEGORY, or_f(F.text == 'Шопперы', F.text == 'Футболки'))
+@shop_router.message(PurchasesActions.CHOOSE_CATEGORY, or_f(LocalizedTextFilter("btn-tshirts"), 
+                                                            LocalizedTextFilter("btn-bracelets"),
+                                                            LocalizedTextFilter("btn-id-covers"),
+                                                            LocalizedTextFilter("btn-shoppers")))
 async def handle_shop_category(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	# todo сделать select-запрос и выяснить какие футболки есть и сколько
 	shirts_types = ['Матмех', 'Изоклины', 'Тетрис']  # todo select
