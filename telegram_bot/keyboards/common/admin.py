@@ -1,6 +1,6 @@
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
-
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from utils import SupportCallback
 
 def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
@@ -49,3 +49,21 @@ def get_edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 	)
 
 	return builder.as_markup(resize_keyboard=True)
+
+def get_send_support_inline_kb(l10n, callback_data : SupportCallback) -> InlineKeyboardMarkup:
+	builder = InlineKeyboardBuilder()
+	callback_data.command = 'send_support'
+	builder.row(
+		InlineKeyboardButton(text=l10n.format_value("btn-send-support"), callback_data=callback_data.pack()),
+	)
+
+	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-menu"))
+
+def get_cancel_inline_kb(l10n, callback_data : SupportCallback) -> InlineKeyboardMarkup:
+	builder = InlineKeyboardBuilder()
+	callback_data.command = 'cancel_send_support'
+	builder.row(
+		InlineKeyboardButton(text=l10n.format_value("btn-cancel-support"), callback_data=callback_data.pack()),
+	)
+
+	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-menu"))
