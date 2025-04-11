@@ -7,14 +7,14 @@ from filters import FromBotToAdminFilter
 from keyboards.inline import SupportFactory
 from .admin_menu import admin_menu_router
 
-admin_main_router = Router()
-admin_main_router.message.filter(
+admin_router = Router()
+admin_router.message.filter(
 	F.text
 )
-admin_main_router.include_routers(admin_menu_router)
+admin_router.include_routers(admin_menu_router)
 
-@admin_main_router.message(FromBotToAdminFilter(),
-                           F.reply_to_message.text.split("\n")[-1].startswith("support"))
+@admin_router.message(FromBotToAdminFilter(),
+                           F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__))
 async def handle_send_support(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="send_support")
 	original = msg.reply_to_message
