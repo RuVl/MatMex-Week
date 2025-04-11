@@ -1,11 +1,18 @@
+import io
+import uuid
+
+import segno
 from aiogram import Router, types
 from aiogram.enums import ParseMode
+from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import FSInputFile
 from fluent.runtime import FluentLocalization
+from structlog.typing import FilteringBoundLogger
 
 from config import MEDIA_DIR
 from database import async_session
 from database.methods import get_user_by_telegram_id
+from database.methods.user import mark_user_attended_event_by_code, update_user_balance, get_user_by_code
 from filters import LocalizedTextFilter
 from handlers.user.account import account_router
 from handlers.user.help import support_router
@@ -29,9 +36,52 @@ async def handle_schedule_button(msg: types.Message, l10n: FluentLocalization):
 	await msg.answer_photo(image_from_pc, caption=text, parse_mode=ParseMode.HTML)
 
 
+STANDARD_SCALE = 10
+
 @user_router.message(LocalizedTextFilter("btn-my-code"))
-async def handle_my_code_button(msg: types.Message, l10n: FluentLocalization):
+async def code_button_pressed(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
 	telegram_id = msg.from_user.id
 	async with async_session() as session:
 		user = await get_user_by_telegram_id(session, telegram_id)
-		await msg.answer(l10n.format_value("code_message") + str(user.code), parse_mode=ParseMode.HTML)
+		data = str(user.code)
+
+		username_bot = (await msg.bot.me()).username
+		message_type = "https://t.me/" + username_bot + "?start=" + data
+
+		qrcode = segno.make(message_type, micro=False)
+
+		buffer = io.BytesIO()
+		qrcode.save(buffer, kind='png', scale=STANDARD_SCALE)
+
+		buffer.seek(0)
+		await msg.answer_photo(photo=types.BufferedInputFile(buffer.read(), "qrcode.png"), ParseMode=ParseMode.HTML)
+
+
+@user_router.message(CommandStart(deep_link=True))
+async def handle_start_deeplink(message: types.Message, command: CommandObject, l10n: FluentLocalization,
+                                log: FilteringBoundLogger):
+	payload = command.args
+	await log.ainfo(payload)
+	try:
+		alo = uuid.UUID(payload)
+		async with async_session() as session:
+			# todo доработать с event_id, не хардкодно
+			result = await mark_user_attended_event_by_code(session, payload, 3, log)
+			await log.adebug("Result is" + str(result))
+			if result:
+				user = await get_user_by_code(session, alo)
+				await update_user_balance(session, user.id, 500)
+				await message.answer(
+					l10n.format_value("deeplink-valid", {"uuid": payload})
+				)
+			else:
+				await message.answer(
+					l10n.format_value("deeplink-badrequest")
+				)
+
+
+
+	except ValueError:
+		await message.answer(
+			l10n.format_value("deeplink-invalid")
+		)
