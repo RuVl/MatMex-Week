@@ -4,11 +4,10 @@ from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
 from filters import LocalizedTextFilter
-from keyboards.common import get_menu_kb, get_cancel_kb, get_send_support_inline_kb
+from keyboards.common import get_menu_kb, get_cancel_kb
 from state_machines.states_help import HelpActions
 from config import SUPPORT_CHAT_ID
-from utils import SupportCallback
-
+from keyboards.inline import SupportFactory
 support_router = Router()
 
 
@@ -32,10 +31,9 @@ async def handle_support_message(msg: types.Message, state: FSMContext, l10n: Fl
 	# user_id = msg.from_user.id
 	# TODO отправить в чат админов
 	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID, 
-                            text=l10n.format_value("new-support-question")+msg.from_user.username)
-	message_callback = SupportCallback(command = '', user_id = msg.from_user.id, message_id=msg.message_id)
-	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID, text=msg.text.strip(), 
-                            reply_markup=get_send_support_inline_kb(l10n, message_callback))
-	await msg.answer(l10n.format_value("send-helping"))
+                            text=l10n.format_value("new-support-question"))
+	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID,
+                            text = SupportFactory(user_id = msg.from_user.id, message_id=msg.message_id).pack() + "\n"+ msg.text)
+	await msg.answer(l10n.format_value("send-helping"), reply_markup=get_menu_kb(l10n))
 	await state.clear()
 	log.info("log-state-changed", state="cleared")
