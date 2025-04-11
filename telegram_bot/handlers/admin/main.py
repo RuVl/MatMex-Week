@@ -8,9 +8,7 @@ from keyboards.inline import SupportFactory
 from .admin_menu import admin_menu_router
 
 admin_router = Router()
-admin_router.message.filter(
-	F.text
-)
+
 admin_router.include_routers(admin_menu_router)
 
 @admin_router.message(FromBotToAdminFilter(),

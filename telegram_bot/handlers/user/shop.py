@@ -15,16 +15,17 @@ from filters import LocalizedTextFilter
 shop_router = Router()
 
 
-@shop_router.message(LocalizedTextFilter("btn-edit-shop"))
+@shop_router.message(LocalizedTextFilter("btn-shop"))
 async def handle_shop_button(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	text = l10n.format_value("shop_hello")
 
 	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
+	category_kb = await get_category_kb(l10n)
 	await msg.answer_photo(
 		image_from_pc,
 		caption=text,
 		parse_mode=ParseMode.HTML,
-		reply_markup=get_category_kb(l10n)
+		reply_markup=category_kb
 	)
 	await state.set_state(PurchasesActions.CHOOSE_CATEGORY)
 	await log.adebug("log-state-changed", state=PurchasesActions.CHOOSE_CATEGORY.state)
