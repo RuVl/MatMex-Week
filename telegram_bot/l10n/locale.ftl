@@ -169,3 +169,11 @@ log-user-data-fetched = Получены данные пользователя
 log-admin-action = Выполнено действие администратора
 log-profile-action = Действие в профиле
 log-name-changed = Изменено имя пользователя
+
+
+#profile messages
+user_is = Пользователь:
+balance_is = Баланс:
+deeplink-valid = Баллы начислены
+deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
+deeplink-badrequest = Вы уже получали данные за это мероприятие
