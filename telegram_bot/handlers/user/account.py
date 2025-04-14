@@ -1,4 +1,5 @@
 from aiogram import Router, types
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
@@ -15,9 +16,19 @@ account_router = Router()
 @account_router.message(LocalizedTextFilter("btn-profile"))
 async def handle_profile_open(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-profile-action", action="open_profile")
-	await msg.answer(l10n.format_value("account-temp"), reply_markup=get_account_menu_kb(l10n))
-	await state.set_state(AccountActions.ACCOUNT_PANEL)
-	await log.adebug("log-state-changed", state=AccountActions.ACCOUNT_PANEL.state)
+
+	async with async_session() as session:
+		user = await get_user_by_telegram_id(session, msg.from_user.id)
+		user_name = user.full_name
+		user_balance = int(user.balance)
+
+
+		await msg.answer(l10n.format_value("account-temp") + "\n" +
+		l10n.format_value("user_is") + " " +user_name + "\n" +
+		l10n.format_value("balance_is") + " " + str(user_balance) + "i", reply_markup=get_account_menu_kb(l10n))
+		#TODO выводить еще покупки
+		await state.set_state(AccountActions.ACCOUNT_PANEL)
+		await log.adebug("log-state-changed", state=AccountActions.ACCOUNT_PANEL.state)
 
 
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-edit-name"))

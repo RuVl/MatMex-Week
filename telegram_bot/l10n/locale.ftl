@@ -70,7 +70,7 @@ cancel-edit-item = Отменено
 create-item = Товар создан
 
 #account messages
-account-temp = Мой аккаунт
+account-temp = Добро пожаловать в личный кабинет\!
 input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
 name-changed = ФИО успешо изменено\! Приятно познакомиться
