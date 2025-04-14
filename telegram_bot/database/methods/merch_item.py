@@ -1,9 +1,8 @@
 import os
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
 
-from database.models import MerchCategory, MerchItem
+from database.models import MerchItem
 
 async def create_item(session: AsyncSession, 
                       name : str, 
@@ -13,7 +12,7 @@ async def create_item(session: AsyncSession,
                       discount_price : float,
                       available_count : int,
                       in_stock : bool,
-                      category_id : int,) -> MerchItem | None:
+                      category_id : int,) -> MerchItem:
 	item = MerchItem(name = name, 
                           image_path = image_path, 
                           size = size, 
@@ -23,15 +22,11 @@ async def create_item(session: AsyncSession,
                           in_stock = in_stock,
                           category_id = category_id)
 	session.add(item)
-	try:
-		await session.commit()
-		await session.refresh(item)
-		return item
-	except IntegrityError:
-		await session.rollback()
-		return None
+	await session.commit()
+	await session.refresh(item)
+	return item
 
-async def get_item(session: AsyncSession, name : str) -> MerchItem | None:
+async def get_item_by_name(session: AsyncSession, name : str) -> MerchItem | None:
 	query = (
 		select(MerchItem)
 		.where(MerchItem.name == name)
@@ -39,7 +34,16 @@ async def get_item(session: AsyncSession, name : str) -> MerchItem | None:
 	result = await session.execute(query)
 	return result.scalars().first()
 
-async def remove_item(session: AsyncSession, item: MerchItem) -> bool:
+async def get_item_by_id(session: AsyncSession, id : int) -> MerchItem | None:
+	query = (
+		select(MerchItem)
+		.where(MerchItem.id == id)
+	)
+	result = await session.execute(query)
+	return result.scalars().first()
+
+async def remove_item_by_id(session: AsyncSession, id : int) -> bool:
+	item = await get_item_by_id(session, id)
 	if item:
 		if os.path.exists(item.image_path):
 			os.remove(item.image_path)
@@ -47,4 +51,3 @@ async def remove_item(session: AsyncSession, item: MerchItem) -> bool:
 		await session.commit()
 		return True
 	return False
-

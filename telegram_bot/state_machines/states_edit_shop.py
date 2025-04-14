@@ -4,7 +4,6 @@ class EditShopActions(StatesGroup):
 	EDIT_SHOP = State()
 
 	CREATE_CATEGORY = State()
-	DELETE_CATEGORY = State()
 	EDIT_CATEGORY = State()
 	IN_CATEGORY = State()
 
@@ -16,6 +15,3 @@ class EditShopActions(StatesGroup):
 	CHOOSE_ITEM_DISCOUNT_PRICE = State()
 	CHOOSE_ITEM_AVAILABLE_COUNT = State()
 	CHOOSE_ITEM_IN_STOCK = State()
-
-	DELETE_ITEM = State()
-	DELETE_ITEM_CHOOSE_CATEGORY = State()

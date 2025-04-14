@@ -1,4 +1,3 @@
-from aiogram import F
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
@@ -8,10 +7,10 @@ from filters import LocalizedTextFilter
 from keyboards.common import get_admin_kb, get_menu_kb
 from state_machines.states_admin import AdminActions
 from .code_scanner import code_scanner_router
-from .edit_shop import edit_shop_router
+from .edit_shop import edit_shop_main_router
 
 admin_menu_router = Router()
-admin_menu_router.include_routers(code_scanner_router, edit_shop_router)
+admin_menu_router.include_routers(code_scanner_router, edit_shop_main_router)
 
 
 @admin_menu_router.message(LocalizedTextFilter("btn-admin-panel"))

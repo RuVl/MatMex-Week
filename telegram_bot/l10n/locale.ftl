@@ -105,6 +105,16 @@ cancel-change-name = Редактирование ФИО отменено
 name-changed = ФИО успешо изменено\! Приятно познакомиться
 already-in-pc = Мы знаем\) Это отмечено в твоем профиле
 
+#shop messages
+shop-hello = Магазин
+item-name = Название:
+item-size = Размер:
+full-price = Цена:
+discount-price = Цена по скидке:
+available-count = На складе:
+in-stock = Товар в продаже
+not-in-stock = Товар закончился
+
 # Menu buttons
 btn-support = Поддержка
 btn-schedule = Расписание
@@ -129,12 +139,12 @@ btn-add-category = Добавить категорию
 btn-edit-category = Редактировать категорию
 btn-add-item = Добавить товар
 btn-edit-item = Редактировать товар
-btn-del-item = Удалить товар
-btn-delete-item = Удалить товар
+btn-delete-item-or-category = Удалить товар или категорию
+btn-delete-category = Удалить эту категорию
+btn-delete-item = Удалить этот товар
 btn-add-custom-prize = Добавить приз
 btn-send-support = Отправить ответ
 btn-cancel-support = Отмена
-btn-delete-category = Удалить категорию
 
 # Account buttons
 btn-edit-name = Редактировать ФИО
@@ -155,6 +165,7 @@ placeholder-menu = Выберите элемент меню
 placeholder-category = Выберите категорию
 placeholder-item = Выберите товар
 placeholder-item-size = Выберите размер товара
+placeholder-get-back-to-item = Назад к товарам
 
 # Log messages
 log-handler-called = Вызван обработчик
