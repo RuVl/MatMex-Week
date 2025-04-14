@@ -1,6 +1,8 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from database import async_session
 
+from database.methods import get_all_categories
 
 def get_yes_no_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
@@ -60,18 +62,15 @@ def get_menu_kb(l10n) -> ReplyKeyboardMarkup:
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-menu"))
 
 
-def get_category_kb(l10n) -> ReplyKeyboardMarkup:
+async def get_category_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
+	async with async_session() as session:
+		categories = await get_all_categories(session)
+	for item in categories:
+		builder.row(
+			KeyboardButton(text=item.name),
+		)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-tshirts")),
-	).row(
-		KeyboardButton(text=l10n.format_value("btn-bracelets")),
-	).row(
-		KeyboardButton(text=l10n.format_value("btn-id-covers")),
-	).row(
-		KeyboardButton(text=l10n.format_value("btn-shoppers")),
-	).row(
 		KeyboardButton(text=l10n.format_value("btn-back")),
 	)
-
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-category"))

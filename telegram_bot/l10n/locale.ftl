@@ -6,7 +6,8 @@ tell-about-pc = Кстати, цены в магазине зависят от �
 roll-back-name = Введи ФИО
 
 helping = Задай свой вопрос в поддержку
-send_helping = Ваш вопрос отправлен в службу поддержки\. Ожидайте ответа\.
+send-helping = Ваш вопрос отправлен в службу поддержки\. Ожидайте ответа\.
+new-support-question = Новый вопрос в поддержку\. Ответьте на следующее сообщение\:  
 
 cancel = Отмена
 cancel_message = Запрос в службу поддержки отменён
@@ -54,12 +55,17 @@ give-points = Баллы успешно начислены
 wrong-id = Участника с таким кодом не существует, попробуйте еще раз
 cancel-code-scanner-message = Сканирование кода отменено 
 back-to-menu = Возвращаю обратно в меню
+wait-send-support = Отправьте ответ
+support-sent = Ответ отправлен
+canel-send-support = Отправка ответа отменена
+support-answer = Ответ на вопрос:
 
 #edit shop messages
 edit-shop-menu = Редактирование магазина
-ask-for-category-create = Название категории
+cancel_edit_shop = Редактирование отменено
+ask-for-category-create = Введите название категории и прикрепите изображение категории
 creating-category-cancelled = Создание категории отменено
-create-category = Категория создана
+category-created = Категория создана
 edit-category = Редактирование категории
 ask-for-name-item = Введите название
 ask-for-size = Введите размер
@@ -68,6 +74,9 @@ ask-for-count = Введите количество
 delete-item = Товар удален
 cancel-edit-item = Отменено
 create-item = Товар создан
+no-photo = Фото не прикреплено, попробуйте еще раз
+no-text = У категории нет названия, попробуйте еще раз
+failed-download = Ошибка загрузки фото, попробуйте еще раз
 
 #account messages
 account-temp = Мой аккаунт
@@ -103,6 +112,8 @@ btn-edit-item = Редактировать товар
 btn-del-item = Удалить товар
 btn-delete-item = Удалить товар
 btn-add-custom-prize = Добавить приз
+btn-send-support = Отправить ответ
+btn-cancel-support = Отмена
 
 # Account buttons
 btn-edit-name = Редактировать ФИО

@@ -1,12 +1,8 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-
 def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
-	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-admin-panel")),
-	)
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-edit-shop")),
 	)
@@ -17,7 +13,7 @@ def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
 		KeyboardButton(text=l10n.format_value("btn-add-custom-prize")),
 	)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-back")),
+		KeyboardButton(text=l10n.format_value("btn-back-to-menu")),
 	)
 
 	return builder.as_markup(resize_keyboard=True)
@@ -26,7 +22,7 @@ def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
 def get_edit_item_kb(l10n):
 	builder = ReplyKeyboardBuilder()
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-add-item")),
+		KeyboardButton(text=l10n.format_value("btn-add-category")),
 		KeyboardButton(text=l10n.format_value("btn-del-item")),
 		KeyboardButton(text=l10n.format_value("btn-back"))
 	)
@@ -35,6 +31,9 @@ def get_edit_item_kb(l10n):
 
 def get_edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-add-category")),
+	)
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-add-item")),
 	)
