@@ -54,7 +54,7 @@ async def handle_delete_item_choose_category(msg: types.Message, state: FSMConte
                  reply_markup=get_item_kb(l10n, category))
 	await state.update_data(category_name = category.name)
 	await state.set_state(PurchasesActions.CHOOSE_ITEM)
-	await log.adebug("log-state-changed", state="PurchasesActions.CHOOSE_ITEM")
+	await log.adebug("log-state-changed", state=PurchasesActions.CHOOSE_ITEM.state)
 
 @shop_router.message(PurchasesActions.CHOOSE_ITEM)
 async def handle_delete_item(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -76,9 +76,8 @@ async def handle_delete_item(msg: types.Message, state: FSMContext, l10n: Fluent
 		f"На складе: {item.available_count}\n"
 		f"{'В наличии' if item.in_stock else 'Пока не продается'}"
 	)
-	await log.adebug(item_chars, state="EditShopActions.EDIT_SHOP")
 	await msg.answer_photo(caption = item_chars, 
                         photo=FSInputFile(item.image_path),
                         reply_markup=get_menu_kb(l10n))
 	await state.clear()
-	await log.adebug("log-state-changed", state="EditShopActions.EDIT_SHOP")
+	await log.adebug("log-state-changed", state="cleared")

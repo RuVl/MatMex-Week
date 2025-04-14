@@ -129,7 +129,6 @@ btn-add-category = Добавить категорию
 btn-edit-category = Редактировать категорию
 btn-add-item = Добавить товар
 btn-edit-item = Редактировать товар
-btn-del-item = Удалить товар
 btn-delete-item = Удалить товар
 btn-add-custom-prize = Добавить приз
 btn-send-support = Отправить ответ

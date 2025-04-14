@@ -30,7 +30,7 @@ async def handle_back_to_menu(msg: types.Message, state: FSMContext, l10n: Fluen
 	await log.adebug("log-admin-action", action="handle_back_to_menu")
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=get_admin_kb(l10n))
 	await state.set_state(AdminActions.ADMIN_PANEL)
-	await log.adebug("log-state-changed", state="AdminActions.ADMIN_PANEL")
+	await log.adebug("log-state-changed", state=AdminActions.ADMIN_PANEL.state)
 
 @edit_shop_router.message(
 	or_f(EditShopActions.CREATE_CATEGORY, 
@@ -53,21 +53,21 @@ async def handle_cancel_edit(msg: types.Message, state: FSMContext, l10n: Fluent
 	await log.adebug("log-admin-action", action="handle_cancel_edit")
 	await msg.answer(l10n.format_value("cancel_edit_shop"), reply_markup=get_edit_shop_kb(l10n))
 	await state.set_state(EditShopActions.EDIT_SHOP)
-	await log.adebug("log-state-changed", state="EditShopActions.EDIT_SHOP")
+	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 @edit_shop_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-back"))
 async def handle_back(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_category")
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=get_admin_kb(l10n))
 	await state.set_state(AdminActions.ADMIN_PANEL)
-	await log.adebug("log-state-changed", state="AdminActions.ADMIN_PANEL")
+	await log.adebug("log-state-changed", state=AdminActions.ADMIN_PANEL.state)
 
 @edit_shop_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-add-category"))
 async def handle_create_category_btn(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_category_btn")
 	await msg.answer(l10n.format_value("ask-for-category-create"), reply_markup=get_cancel_kb(l10n))
 	await state.set_state(EditShopActions.CREATE_CATEGORY)
-	await log.adebug("log-state-changed", state="EditShopActions.CREATE_CATEGORY")
+	await log.adebug("log-state-changed", state=EditShopActions.CREATE_CATEGORY.state)
 
 @edit_shop_router.message(EditShopActions.CREATE_CATEGORY)
 async def handle_create_category(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -95,7 +95,7 @@ async def handle_create_category(msg: types.Message, state: FSMContext, l10n: Fl
 		return
 	await msg.answer(l10n.format_value("category-created"), reply_markup=get_edit_shop_kb(l10n))
 	await state.set_state(EditShopActions.EDIT_SHOP)
-	await log.adebug("log-state-changed", state="EditShopActions.EDIT_SHOP")
+	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 @edit_shop_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-delete-category"))
 async def handle_delete_category_btn(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -103,7 +103,7 @@ async def handle_delete_category_btn(msg: types.Message, state: FSMContext, l10n
 	category_kb = await get_category_kb(l10n)
 	await msg.answer(l10n.format_value("ask-for-category"), reply_markup=category_kb)
 	await state.set_state(EditShopActions.DELETE_CATEGORY)
-	await log.adebug("log-state-changed", state="EditShopActions.DELETE_CATEGORY")
+	await log.adebug("log-state-changed", state=EditShopActions.DELETE_CATEGORY.state)
 
 
 @edit_shop_router.message(EditShopActions.DELETE_CATEGORY)
@@ -115,7 +115,7 @@ async def handle_delete_category(msg: types.Message, state: FSMContext, l10n: Fl
 	if result:
 		await msg.answer(l10n.format_value("category-deleted"), reply_markup=get_edit_shop_kb(l10n))
 		await state.set_state(EditShopActions.EDIT_SHOP)
-		await log.adebug("log-state-changed", state="EditShopActions.EDIT_SHOP")
+		await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 	else:
 		await msg.answer(l10n.format_value("category-not-deleted"), reply_markup=get_cancel_kb(l10n))
 '''
@@ -138,7 +138,7 @@ async def handle_create_item_btn(msg: types.Message, state: FSMContext, l10n: Fl
 	category_kb = await get_category_kb(l10n)
 	await msg.answer(l10n.format_value("ask-for-category"), reply_markup=category_kb)
 	await state.set_state(EditShopActions.CREATE_ITEM)
-	await log.adebug("log-state-changed", state="EditShopActions.CREATE_ITEM")
+	await log.adebug("log-state-changed", state=EditShopActions.CREATE_ITEM.state)
 
 
 @edit_shop_router.message(EditShopActions.CREATE_ITEM)
@@ -150,7 +150,7 @@ async def handle_create_item(msg: types.Message, state: FSMContext, l10n: Fluent
 		await msg.answer(l10n.format_value("ask-for-item-name"), reply_markup=get_cancel_kb(l10n))
 		await state.update_data(category_id = category.id)
 		await state.set_state(EditShopActions.CHOOSE_ITEM_NAME)
-		await log.adebug("log-state-changed", state="EditShopActions.CHOOSE_ITEM_NAME")
+		await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_NAME.state)
 	else:
 		await msg.answer(l10n.format_value("category-not-exists"), reply_markup=get_cancel_kb(l10n))
 
@@ -160,7 +160,7 @@ async def handle_ask_for_item_name(msg: types.Message, state: FSMContext, l10n: 
 	await msg.answer(l10n.format_value("ask-for-item-size"), reply_markup=get_item_size_kb(l10n))
 	await state.update_data(item_name = msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_SIZE)
-	await log.adebug("log-state-changed", state="EditShopActions.CHOOSE_ITEM_SIZE")
+	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_SIZE.state)
 
 @edit_shop_router.message(EditShopActions.CHOOSE_ITEM_SIZE)
 async def handle_ask_for_item_size(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -171,7 +171,7 @@ async def handle_ask_for_item_size(msg: types.Message, state: FSMContext, l10n: 
 	await msg.answer(l10n.format_value("ask-for-item-full-price"), reply_markup=get_cancel_kb(l10n))
 	await state.update_data(item_size = msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_FULL_PRICE)
-	await log.adebug("log-state-changed", state="EditShopActions.CHOOSE_ITEM_FULL_PRICE")
+	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_FULL_PRICE.state)
  
 @edit_shop_router.message(EditShopActions.CHOOSE_ITEM_FULL_PRICE)
 async def handle_ask_for_item_full_prcie(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -182,7 +182,7 @@ async def handle_ask_for_item_full_prcie(msg: types.Message, state: FSMContext, 
 	await msg.answer(l10n.format_value("ask-for-item-discount-price"), reply_markup=get_cancel_kb(l10n))
 	await state.update_data(item_full_price = msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE)
-	await log.adebug("log-state-changed", state="EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE")
+	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE.state)
 
 @edit_shop_router.message(EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE)
 async def handle_ask_for_item_discount_pice(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -193,7 +193,7 @@ async def handle_ask_for_item_discount_pice(msg: types.Message, state: FSMContex
 	await msg.answer(l10n.format_value("ask-for-item-available-count"), reply_markup=get_cancel_kb(l10n))
 	await state.update_data(item_discount_price = msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT)
-	await log.adebug("log-state-changed", state="EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT")
+	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT.state)
 
 @edit_shop_router.message(EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT)
 async def handle_ask_for_item_available_count(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -204,7 +204,7 @@ async def handle_ask_for_item_available_count(msg: types.Message, state: FSMCont
 	await msg.answer(l10n.format_value("ask-for-item-in-stock"), reply_markup=get_yes_no_cancel_kb(l10n))
 	await state.update_data(item_available_count = msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_IN_STOCK)
-	await log.adebug("log-state-changed", state="EditShopActions.CHOOSE_ITEM_IN_STOCK")
+	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_IN_STOCK.state)
 
 @edit_shop_router.message(EditShopActions.CHOOSE_ITEM_IN_STOCK)
 async def handle_ask_for_item_in_stock(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -218,7 +218,7 @@ async def handle_ask_for_item_in_stock(msg: types.Message, state: FSMContext, l1
 		await state.update_data(item_in_stock = False)
 	await msg.answer(l10n.format_value("ask-for-item-image"), reply_markup=get_cancel_kb(l10n))
 	await state.set_state(EditShopActions.CHOOSE_ITEM_IMAGE)
-	await log.adebug("log-state-changed", state="EditShopActions.CHOOSE_ITEM_IMAGE")
+	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_IMAGE.state)
 
 @edit_shop_router.message(EditShopActions.CHOOSE_ITEM_IMAGE)
 async def handle_ask_for_item_image(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -251,7 +251,7 @@ async def handle_ask_for_item_image(msg: types.Message, state: FSMContext, l10n:
 		await msg.answer(l10n.format_value("item-created"), reply_markup=get_edit_shop_kb(l10n))
 	await state.clear()
 	await state.set_state(EditShopActions.EDIT_SHOP)
-	await log.adebug("log-state-changed", state="EditShopActions.EDIT_SHOP")
+	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 @edit_shop_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-delete-item"))
 async def handle_delete_item_btn(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -259,7 +259,7 @@ async def handle_delete_item_btn(msg: types.Message, state: FSMContext, l10n: Fl
 	category_kb = await get_category_kb(l10n)
 	await msg.answer(l10n.format_value("ask-for-category"), reply_markup=category_kb)
 	await state.set_state(EditShopActions.DELETE_ITEM_CHOOSE_CATEGORY)
-	await log.adebug("log-state-changed", state="EditShopActions.DELETE_ITEM_CHOOSE_CATEGORY")
+	await log.adebug("log-state-changed", state=EditShopActions.DELETE_ITEM_CHOOSE_CATEGORY.state)
 
 @edit_shop_router.message(EditShopActions.DELETE_ITEM_CHOOSE_CATEGORY)
 async def handle_delete_item_choose_category(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -273,7 +273,7 @@ async def handle_delete_item_choose_category(msg: types.Message, state: FSMConte
 	await msg.answer(l10n.format_value("ask-for-item-name"), reply_markup=get_item_kb(l10n, category))
 	await state.update_data(category_name = category.name)
 	await state.set_state(EditShopActions.DELETE_ITEM)
-	await log.adebug("log-state-changed", state="EditShopActions.DELETE_ITEM")
+	await log.adebug("log-state-changed", state=EditShopActions.DELETE_ITEM.state)
 
 @edit_shop_router.message(EditShopActions.DELETE_ITEM)
 async def handle_delete_item(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -290,4 +290,4 @@ async def handle_delete_item(msg: types.Message, state: FSMContext, l10n: Fluent
 	await msg.answer(l10n.format_value("item-deleted"), reply_markup=get_edit_shop_kb(l10n))
 	await state.clear()
 	await state.set_state(EditShopActions.EDIT_SHOP)
-	await log.adebug("log-state-changed", state="EditShopActions.EDIT_SHOP")
+	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
