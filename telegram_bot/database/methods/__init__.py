@@ -35,6 +35,8 @@ from .user import (
 	get_user_by_telegram_id,
 	update_user_balance,
 	update_user_fullname,
+	mark_user_attended_event_by_code,
+	get_user_by_code
 )
 
 from .merch_category import (
@@ -49,6 +51,9 @@ __all__ = [
 	"get_user_by_telegram_id",
 	"update_user_balance",
 	"update_user_fullname",
+	"mark_user_attended_event_by_code",
+	"get_user_by_code",
+
 
 	# PkApply methods
 	"create_privilege_request",
