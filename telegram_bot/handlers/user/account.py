@@ -26,7 +26,7 @@ async def handle_profile_open(msg: types.Message, state: FSMContext, l10n: Fluen
 		await msg.answer(l10n.format_value("account-temp") + "\n" +
 		l10n.format_value("user_is") + " " +user_name + "\n" +
 		l10n.format_value("balance_is") + " " + str(user_balance) + "i", reply_markup=get_account_menu_kb(l10n))
-		#TODO выводить еще покупки
+#TODO добавить купленные товары
 		await state.set_state(AccountActions.ACCOUNT_PANEL)
 		await log.adebug("log-state-changed", state=AccountActions.ACCOUNT_PANEL.state)
 
