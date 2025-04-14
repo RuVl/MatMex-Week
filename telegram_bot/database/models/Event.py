@@ -3,8 +3,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, Integer, String, ForeignKey, func
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from database.models import Base, Privilege, EventAttendance
-from database.models import EventPrivilegeGrant
+from database.models import Base, Privilege, EventAttendance, EventPrivilegeGrant
 
 
 class Event(Base):

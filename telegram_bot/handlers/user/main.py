@@ -6,10 +6,11 @@ from aiogram import Router, types
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import FSInputFile
+from aiogram.utils.deep_linking import create_start_link
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from config import MEDIA_DIR
+from config import MEDIA_DIR, STANDARD_SCALE, STANDARD_AMOUNT
 from database import async_session
 from database.methods import get_user_by_telegram_id
 from database.methods.user import mark_user_attended_event_by_code, update_user_balance, get_user_by_code
@@ -36,7 +37,6 @@ async def handle_schedule_button(msg: types.Message, l10n: FluentLocalization):
 	await msg.answer_photo(image_from_pc, caption=text, parse_mode=ParseMode.HTML)
 
 
-STANDARD_SCALE = 10
 
 @user_router.message(LocalizedTextFilter("btn-my-code"))
 async def code_button_pressed(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -46,9 +46,10 @@ async def code_button_pressed(msg: types.Message, l10n: FluentLocalization, log:
 		data = str(user.code)
 
 		username_bot = (await msg.bot.me()).username
-		message_type = "https://t.me/" + username_bot + "?start=" + data
+		link = await create_start_link(bot = msg.bot, payload=data, encode = True)
+		#message_type = "https://t.me/" + username_bot + "?start=" + data
 
-		qrcode = segno.make(message_type, micro=False)
+		qrcode = segno.make(link, micro=False)
 
 		buffer = io.BytesIO()
 		qrcode.save(buffer, kind='png', scale=STANDARD_SCALE)
@@ -57,7 +58,7 @@ async def code_button_pressed(msg: types.Message, l10n: FluentLocalization, log:
 		await msg.answer_photo(photo=types.BufferedInputFile(buffer.read(), "qrcode.png"), ParseMode=ParseMode.HTML)
 
 
-@user_router.message(CommandStart(deep_link=True))
+@user_router.message(CommandStart(deep_link=True, deep_link_encoded=True))
 async def handle_start_deeplink(message: types.Message, command: CommandObject, l10n: FluentLocalization,
                                 log: FilteringBoundLogger):
 	payload = command.args
@@ -70,7 +71,7 @@ async def handle_start_deeplink(message: types.Message, command: CommandObject, 
 			await log.adebug("Result is" + str(result))
 			if result:
 				user = await get_user_by_code(session, alo)
-				await update_user_balance(session, user.id, 500)
+				await update_user_balance(session, user.id, STANDARD_AMOUNT)
 				await message.answer(
 					l10n.format_value("deeplink-valid", {"uuid": payload})
 				)
