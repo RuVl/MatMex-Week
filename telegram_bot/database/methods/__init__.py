@@ -37,6 +37,11 @@ from .user import (
 	update_user_fullname,
 )
 
+from .merch_category import (
+	get_all_categories,
+	create_category,
+)
+
 __all__ = [
 	# User methods
 	"create_user",
@@ -75,4 +80,8 @@ __all__ = [
 	"get_recent_user_activations",
 	"get_promocode_activations",
 	"get_user_activation_count",
+ 
+	# MerchCategory methods
+	"get_all_categories",
+	"create_category",
 ]

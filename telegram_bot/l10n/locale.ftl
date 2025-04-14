@@ -62,9 +62,10 @@ support-answer = Ответ на вопрос:
 
 #edit shop messages
 edit-shop-menu = Редактирование магазина
-ask-for-category-create = Название категории
+cancel_edit_shop = Редактирование отменено
+ask-for-category-create = Введите название категории и прикрепите изображение категории
 creating-category-cancelled = Создание категории отменено
-create-category = Категория создана
+category-created = Категория создана
 edit-category = Редактирование категории
 ask-for-name-item = Введите название
 ask-for-size = Введите размер
@@ -73,6 +74,9 @@ ask-for-count = Введите количество
 delete-item = Товар удален
 cancel-edit-item = Отменено
 create-item = Товар создан
+no-photo = Фото не прикреплено, попробуйте еще раз
+no-text = У категории нет названия, попробуйте еще раз
+failed-download = Ошибка загрузки фото, попробуйте еще раз
 
 #account messages
 account-temp = Мой аккаунт
@@ -110,6 +114,7 @@ btn-delete-item = Удалить товар
 btn-add-custom-prize = Добавить приз
 btn-send-support = Отправить ответ
 btn-cancel-support = Отмена
+
 # Account buttons
 btn-edit-name = Редактировать ФИО
 btn-already-in-pc = Я вообще-то в пк

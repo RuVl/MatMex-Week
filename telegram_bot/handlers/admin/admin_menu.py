@@ -11,9 +11,6 @@ from .code_scanner import code_scanner_router
 from .edit_shop import edit_shop_router
 
 admin_menu_router = Router()
-admin_menu_router.message.filter(
-	F.text  # TODO добавить чек на права из базы данных
-)
 admin_menu_router.include_routers(code_scanner_router, edit_shop_router)
 
 
