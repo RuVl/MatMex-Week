@@ -3,6 +3,8 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from database import async_session
 
 from database.methods import get_all_categories
+from database.models import MerchCategory
+from database.enums import MerchSize
 
 def get_yes_no_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
@@ -71,6 +73,29 @@ async def get_category_kb(l10n) -> ReplyKeyboardMarkup:
 			KeyboardButton(text=item.name),
 		)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-back")),
+		KeyboardButton(text=l10n.format_value("btn-cancel")),
 	)
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-category"))
+
+
+def get_item_kb(l10n, category: MerchCategory) -> ReplyKeyboardMarkup:
+	builder = ReplyKeyboardBuilder()
+	for item in category.merch_items:
+		builder.row(
+			KeyboardButton(text=item.name),
+		)
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-cancel")),
+	)
+	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-item"))
+
+def get_item_size_kb(l10n) -> ReplyKeyboardMarkup:
+	builder = ReplyKeyboardBuilder()
+	for size in MerchSize:
+		builder.row(
+			KeyboardButton(text=size.value),
+		)
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-cancel")),
+	)
+	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-item-size"))

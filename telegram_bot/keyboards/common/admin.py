@@ -18,27 +18,16 @@ def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
 
 	return builder.as_markup(resize_keyboard=True)
 
-
-def get_edit_item_kb(l10n):
-	builder = ReplyKeyboardBuilder()
-	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-add-category")),
-		KeyboardButton(text=l10n.format_value("btn-del-item")),
-		KeyboardButton(text=l10n.format_value("btn-back"))
-	)
-	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-menu"))
-
-
 def get_edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-add-category")),
 	)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-add-item")),
+		KeyboardButton(text=l10n.format_value("btn-delete-category")),
 	)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-edit-item")),
+		KeyboardButton(text=l10n.format_value("btn-add-item")),
 	)
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-del-item")),

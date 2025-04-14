@@ -36,11 +36,18 @@ from .user import (
 	update_user_balance,
 	update_user_fullname,
 )
-
 from .merch_category import (
 	get_all_categories,
 	create_category,
+ 	get_category,
+	remove_category,
 )
+from .merch_item import (
+	create_item,
+ 	get_item,
+	remove_item,
+)
+
 
 __all__ = [
 	# User methods
@@ -84,4 +91,11 @@ __all__ = [
 	# MerchCategory methods
 	"get_all_categories",
 	"create_category",
+	"get_category",
+ 	"remove_category",
+
+	#MerchItem methods
+ 	"create_item",
+ 	"get_item",
+	"remove_item",
 ]

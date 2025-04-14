@@ -22,7 +22,7 @@ async def handle_promocode_button(msg: types.Message, state: FSMContext, l10n: F
 
 @promocode_router.message(PromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-cancel"))
 async def handle_promocode_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await msg.answer(l10n.format_value("cancel_message"), reply_markup=get_menu_kb(l10n))
+	await msg.answer(l10n.format_value("cancel"), reply_markup=get_menu_kb(l10n))
 	await state.clear()
 	await log.adebug("log-state-changed", state="cleared")
 
