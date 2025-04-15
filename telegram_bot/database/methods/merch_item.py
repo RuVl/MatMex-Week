@@ -42,16 +42,6 @@ async def get_item_by_id(session: AsyncSession, id : int) -> MerchItem | None:
 	result = await session.execute(query)
 	return result.scalars().first()
 
-async def remove_item_by_name(session: AsyncSession, name : str) -> bool:
-	item = await get_item_by_name(session, name)
-	if item:
-		if os.path.exists(item.image_path):
-			os.remove(item.image_path)
-		await session.delete(item)
-		await session.commit()
-		return True
-	return False
-
 async def remove_item_by_id(session: AsyncSession, id : int) -> bool:
 	item = await get_item_by_id(session, id)
 	if item:

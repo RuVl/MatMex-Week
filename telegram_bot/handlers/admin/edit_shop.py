@@ -6,13 +6,13 @@ from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from keyboards.common import get_edit_shop_kb, get_cancel_kb, get_admin_kb, get_category_kb, get_item_kb, get_item_size_kb, get_yes_no_cancel_kb
+from keyboards.common import get_edit_shop_kb, get_cancel_kb, get_admin_kb, get_category_kb, get_item_size_kb, get_yes_no_cancel_kb
 from keyboards.inline import get_category_ikb, get_item_ikb
 from state_machines.states_admin import AdminActions
 from state_machines.states_edit_shop import EditShopActions
 from filters.main import LocalizedTextFilter
 from config import MEDIA_DIR
-from database.methods import create_category, get_category_by_name, get_category_by_id, remove_category_by_name, create_item, remove_item_by_name
+from database.methods import create_category, get_category_by_name, create_item
 from database import async_session
 from database.enums import MerchSize
 edit_shop_router = Router()
@@ -34,16 +34,17 @@ async def handle_back_to_menu(msg: types.Message, state: FSMContext, l10n: Fluen
 	await log.adebug("log-state-changed", state=AdminActions.ADMIN_PANEL.state)
 
 @edit_shop_router.message(
-	or_f(EditShopActions.CREATE_CATEGORY, 
-      EditShopActions.EDIT_CATEGORY, 
-      EditShopActions.CREATE_ITEM,
-      EditShopActions.CHOOSE_ITEM_NAME,
-      EditShopActions.CHOOSE_ITEM_SIZE,
-      EditShopActions.CHOOSE_ITEM_FULL_PRICE,
-      EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE,
-	  EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT,
-	  EditShopActions.CHOOSE_ITEM_IN_STOCK,
-   	  EditShopActions.CHOOSE_ITEM_IMAGE,
+	or_f(
+     	EditShopActions.CREATE_CATEGORY, 
+		EditShopActions.EDIT_CATEGORY, 
+		EditShopActions.CREATE_ITEM,
+		EditShopActions.CHOOSE_ITEM_NAME,
+		EditShopActions.CHOOSE_ITEM_SIZE,
+		EditShopActions.CHOOSE_ITEM_FULL_PRICE,
+		EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE,
+		EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT,
+		EditShopActions.CHOOSE_ITEM_IN_STOCK,
+		EditShopActions.CHOOSE_ITEM_IMAGE,
       ),
 	or_f(LocalizedTextFilter("btn-cancel"), LocalizedTextFilter("btn-back"))
 )

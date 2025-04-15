@@ -92,7 +92,7 @@ async def handle_choose_item(callback: types.CallbackQuery, l10n: FluentLocaliza
 		item = await get_item_by_id(session, data.item_id)
 	#TODO: markdownv2 точки
 	item_chars = (
-		f"{l10n.format_value("in-stock") if item.in_stock else  l10n.format_value("not-in-stock")}\n"
+		f"{l10n.format_value("in-stock") if item.in_stock else l10n.format_value("not-in-stock")}\n"
 		f"{l10n.format_value("item-name")} {item.name}\n"
 		f"{l10n.format_value("item-size")} {item.size}\n"
 		f"{l10n.format_value("full-price")} {int(item.full_price)}\n"

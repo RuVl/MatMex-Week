@@ -43,14 +43,12 @@ from .merch_category import (
 	create_category,
  	get_category_by_name,
 	get_category_by_id,
-	remove_category_by_name,
 	remove_category_by_id,
 )
 from .merch_item import (
 	create_item,
 	get_item_by_name,
 	get_item_by_id,
-	remove_item_by_name,
 	remove_item_by_id,
 )
 
@@ -102,13 +100,11 @@ __all__ = [
 	"create_category",
 	"get_category_by_name",
 	"get_category_by_id",
- 	"remove_category_by_name",
 	"remove_category_by_id",
 
 	#MerchItem methods
 	"create_item",
  	"get_item_by_name",
 	"get_item_by_id",
-	"remove_item_by_name",
 	"remove_item_by_id",
 ]

@@ -37,18 +37,6 @@ async def get_category_by_id(session: AsyncSession, id : int) -> MerchCategory |
 	result = await session.execute(query)
 	return result.scalars().first()
 
-async def remove_category_by_name(session: AsyncSession, name : str) -> bool:
-	category = await get_category_by_name(session, name)
-	if category:
-		if os.path.exists(category.image_path):
-			os.remove(category.image_path)
-		for item in category.merch_items:
-			await remove_item_by_id(session, item.id)
-		await session.delete(category)
-		await session.commit()
-		return True
-	return False
-
 async def remove_category_by_id(session: AsyncSession, id : int) -> bool:
 	category = await get_category_by_id(session, id)
 	if category:
