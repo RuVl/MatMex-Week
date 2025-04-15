@@ -139,11 +139,12 @@ btn-add-category = Добавить категорию
 btn-edit-category = Редактировать категорию
 btn-add-item = Добавить товар
 btn-edit-item = Редактировать товар
-btn-delete-item = Удалить товар
+btn-delete-item-or-category = Удалить товар или категорию
+btn-delete-category = Удалить эту категорию
+btn-delete-item = Удалить этот товар
 btn-add-custom-prize = Добавить приз
 btn-send-support = Отправить ответ
 btn-cancel-support = Отмена
-btn-delete-category = Удалить категорию
 
 # Account buttons
 btn-edit-name = Редактировать ФИО

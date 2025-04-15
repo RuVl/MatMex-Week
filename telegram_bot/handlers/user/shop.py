@@ -9,10 +9,10 @@ from config import MEDIA_DIR
 from state_machines.states_purchases import PurchasesActions
 from filters import LocalizedTextFilter
 from keyboards.inline import get_category_ikb, get_item_ikb, get_back_to_item_ikb
-from keyboards.inline import ShopCategoryFactory, ShopItemFactory
+from keyboards.inline import ShopCategoryFactory, ShopItemFactory, ShopDeleteCategoryFactory, ShopDeleteItemFactory, ShopBackToCategoriesFactory
 
 from database import async_session
-from database.methods import get_category_by_id, get_item_by_id
+from database.methods import get_category_by_id, get_item_by_id, remove_category_by_id, remove_item_by_id
 
 shop_router = Router()
 
@@ -21,11 +21,10 @@ shop_router = Router()
 async def handle_shop_button(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
 	text = l10n.format_value("shop-hello")
 	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
-	category_ikb = await get_category_ikb(l10n)
+	category_ikb = await get_category_ikb(l10n, False)
 	await msg.answer_photo(
 		image_from_pc,
 		caption=text,
-		parse_mode=ParseMode.HTML,
 		reply_markup=category_ikb
 	)
 	await log.adebug("log-state-changed", state=PurchasesActions.CHOOSE_CATEGORY.state)
@@ -39,14 +38,46 @@ async def handle_choose_category(callback: types.CallbackQuery, l10n: FluentLoca
 	await callback.bot.edit_message_media(
      									media = InputMediaPhoto(media = FSInputFile(category.image_path),
 																caption = l10n.format_value("ask-for-item-name")),
-              							reply_markup=get_item_ikb(l10n, category),
+              							reply_markup=get_item_ikb(l10n, category, data.can_delete),
                                     	chat_id=callback.message.chat.id,
         								message_id=callback.message.message_id)
 
-@shop_router.callback_query(F.data == "back_to_categories")
+@shop_router.callback_query(ShopDeleteItemFactory.filter(F))
+async def handle_choose_category(callback: types.CallbackQuery, l10n: FluentLocalization):
+	data = ShopDeleteItemFactory.unpack(callback.data)
+	async with async_session() as session:	
+		if data.can_delete:
+			await remove_item_by_id(session, data.item_id)
+	async with async_session() as session:
+		category = await get_category_by_id(session, data.category_id)
+	
+	await callback.bot.edit_message_media(
+     									media = InputMediaPhoto(media = FSInputFile(category.image_path),
+																caption = l10n.format_value("ask-for-item-name")),
+              							reply_markup=get_item_ikb(l10n, category, data.can_delete),
+                                    	chat_id=callback.message.chat.id,
+        								message_id=callback.message.message_id)
+
+@shop_router.callback_query(ShopBackToCategoriesFactory.filter(F))
 async def handle_back_to_categories(callback: types.CallbackQuery, l10n: FluentLocalization):
+	data = ShopBackToCategoriesFactory.unpack(callback.data)
 	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
-	category_ikb = await get_category_ikb(l10n)
+	category_ikb = await get_category_ikb(l10n, data.can_delete)
+	await callback.bot.edit_message_media(
+     									media = InputMediaPhoto(media = image_from_pc,
+																caption = l10n.format_value("shop-hello")),
+              							reply_markup=category_ikb,
+                                    	chat_id=callback.message.chat.id,
+        								message_id=callback.message.message_id)
+
+@shop_router.callback_query(ShopDeleteCategoryFactory.filter(F))
+async def handle_delete_category(callback: types.CallbackQuery, l10n: FluentLocalization):
+	data = ShopDeleteCategoryFactory.unpack(callback.data)
+	async with async_session() as session:	
+		if data.can_delete:
+			await remove_category_by_id(session, data.category_id)
+	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
+	category_ikb = await get_category_ikb(l10n, data.can_delete)
 	await callback.bot.edit_message_media(
      									media = InputMediaPhoto(media = image_from_pc,
 																caption = l10n.format_value("shop-hello")),
@@ -73,4 +104,4 @@ async def handle_choose_item(callback: types.CallbackQuery, l10n: FluentLocaliza
 												caption = item_chars),
             			chat_id=callback.message.chat.id,
         				message_id=callback.message.message_id,
-                        reply_markup=get_back_to_item_ikb(l10n, item))
+                        reply_markup=get_back_to_item_ikb(l10n, item, data.can_delete))

@@ -24,13 +24,10 @@ def get_edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 		KeyboardButton(text=l10n.format_value("btn-add-category")),
 	)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-delete-category")),
-	)
-	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-add-item")),
 	)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-delete-item")),
+		KeyboardButton(text=l10n.format_value("btn-delete-item-or-category")),
 	)
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-back")),
