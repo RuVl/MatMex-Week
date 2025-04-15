@@ -62,11 +62,11 @@ async def handle_choose_item(callback: types.CallbackQuery, l10n: FluentLocaliza
 	#TODO: markdownv2 точки
 	item_chars = (
 		f"{l10n.format_value("in-stock") if item.in_stock else  l10n.format_value("not-in-stock")}\n"
-		f"{l10n.format_value("item-name")}: {item.name}\n"
-		f"{l10n.format_value("item-size")}: {item.size}\n"
-		f"{l10n.format_value("full-price")}: {int(item.full_price)}\n"
-		f"{l10n.format_value("discount-price")}: {int(item.discount_price)}\n"
-		f"{l10n.format_value("available-count")}: {item.available_count}\n"
+		f"{l10n.format_value("item-name")} {item.name}\n"
+		f"{l10n.format_value("item-size")} {item.size}\n"
+		f"{l10n.format_value("full-price")} {int(item.full_price)}\n"
+		f"{l10n.format_value("discount-price")} {int(item.discount_price)}\n"
+		f"{l10n.format_value("available-count")} {item.available_count}\n"
 	)
 	await callback.bot.edit_message_media(
      					media = InputMediaPhoto(media = FSInputFile(item.image_path),
