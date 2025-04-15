@@ -11,7 +11,7 @@ from state_machines.states_admin import AdminActions
 from state_machines.states_edit_shop import EditShopActions
 from filters.main import LocalizedTextFilter
 from config import MEDIA_DIR
-from database.methods import create_category, get_category, remove_category, create_item, remove_item, get_item
+from database.methods import create_category, get_category_by_name, get_category_by_id, remove_category_by_name, create_item, remove_item_by_name
 from database import async_session
 from database.enums import MerchSize
 edit_shop_router = Router()
@@ -81,12 +81,9 @@ async def handle_create_category(msg: types.Message, state: FSMContext, l10n: Fl
 	name = msg.caption.strip()
 	save_folder = MEDIA_DIR / "categories" 
 	os.makedirs(save_folder, exist_ok=True)
-	save_location = save_folder / (name + ".jpg")
 	file = await msg.bot.get_file(msg.photo[-1].file_id)
+	save_location = save_folder / (name + '.jpg')
 	res = await msg.bot.download_file(file_path=file.file_path, destination=save_location)
-	"""if not res:
-		await msg.answer(l10n.format_value("failed-download"), reply_markup=get_cancel_kb(l10n))
-		return"""
 
 	async with async_session() as session:
 		category = await create_category(session=session, name=name, image_path=str(save_location))
@@ -110,27 +107,13 @@ async def handle_delete_category_btn(msg: types.Message, state: FSMContext, l10n
 async def handle_delete_category(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_delete_category")
 	async with async_session() as session:
-		category = await get_category(session, msg.text)
-		result = await remove_category(session=session, category=category)
+		result = await remove_category_by_name(session, msg.text)
 	if result:
 		await msg.answer(l10n.format_value("category-deleted"), reply_markup=get_edit_shop_kb(l10n))
 		await state.set_state(EditShopActions.EDIT_SHOP)
 		await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 	else:
 		await msg.answer(l10n.format_value("category-not-deleted"), reply_markup=get_cancel_kb(l10n))
-'''
-@edit_shop_router.message(EditShopActions.EDIT_SHOP, F.text == "Редактировать категорию")
-async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("ask-for-category-create"), reply_markup=get_cancel_kb(l10n))
-	await state.set_state(EditShopActions.EDIT_CATEGORY)
-
-
-@edit_shop_router.message(EditShopActions.EDIT_CATEGORY)
-async def ask_for_event(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("edit-category"), reply_markup=get_edit_item_kb(l10n))
-	await state.set_state(EditShopActions.IN_CATEGORY)
-
-'''
 
 @edit_shop_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-add-item"))
 async def handle_create_item_btn(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -145,7 +128,7 @@ async def handle_create_item_btn(msg: types.Message, state: FSMContext, l10n: Fl
 async def handle_create_item(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_item")
 	async with async_session() as session:
-		category = await get_category(session=session, name=msg.text)
+		category = await get_category_by_name(session=session, name=msg.text)
 	if category:
 		await msg.answer(l10n.format_value("ask-for-item-name"), reply_markup=get_cancel_kb(l10n))
 		await state.update_data(category_id = category.id)
@@ -229,12 +212,9 @@ async def handle_ask_for_item_image(msg: types.Message, state: FSMContext, l10n:
 		return
 	save_folder = MEDIA_DIR / "merch_items" 
 	os.makedirs(save_folder, exist_ok=True)
-	save_location = save_folder / (data.get("item_name") + ".jpg")
 	file = await msg.bot.get_file(msg.photo[-1].file_id)
+	save_location = save_folder / (data.get("item_name") + '.jpg')
 	res = await msg.bot.download_file(file_path=file.file_path, destination=save_location)
-	"""if not res:
-		await msg.answer(l10n.format_value("failed-download"), reply_markup=get_cancel_kb(l10n))
-		return"""
 	async with async_session() as session:
 		item = await create_item(session=session, 
                            name=data.get("item_name"), 
@@ -245,10 +225,7 @@ async def handle_ask_for_item_image(msg: types.Message, state: FSMContext, l10n:
                            available_count = int(data.get("item_available_count")),
                            in_stock = bool(data.get("item_in_stock")),
                            category_id=int(data.get("category_id")))
-	if not item:
-		await msg.answer(l10n.format_value("item-create-error"), reply_markup=get_edit_shop_kb(l10n))
-	else:
-		await msg.answer(l10n.format_value("item-created"), reply_markup=get_edit_shop_kb(l10n))
+	await msg.answer(l10n.format_value("item-created"), reply_markup=get_edit_shop_kb(l10n))
 	await state.clear()
 	await state.set_state(EditShopActions.EDIT_SHOP)
 	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
@@ -265,13 +242,13 @@ async def handle_delete_item_btn(msg: types.Message, state: FSMContext, l10n: Fl
 async def handle_delete_item_choose_category(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_delete_item_choose_category")
 	async with async_session() as session:
-		category = await get_category(session, msg.text)
+		category = await get_category_by_name(session, msg.text)
 	if not category:
 		category_kb = await get_category_kb(l10n)
 		await msg.answer(l10n.format_value("category-not-exists"), reply_markup=category_kb)
 		return
 	await msg.answer(l10n.format_value("ask-for-item-name"), reply_markup=get_item_kb(l10n, category))
-	await state.update_data(category_name = category.name)
+	await state.update_data(category_id = category.id)
 	await state.set_state(EditShopActions.DELETE_ITEM)
 	await log.adebug("log-state-changed", state=EditShopActions.DELETE_ITEM.state)
 
@@ -279,11 +256,10 @@ async def handle_delete_item_choose_category(msg: types.Message, state: FSMConte
 async def handle_delete_item(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_delete_item_btn")
 	async with async_session() as session:
-		item = await get_item(session, msg.text)
-		result = await remove_item(session, item)
+		result = await remove_item_by_name(session, msg.text)
 	if not result:
 		data = await state.get_data()
-		category = await get_category(session, data.get("category_name"))
+		category = await get_category_by_id(session, data.get("category_id"))
 		category_kb = await get_item_kb(l10n, category)
 		await msg.answer(l10n.format_value("item-not-exists"), reply_markup=get_item_kb(l10n, category_kb))
 		return
