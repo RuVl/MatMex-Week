@@ -3,7 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from database import async_session
 from database.methods import get_all_categories
-from database.models import MerchCategory
+from database.models import MerchCategory, MerchItem
 from .main import ShopCategoryFactory, ShopItemFactory
 
 async def get_category_ikb(l10n) -> InlineKeyboardMarkup:
@@ -23,4 +23,14 @@ def get_item_ikb(l10n, category: MerchCategory) -> InlineKeyboardMarkup:
 		builder.row(
 			InlineKeyboardButton(text=item.name, callback_data=ShopItemFactory(category_id = category.id, item_id = item.id).pack()),
 		)
+	builder.row(InlineKeyboardButton(
+    								text=l10n.format_value("btn-back"), 
+     								callback_data="back_to_categories"))
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-item"))
+
+def get_back_to_item_ikb(l10n, item: MerchItem) -> InlineKeyboardMarkup:
+	builder = InlineKeyboardBuilder()
+	builder.row(InlineKeyboardButton(
+     								text=l10n.format_value("btn-back"), 
+             						callback_data=ShopCategoryFactory(category_id = item.category_id).pack()))
+	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-get-back-to-item"))
