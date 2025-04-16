@@ -10,7 +10,7 @@ class EventPrivilegeGrant(Base):
 	__table_args__ = {"comment": "Привилегии на конкретное мероприятие"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	privileges: Mapped[int] = mapped_column(Enum(EventPrivilege), nullable=False, comment="флаги привилегий")
+	privileges: Mapped[EventPrivilege] = mapped_column(Enum(EventPrivilege), nullable=False, comment="флаги привилегий")
 
 	# Кто дал права - no backref
 	promoter_id: Mapped[int] = mapped_column(Integer, ForeignKey("privileges.id"), nullable=False, comment="кем выданы")

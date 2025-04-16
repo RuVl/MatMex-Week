@@ -30,6 +30,7 @@ def get_processors(log_config: LoggerKeys) -> list:
 	:return: processors list for structlog
 	"""
 
+	# noinspection PyUnusedLocal
 	def custom_json_serializer(data, *args, **kwargs):
 		"""
 		JSON-objects custom serializer

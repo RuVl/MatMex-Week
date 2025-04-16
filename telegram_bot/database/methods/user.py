@@ -3,14 +3,13 @@ import uuid
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from structlog.typing import FilteringBoundLogger
 
 from database.models import User, Event, EventAttendance
 
 
-async def create_user(session: AsyncSession, telegram_id: int, full_name: str, balance: float = 0.0) -> User:
+async def create_user(session: AsyncSession, telegram_id: int, telegram_username: str, full_name: str, balance: float = 0.0) -> User:
 	"""Создаёт нового пользователя с указанными параметрами."""
-	user = User(telegram_id=telegram_id, full_name=full_name, balance=balance)
+	user = User(telegram_id=telegram_id, telegram_username=telegram_username, full_name=full_name, balance=balance)
 	session.add(user)
 	await session.commit()
 	await session.refresh(user)
@@ -49,6 +48,7 @@ async def get_user_by_code(session: AsyncSession, code: uuid.UUID) -> User | Non
 	result = await session.execute(query)
 	return result.scalar_one_or_none()
 
+
 async def update_user_balance(session: AsyncSession, user_id: int, amount: float) -> User:
 	"""Обновляет баланс пользователя, добавляя или вычитая сумму."""
 	user = await session.get(User, user_id)
@@ -73,8 +73,7 @@ async def update_user_fullname(session: AsyncSession, user_id: int, full_name: s
 		raise ValueError(f"Пользователь с id {user_id} не найден")
 
 
-async def mark_user_attended_event_by_code(session: AsyncSession, user_code: str, event_id: int,
-                                           log: FilteringBoundLogger) -> bool:
+async def mark_user_attended_event_by_code(session: AsyncSession, user_code: str, event_id: int) -> bool:
 	"""Отмечает определённого пользователя присутствующим на определённом мероприятии"""
 	try:
 		# 1. Найти пользователя по code
@@ -104,6 +103,6 @@ async def mark_user_attended_event_by_code(session: AsyncSession, user_code: str
 
 		return True
 
-	except Exception as e:
+	except Exception:
 		await session.rollback()  # Important: Rollback in case of error
 		return False

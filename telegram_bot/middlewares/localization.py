@@ -5,7 +5,7 @@ from aiogram.types import TelegramObject
 from fluent.runtime import FluentLocalization
 
 
-class L10nMiddleware(BaseMiddleware):
+class L10nMw(BaseMiddleware):
 	def __init__(self, locale: FluentLocalization):
 		self.locale = locale
 

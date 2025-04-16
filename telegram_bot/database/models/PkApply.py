@@ -12,7 +12,7 @@ class PkApply(Base):
 	__table_args__ = {"comment": "Заявки на ручную проверку статуса"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	status: Mapped[str] = mapped_column(Enum(ApplyStatus), default=ApplyStatus.pending, nullable=False, comment="статус заявки")
+	status: Mapped[ApplyStatus] = mapped_column(Enum(ApplyStatus), default=ApplyStatus.PENDING.value, nullable=False, comment="статус заявки")
 	reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, comment="когда рассмотрена")
 
 	# Связь с пользователем, создавшим заявку

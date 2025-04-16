@@ -12,6 +12,7 @@ class User(Base):
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
 	telegram_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False, comment="Telegram id пользователя")
+	telegram_username: Mapped[str] = mapped_column(String(255), nullable=True, comment="Telegram username пользователя")
 
 	full_name: Mapped[str] = mapped_column(String(255), nullable=False, comment="ФИО")
 	balance: Mapped[float] = mapped_column(Float, nullable=False, default=0, comment="баланс (мнимые единицы)")

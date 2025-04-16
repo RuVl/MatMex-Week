@@ -13,7 +13,7 @@ class MerchItem(Base):
 	image_path: Mapped[str] = mapped_column(String(255), nullable=False)
 
 	name: Mapped[str] = mapped_column(String(255), nullable=False, comment="название товара")
-	size: Mapped[str] = mapped_column(Enum(MerchSize), nullable=False, comment="размер товара")
+	size: Mapped[MerchSize] = mapped_column(Enum(MerchSize), default=MerchSize.NONE.value, nullable=False, comment="размер товара")
 
 	full_price: Mapped[float] = mapped_column(Float, nullable=False, comment="цена без скидки")
 	discount_price: Mapped[float] = mapped_column(Float, nullable=False, comment="стоимость со скидкой")

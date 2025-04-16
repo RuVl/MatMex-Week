@@ -52,17 +52,17 @@ async def check_promocode_valid(session: AsyncSession, code: str, user_id: int) 
 
 	if not promocode:
 		return False, "Промокод не найден", 0
-	
+
 	if not promocode.is_active:
 		return False, "Промокод деактивирован", 0
-	
-	if promocode.expires_at and promocode.expires_at < datetime.utcnow():
+
+	if promocode.expires_at and promocode.expires_at < datetime.now():
 		return False, "Срок действия промокода истек", 0
-	
+
 	# Проверяем количество активаций
 	if promocode.max_uses is not None and len(promocode.activations) >= promocode.max_uses:
 		return False, "Достигнуто максимальное количество использований промокода", 0
-	
+
 	# Проверяем, активировал ли пользователь уже этот промокод
 	query = select(exists().where(
 		(PromocodeActivation.promocode_id == promocode.id) &
@@ -96,14 +96,14 @@ async def activate_promocode(session: AsyncSession, code: str, user_id: int) -> 
 	user = await session.get(User, user_id)
 	if not user:
 		return False, "Пользователь не найден", 0
-	
+
 	# Создаём активацию
 	activation = PromocodeActivation(promocode_id=promocode.id, recipient_id=user_id)
 	session.add(activation)
 
 	# Начисляем баллы
 	user.balance += promocode.cost
-	
+
 	await session.commit()
 	return True, f"Промокод активирован! Начислено {promocode.cost} баллов", promocode.cost
 
@@ -131,7 +131,7 @@ async def get_promocodes_by_creator(session: AsyncSession, creator_id: int) -> l
 
 async def get_active_promocodes(session: AsyncSession) -> list[Promocode]:
 	"""Возвращает список активных промокодов, которые ещё не истекли."""
-	current_time = datetime.utcnow()
+	current_time = datetime.now()
 	query = (
 		select(Promocode)
 		.where(Promocode.is_active == True)

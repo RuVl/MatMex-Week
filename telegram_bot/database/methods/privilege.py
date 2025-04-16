@@ -49,7 +49,7 @@ async def add_privilege(session: AsyncSession, user_id: int, privilege_flag: int
 		raise ValueError(f"У пользователя с id {user_id} нет привилегий")
 
 	user.privileges.privilege |= privilege_flag  # Добавляем флаг
-	user.privileges.updated_at = datetime.utcnow()
+	user.privileges.updated_at = datetime.now()
 	await session.commit()
 	return user.privileges
 
@@ -63,7 +63,7 @@ async def remove_privilege(session: AsyncSession, user_id: int, privilege_flag: 
 		raise ValueError(f"У пользователя с id {user_id} нет привилегий")
 
 	user.privileges.privilege &= ~privilege_flag  # Убираем флаг
-	user.privileges.updated_at = datetime.utcnow()
+	user.privileges.updated_at = datetime.now()
 	await session.commit()
 	return user.privileges
 
@@ -72,7 +72,7 @@ async def remove_all_privileges(session: AsyncSession, user_id: int):
 	"""Удаляет все привилегии пользователя и каскадно убирает привилегии у тех, кому он их выдал."""
 	user = await session.get(User, user_id, options=[
 		selectinload(User.privileges),
-		selectinload(User.issued_privileges).selectinload(Privilege.user)
+		selectinload(User.issued_privileges).selectinload(Privilege.owner)
 	])
 	if not user:
 		raise ValueError(f"Пользователь с id {user_id} не найден")
