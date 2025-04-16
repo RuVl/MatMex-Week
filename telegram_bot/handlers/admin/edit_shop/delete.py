@@ -1,13 +1,29 @@
 from aiogram import F
 from aiogram import Router, types
 from fluent.runtime import FluentLocalization
+from structlog.typing import FilteringBoundLogger
 
 from keyboards.inline import get_category_ikb, get_item_ikb, ShopDeleteCategoryFactory, ShopDeleteItemFactory
 from config import MEDIA_DIR
 from database.methods import remove_item_by_id, remove_category_by_id, get_category_by_id
 from database import async_session
+from state_machines import EditShopActions
+from filters.main import LocalizedTextFilter
 
 edit_shop_delete_router = Router()
+
+@edit_shop_delete_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-delete-item-or-category"))
+async def handle_delete_category_btn(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
+	await log.adebug("log-admin-action", action="handle_delete_category_btn")	
+	text = l10n.format_value("shop-hello")
+	image_from_pc = types.FSInputFile(MEDIA_DIR / "shop_mock.jpg")
+	category_ikb = await get_category_ikb(l10n, True)
+	await msg.answer_photo(
+		image_from_pc,
+		caption=text,
+		reply_markup=category_ikb
+	)
+	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 @edit_shop_delete_router.callback_query(ShopDeleteItemFactory.filter(F))
 async def handle_choose_category(callback: types.CallbackQuery, l10n: FluentLocalization):

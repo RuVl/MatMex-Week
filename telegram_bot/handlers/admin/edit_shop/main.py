@@ -1,3 +1,4 @@
+from aiogram import F
 from aiogram import Router, types
 from aiogram.filters import or_f
 from aiogram.fsm.context import FSMContext
@@ -22,9 +23,17 @@ async def handle_edit_shop(msg: types.Message, state: FSMContext, l10n: FluentLo
 	await log.adebug("log-state-changed", state="cleared")
 
 @edit_shop_main_router.message(
+    EditShopActions.CREATE_CATEGORY,
+	LocalizedTextFilter("btn-cancel"),
+)
+async def handle_cancel_edit_category(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
+	await log.adebug("log-admin-action", action="handle_cancel_edit_category")
+	await msg.answer(l10n.format_value("cancel_edit_shop"), reply_markup=get_edit_shop_kb(l10n))
+	await state.set_state(EditShopActions.EDIT_SHOP)
+	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
+
+@edit_shop_main_router.callback_query(
 	or_f(
-     	EditShopActions.CREATE_CATEGORY, 
-		EditShopActions.EDIT_CATEGORY, 
 		EditShopActions.CREATE_ITEM,
 		EditShopActions.CHOOSE_ITEM_NAME,
 		EditShopActions.CHOOSE_ITEM_SIZE,
@@ -34,11 +43,12 @@ async def handle_edit_shop(msg: types.Message, state: FSMContext, l10n: FluentLo
 		EditShopActions.CHOOSE_ITEM_IN_STOCK,
 		EditShopActions.CHOOSE_ITEM_IMAGE,
       ),
-	or_f(LocalizedTextFilter("btn-cancel"), LocalizedTextFilter("btn-back"))
+	F.data == "btn_cancel"
 )
-async def handle_cancel_edit(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await log.adebug("log-admin-action", action="handle_cancel_edit")
-	await msg.answer(l10n.format_value("cancel_edit_shop"), reply_markup=get_edit_shop_kb(l10n))
+async def handle_cancel_edit_item(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
+	await log.adebug("log-admin-action", action="handle_cancel_edit_item")
+	await callback.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+	await callback.message.answer(l10n.format_value("cancel_edit_shop"), reply_markup=get_edit_shop_kb(l10n))
 	await state.set_state(EditShopActions.EDIT_SHOP)
 	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 

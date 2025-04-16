@@ -26,24 +26,16 @@ async def create_item(session: AsyncSession,
 	await session.refresh(item)
 	return item
 
-async def get_item_by_name(session: AsyncSession, name : str) -> MerchItem | None:
+async def get_item_by_id(session: AsyncSession, item_id : int) -> MerchItem | None:
 	query = (
 		select(MerchItem)
-		.where(MerchItem.name == name)
+		.where(MerchItem.id == item_id)
 	)
 	result = await session.execute(query)
 	return result.scalars().first()
 
-async def get_item_by_id(session: AsyncSession, id : int) -> MerchItem | None:
-	query = (
-		select(MerchItem)
-		.where(MerchItem.id == id)
-	)
-	result = await session.execute(query)
-	return result.scalars().first()
-
-async def remove_item_by_id(session: AsyncSession, id : int) -> bool:
-	item = await get_item_by_id(session, id)
+async def remove_item_by_id(session: AsyncSession, item_id : int) -> bool:
+	item = await get_item_by_id(session, item_id)
 	if item:
 		if os.path.exists(item.image_path):
 			os.remove(item.image_path)

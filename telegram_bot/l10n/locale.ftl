@@ -70,6 +70,7 @@ ask-for-category-create = Введите название категории и 
 creating-category-cancelled = Создание категории отменено
 category-created = Категория создана
 edit-category = Редактирование категории
+item-creation = Создание товара
 ask-for-name-item = Введите название
 ask-for-size = Введите размер
 ask-for-price = Введите цену

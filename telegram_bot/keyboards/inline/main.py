@@ -1,27 +1,15 @@
-from aiogram.filters.callback_data import CallbackData
+from aiogram.types import InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-class SupportFactory(CallbackData, prefix='support'):
-	user_id: int
-	message_id: int
-	can_delete: bool
+def get_cancel_ikb(l10n):
+	builder = InlineKeyboardBuilder()
+	builder.row(InlineKeyboardButton(text=l10n.format_value("btn-cancel"), callback_data="btn_cancel"))
+	return builder.as_markup(resize_keyboard=True)
 
-class ShopCategoryFactory(CallbackData, prefix='shop_choose_category'):
-	category_id: int
-	can_delete: bool
-
-class ShopDeleteCategoryFactory(CallbackData, prefix='shop_delete_category'):
-	category_id: int
-	can_delete: bool
- 
-class ShopItemFactory(CallbackData, prefix='shop_choose_item'):
-	category_id: int
-	item_id: int
-	can_delete: bool
-
-class ShopDeleteItemFactory(CallbackData, prefix='shop_delete_item'):
-	category_id: int
-	item_id: int
-	can_delete: bool
- 
-class ShopBackToCategoriesFactory(CallbackData, prefix='back_to_categories'):
-	can_delete: bool
+def get_yes_no_cancel_ikb(l10n):
+	builder = InlineKeyboardBuilder()
+	builder.row(
+     			InlineKeyboardButton(text=l10n.format_value("btn-yes"), callback_data="btn_yes"), 
+             	InlineKeyboardButton(text=l10n.format_value("btn-no"), callback_data="btn_no"))
+	builder.row(InlineKeyboardButton(text=l10n.format_value("btn-cancel"), callback_data="btn_cancel"))
+	return builder.as_markup(resize_keyboard=True)

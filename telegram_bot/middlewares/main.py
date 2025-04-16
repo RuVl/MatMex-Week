@@ -19,7 +19,7 @@ def register_middlewares(dp: Dispatcher):
 	# Logging handlers
 	logging_middleware = LoggingMiddleware()
 	dp.message.middleware(logging_middleware)
-	dp.message.middleware(logging_middleware)
+	dp.callback_query.middleware(logging_middleware)
 
 	# Database user from cache or db
 	db_user_middleware = DBUserMiddleware()
