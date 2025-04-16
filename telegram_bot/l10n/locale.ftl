@@ -10,7 +10,7 @@ send-helping = Ваш вопрос отправлен в службу подде
 new-support-question = Новый вопрос в поддержку\. Ответьте на следующее сообщение\:  
 
 cancel = Отмена
-cancel_message = Запрос в службу поддержки отменён
+cancel_message = Запрос отменён
 promocode_enter = Введите промокод
 sad-promo-message = Твой промокод недействителен\(
 good-promo-message = Поздравляю! Промокод добавлен
