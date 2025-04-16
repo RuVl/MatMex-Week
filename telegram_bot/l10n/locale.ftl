@@ -122,16 +122,9 @@ btn-send-for-check = Отправить на ручную проверку
 btn-just-kidding = Нет, я пошутил
 apply-check = Заявка на проверку статуса **Профкомовца**
     {"*"}*Статус**: { $status }
-    {"*"}*Запросил**: { $fullname }{ $username ->
-[undefined]{""}
-*[other] \(@{ $username }\)
-    }
-
+    {"*"}*Запросил**: { $fullname } \(@{ $username }\)
 apply-checked =  { apply-check }
-    { $verified_by ->
-[undefined]{""}
-*[other] **Проверил**: { $verified_by }
-    }
+    {"*"}*Проверил**: { $verified_by }
 
 # Admin buttons
 btn-admin-panel = Админ панель
