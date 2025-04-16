@@ -2,7 +2,7 @@ import io
 import uuid
 
 import segno
-from aiogram import Router, types
+from aiogram import Router, types, flags
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import FSInputFile
@@ -30,24 +30,24 @@ user_router.include_routers(
 
 
 @user_router.message(LocalizedTextFilter("btn-schedule"))
+@flags.chat_action()
 async def handle_schedule_button(msg: types.Message, l10n: FluentLocalization):
-	text = l10n.format_value("week-title")
+	text = l10n.format_value("schedule-text-html")
 
 	image_from_pc = FSInputFile(MEDIA_DIR / "schedule.jpg")
 	await msg.answer_photo(image_from_pc, caption=text, parse_mode=ParseMode.HTML)
 
 
-
 @user_router.message(LocalizedTextFilter("btn-my-code"))
-async def code_button_pressed(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
+async def code_button_pressed(msg: types.Message):
 	telegram_id = msg.from_user.id
 	async with async_session() as session:
 		user = await get_user_by_telegram_id(session, telegram_id)
 		data = str(user.code)
 
-		username_bot = (await msg.bot.me()).username
-		link = await create_start_link(bot = msg.bot, payload=data, encode = True)
-		#message_type = "https://t.me/" + username_bot + "?start=" + data
+		# username_bot = (await msg.bot.me()).username
+		link = await create_start_link(bot=msg.bot, payload=data, encode=True)
+		# message_type = "https://t.me/" + username_bot + "?start=" + data
 
 		qrcode = segno.make(link, micro=False)
 
@@ -67,7 +67,7 @@ async def handle_start_deeplink(message: types.Message, command: CommandObject, 
 		alo = uuid.UUID(payload)
 		async with async_session() as session:
 			# todo доработать с event_id, не хардкодно
-			result = await mark_user_attended_event_by_code(session, payload, 3, log)
+			result = await mark_user_attended_event_by_code(session, payload, 3)
 			await log.adebug("Result is" + str(result))
 			if result:
 				user = await get_user_by_code(session, alo)

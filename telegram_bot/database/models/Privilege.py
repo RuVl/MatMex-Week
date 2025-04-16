@@ -14,7 +14,7 @@ class Privilege(Base):
 	__table_args__ = {"comment": "Привилегии пользователя (o2o)"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	privilege: Mapped[int] = mapped_column(Enum(AdminPrivilege), nullable=False, comment="привилегии администрирования")
+	privilege: Mapped[AdminPrivilege] = mapped_column(Enum(AdminPrivilege), nullable=False, comment="привилегии администрирования")
 
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), nullable=False, comment="дата выдачи привилегий")
 	updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), nullable=False, comment="дата обновления привилегий")

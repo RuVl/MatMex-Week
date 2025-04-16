@@ -77,15 +77,15 @@
 
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
-Данный бот предназначен для недели Матмеха. В его функции входят регистрация новых участников недели, начисление валюты за участие в событиях, магазин мерча, администрирование пользователей.
+Данный бот предназначен для недели Матмеха. В его функции входят регистрация новых участников недели, начисление валюты за участие в событиях, магазин мерча, администрирование
+пользователей.
 Сам бот обернут в докер и сопровождается postgres и redis.
 Trello: [https://trello.com/b/rDOuwQsR/matmex-week](https://trello.com/b/rDOuwQsR/matmex-week)
 Схема базы данных: [https://dbdiagram.io/d/MatMex-Week-67ee67894f7afba184376c28](https://dbdiagram.io/d/MatMex-Week-67ee67894f7afba184376c28)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ### Built With
 
@@ -99,6 +99,7 @@ Trello: [https://trello.com/b/rDOuwQsR/matmex-week](https://trello.com/b/rDOuwQs
 
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 How to launch bot
@@ -124,6 +125,7 @@ How to launch bot
 
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 1. Fork the Project
@@ -143,6 +145,7 @@ How to launch bot
 
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT. See `LICENSE` for more information.
@@ -152,6 +155,7 @@ Distributed under the MIT. See `LICENSE` for more information.
 
 
 <!-- CONTACT -->
+
 ## Contact
 
 Project Link: [https://github.com/RuVl/MatMex-Week](https://github.com/RuVl/MatMex-Week)
@@ -164,25 +168,45 @@ Docker Hub: ...?
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/RuVl/MatMex-Week.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/RuVl/MatMex-Week/graphs/contributors
+
 [forks-shield]: https://img.shields.io/github/forks/RuVl/MatMex-Week.svg?style=for-the-badge
+
 [forks-url]: https://github.com/RuVl/MatMex-Week/network/members
+
 [stars-shield]: https://img.shields.io/github/stars/RuVl/MatMex-Week.svg?style=for-the-badge
+
 [stars-url]: https://github.com/RuVl/MatMex-Week/stargazers
+
 [issues-shield]: https://img.shields.io/github/issues/RuVl/MatMex-Week.svg?style=for-the-badge
+
 [issues-url]: https://github.com/RuVl/MatMex-Week/issues
+
 [license-shield]: https://img.shields.io/github/license/RuVl/MatMex-Week.svg?style=for-the-badge
+
 [license-url]: https://github.com/RuVl/MatMex-Week/blob/master/LICENSE.txt
+
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+
 [linkedin-url]: https://linkedin.com/in/linkedin_username
+
 [product-screenshot]: images/screenshot.png
 
 [Python.org]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
+
 [Python-url]: https://python.org
+
 [Docker.com]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
+
 [Docker-url]: https://docker.com
+
 [Postgres.org]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
+
 [Postgres-url]: https://postgresql.org
+
 [Redis.io]: https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white
+
 [Redis-url]: https://redis.io 

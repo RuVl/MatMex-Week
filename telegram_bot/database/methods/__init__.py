@@ -1,9 +1,13 @@
+from .merch_category import (
+	get_all_categories,
+	create_category,
+)
 from .pk_apply import (
-	create_privilege_request,
-	update_request_status,
-	get_pending_requests,
-	get_user_request,
-	get_requests_by_reviewer,
+	create_apply,
+	update_apply_status,
+	get_pending_applies,
+	get_user_apply,
+	get_applies_by_reviewer,
 )
 from .privilege import (
 	get_privilege_by_user,
@@ -39,11 +43,6 @@ from .user import (
 	get_user_by_code
 )
 
-from .merch_category import (
-	get_all_categories,
-	create_category,
-)
-
 __all__ = [
 	# User methods
 	"create_user",
@@ -54,13 +53,12 @@ __all__ = [
 	"mark_user_attended_event_by_code",
 	"get_user_by_code",
 
-
 	# PkApply methods
-	"create_privilege_request",
-	"update_request_status",
-	"get_pending_requests",
-	"get_user_request",
-	"get_requests_by_reviewer",
+	"create_apply",
+	"update_apply_status",
+	"get_pending_applies",
+	"get_user_apply",
+	"get_applies_by_reviewer",
 
 	# Privilege methods
 	"get_privilege_by_user",
@@ -85,7 +83,7 @@ __all__ = [
 	"get_recent_user_activations",
 	"get_promocode_activations",
 	"get_user_activation_count",
- 
+
 	# MerchCategory methods
 	"get_all_categories",
 	"create_category",

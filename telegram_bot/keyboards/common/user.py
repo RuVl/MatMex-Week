@@ -1,17 +1,8 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
+
 from database import async_session
-
 from database.methods import get_all_categories
-
-def get_yes_no_kb(l10n) -> ReplyKeyboardMarkup:
-	builder = ReplyKeyboardBuilder()
-	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-yes")),
-		KeyboardButton(text=l10n.format_value("btn-no")),
-	)
-
-	return builder.as_markup(resize_keyboard=True)
 
 
 def get_account_menu_kb(l10n) -> ReplyKeyboardMarkup:
@@ -41,7 +32,7 @@ def manual_check_kb(l10n) -> ReplyKeyboardMarkup:
 	return builder.as_markup(resize_keyboard=True)
 
 
-def get_menu_kb(l10n) -> ReplyKeyboardMarkup:
+def menu_kb(l10n) -> ReplyKeyboardMarkup:
 	isAdmin = True  # TODO чек на права из базы данных
 
 	builder = ReplyKeyboardBuilder()
@@ -62,7 +53,7 @@ def get_menu_kb(l10n) -> ReplyKeyboardMarkup:
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-menu"))
 
 
-async def get_category_kb(l10n) -> ReplyKeyboardMarkup:
+async def category_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
 	async with async_session() as session:
 		categories = await get_all_categories(session)

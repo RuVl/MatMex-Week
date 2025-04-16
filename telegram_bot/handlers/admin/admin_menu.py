@@ -5,7 +5,7 @@ from structlog.typing import FilteringBoundLogger
 
 from filters import LocalizedTextFilter
 from keyboards.common import admin_kb, menu_kb
-from state_machines.states_admin import AdminActions
+from state_machines.admin import AdminActions
 from .code_scanner import code_scanner_router
 from .edit_shop import edit_shop_router
 
@@ -18,7 +18,6 @@ async def handle_admin_panel(msg: types.Message, state: FSMContext, l10n: Fluent
 	await log.adebug("log-admin-action", action="open_admin_panel")
 	await msg.answer(l10n.format_value("hello-admin"), reply_markup=admin_kb(l10n))
 	await state.set_state(AdminActions.ADMIN_PANEL)
-	await log.adebug("log-state-changed", state=AdminActions.ADMIN_PANEL.state)
 
 
 @admin_menu_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-back-to-menu"))
@@ -26,4 +25,3 @@ async def handle_back_to_menu(msg: types.Message, state: FSMContext, l10n: Fluen
 	await log.adebug("log-admin-action", action="back_to_menu")
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=menu_kb(l10n))
 	await state.clear()
-	await log.adebug("log-state-changed", state="cleared")

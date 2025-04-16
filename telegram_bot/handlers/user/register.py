@@ -1,83 +1,94 @@
-from aiogram import F
 from aiogram import Router, types
+from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
+from config import ADMIN_CHAT_ID
 from database import async_session
-from database.methods import create_user
+from database.methods import create_user, create_apply, get_user_by_telegram_id
 from database.models import User
 from filters import FullNameFilter
-from handlers.typing import send_typing
 from keyboards.common import menu_kb, yes_no_kb, manual_check_kb
-from state_machines.states_registration import RegistrationsActions
+from keyboards.inline import verification_request_ikb
+from state_machines.registration import RegistrationsActions
+from utils import escape_md_v2
 
 register_router = Router()
 
 
-@register_router.message(CommandStart(deep_link=False))
-async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger, cached_user: User):
+@register_router.message(CommandStart(deep_link=False), flags={'chat_action': True})
+async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, cached_user: User):
 	if cached_user is None:
 		await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
 		await msg.answer(l10n.format_value("ask-name"))
 		await msg.answer(l10n.format_value("tell-about-pc"))
 
 		await state.set_state(RegistrationsActions.NAME_WAITING)
-		await log.adebug("state-changed", state=RegistrationsActions.NAME_WAITING.state)
 	else:
-		await msg.answer(l10n.format_value("hi"), reply_markup=menu_kb(l10n))
+		await msg.answer(l10n.format_value("hi-user", args={
+			'fullname': escape_md_v2(cached_user.full_name),
+		}), reply_markup=menu_kb(l10n))
 		await state.clear()
-		await log.adebug("state-changed", state="cleared")
 
 
-@register_router.message(RegistrationsActions.NAME_WAITING, FullNameFilter())
+@register_router.message(RegistrationsActions.NAME_WAITING, flags={'chat_action': True})
 async def correct_fullname_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	telegram_id = msg.from_user.id
+	if not await FullNameFilter().__call__(msg):
+		await msg.answer(l10n.format_value("wrong-name"))
+		return
+
 	fullname = msg.text.strip()
+	await log.ainfo("creating-new-user", full_name=fullname)
 
-	await log.ainfo("Creating new user", telegram_id=telegram_id, full_name=fullname)
 	async with async_session() as session:
-		await create_user(session, telegram_id, fullname)
+		await create_user(session, msg.from_user.id, msg.from_user.username, fullname)
 
-	async with send_typing(msg) as m:
-		await m.answer(l10n.format_value("thanks-name") + ", " + msg.text.strip() + r'\!')
-		await m.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb(l10n))
+	await msg.answer(l10n.format_value("thanks-name-html", args={
+		'fullname': escape_md_v2(fullname)
+	}), parse_mode=ParseMode.HTML)
+	await msg.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb(l10n))
 
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
-	await log.adebug("state-changed", state=RegistrationsActions.CHECK_MEMBER.state)
 
 
-@register_router.message(RegistrationsActions.NAME_WAITING, FullNameFilter())
-async def wrong_fullname_h(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await msg.answer(l10n.format_value("wrong-name"))
-	await log.adebug("handler-completed")
+@register_router.message(RegistrationsActions.CHECK_MEMBER, flags={'chat_action': True})
+async def handle_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	answer = msg.text.strip()
+
+	if answer == l10n.format_value('btn-yes'):
+		await msg.answer(l10n.format_value("send-for-manual-check"), reply_markup=manual_check_kb(l10n))
+		await state.set_state(RegistrationsActions.MANUAL_MEMBER_CHECK)
+	elif answer == l10n.format_value('btn-no'):
+		await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu_kb(l10n))
+		await state.clear()  # end
+	else:
+		await msg.answer(l10n.format_value("ask-valid-answer"), reply_markup=yes_no_kb(l10n))
 
 
-@register_router.message(RegistrationsActions.CHECK_MEMBER, F.text == 'Да')
-async def handle_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await msg.answer(l10n.format_value("send-for-manual-check"), reply_markup=manual_check_kb(l10n))  # todo отправить на ручную проверку
-	await state.set_state(RegistrationsActions.MANUAL_MEMBER_CHECK)
-	await log.adebug("state-changed", state=RegistrationsActions.MANUAL_MEMBER_CHECK.state)
-
-
-@register_router.message(RegistrationsActions.CHECK_MEMBER, F.text == 'Нет')
-async def handle_not_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu_kb(l10n))  # todo зарегистрировать
-	await state.clear()
-	await log.adebug("state-changed", state="cleared")
-
-
-@register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK, F.text == 'Отправить на ручную проверку')
+@register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK, flags={'chat_action': True})
 async def handle_manual_check_confirm(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await msg.answer(l10n.format_value("wait-until-checked"), reply_markup=menu_kb(l10n))  # todo зарегистрировать
-	await state.clear()
-	await log.adebug("state-changed", state="cleared")
+	answer = msg.text.strip()
 
+	if answer == l10n.format_value('btn-send-for-check'):
+		async with async_session() as session:
+			user = await get_user_by_telegram_id(session, msg.from_user.id)  # do not user cache
+			apply = await create_apply(session, user.id)
 
-@register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK, F.text == 'Нет, я пошутил')
-async def handle_manual_check_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu_kb(l10n))  # todo зарегистрировать
-	await state.clear()
-	await log.adebug("state-changed", state="cleared")
+		await log.ainfo("created-apply-for-check", apply_id=apply.id, user_id=user.id, fullname=user.full_name)
+		await msg.bot.send_message(ADMIN_CHAT_ID, l10n.format_value("apply-check", args={
+			'status': apply.status,
+			'fullname': escape_md_v2(user.full_name),
+			'username': escape_md_v2(user.telegram_username),
+			'verified_by': None
+		}), reply_markup=verification_request_ikb(l10n, apply_id=apply.id))
+
+		await msg.answer(l10n.format_value("wait-until-checked"), reply_markup=menu_kb(l10n))
+		await state.clear()  # end
+	elif answer == l10n.format_value('btn-just-kidding'):
+		await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu_kb(l10n))
+		await state.clear()  # end
+	else:
+		await msg.answer(l10n.format_value("ask-valid-answer"), reply_markup=manual_check_kb(l10n))

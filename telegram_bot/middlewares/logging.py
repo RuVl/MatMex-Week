@@ -1,16 +1,20 @@
+import time
+import types
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.middlewares.user_context import EVENT_FROM_USER_KEY
+from aiogram.fsm.context import FSMContext
 from aiogram.types import TelegramObject, User
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
 
 class LoggingMw(BaseMiddleware):
-	def __init__(self, middleware_key: str = 'log'):
+	def __init__(self, middleware_key: str = 'log', *, patch_fsm: bool = True):
 		self.logger: FilteringBoundLogger = get_logger()
 		self.middleware_key = middleware_key
+		self.patch_fsm = patch_fsm
 
 	@staticmethod
 	def get_user_context(user: User) -> dict:
@@ -24,6 +28,20 @@ class LoggingMw(BaseMiddleware):
 				"full_name": f"{user.first_name} {user.last_name or ''}".strip(),
 			})
 		return context
+
+	def patch_fsm_methods(self, fsm: FSMContext, log: FilteringBoundLogger):
+		"""Monkey patch fsm methods."""
+
+		if not self.patch_fsm:
+			return
+
+		original_set_state = fsm.set_state
+
+		async def set_state_with_logging(_, state):
+			await log.adebug("state-changed", state="cleared" if state is None else str(state.state))
+			return await original_set_state(state)
+
+		fsm.set_state = types.MethodType(set_state_with_logging, fsm)
 
 	async def __call__(
 			self,
@@ -46,9 +64,17 @@ class LoggingMw(BaseMiddleware):
 		)
 		await log.adebug("handler-called", handler=handler_name)
 
+		# Patch FSMContext methods if available
+		state: FSMContext = data.get("state")
+		if state:
+			self.patch_fsm_methods(state, log)
+
 		try:
+			start = time.perf_counter()
 			result = await handler(event, data)
-			await log.adebug("handler-completed", handler=handler_name)
+			end = time.perf_counter()
+
+			await log.adebug("handler-completed", handler=handler_name, seconds=format(end - start, '.3'))
 			return result
 		except Exception as e:
 			await log.aerror("handler-error", error=str(e), handler=handler_name)

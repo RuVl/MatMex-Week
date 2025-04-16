@@ -1,30 +1,49 @@
 #register messages
 hi = Привет, ну как там твоя учеба?
+hi-user = Привет, { $fullname }, ну как там твоя учеба?
 ask-name = Напиши свое ФИО, чтоб ты мог получить заслуженный мерч в конце нашей недели\!
 tell-about-pc = Кстати, цены в магазине зависят от того, состоишь ли ты в профкоме, а мерч мы
 выдаем по студбилету, так что не ошибайся при вводе данных\!
 roll-back-name = Введи ФИО
-
-helping = Задай свой вопрос в поддержку
-send-helping = Ваш вопрос отправлен в службу поддержки\. Ожидайте ответа\.
-new-support-question = Новый вопрос в поддержку\. Ответьте на следующее сообщение\:  
-
-cancel = Отмена
-cancel_message = Запрос в службу поддержки отменён
-promocode_enter = Введите промокод
-sad-promo-message = Твой промокод недействителен\(
-good-promo-message = Поздравляю! Промокод добавлен
-code_message = Твой промокод:
-phrase_profile = Привет, это твой профиль
-thanks-name = Приятно познакомиться
+thanks-name-html = Приятно познакомиться { $fullname }!
 ask-pc = Ты состоишь в профкоме\?
 wrong-name = Неправиьный формат ФИО, попробуй еще раз
 send-for-manual-check = Если ты действительно состоишь в Профкоме, то я могу отправить запрос на ручную проверку
 wait-until-checked = Отлично\! Членство в профкоме отправлено на ручную проверку\. Пока не подтвердится, что ты профкомовец, мерч будет без скидки
 ask-to-join = Если хочешь вступить в профком, приходи в кабинет 3528
-# 65-я Неделя Матмеха
+ask-valid-answer = Я тебя не понимаю\.\.\.😥
+Выбери один из вариантов
+already-in-pc = Мы знаем\) Это отмечено в твоем профиле
 
-week-title = 🎉 65-я Неделя Матмеха
+# Account/Profile messages
+phrase_profile = Привет, это твой профиль
+account-temp = Мой аккаунт
+input-new-name = Введите новое ФИО
+cancel-change-name = Редактирование ФИО отменено
+name-changed = ФИО успешо изменено\! Приятно познакомиться
+user_is = Пользователь:
+balance_is = Баланс:
+deeplink-valid = Баллы начислены
+deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
+deeplink-badrequest = Вы уже получали данные за это мероприятие
+
+# Support messages
+helping = Задай свой вопрос в поддержку
+sent-helping = Ваш вопрос отправлен в службу поддержки\. Ожидайте ответа\.
+support-question = Новый вопрос от { $fullname }\:
+    { $question }
+    ||{ $metadata }||
+support-sent = Ответ отправлен
+
+# Promocode messages
+promocode_enter = Введите промокод
+sad-promo-message = Твой промокод недействителен \({ $message }\)
+good-promo-message = Поздравляю! Промокод добавлен \({ $cost } баллов\)
+    Ваш баланс: { $balance } баллов
+code_message = Твой промокод:
+
+# Schedule 
+schedule-text-html = 🎉 65-я Неделя Матмеха
     Солнечные лучи заливают улицы, весна уверенно вступает в свои права! ☀️
     А значит — самое время поделиться новостями о предстоящей 65-й Неделе Матмеха!
 
@@ -46,7 +65,7 @@ week-title = 🎉 65-я Неделя Матмеха
 
     Следите за анонсами в нашей группе и Телеграм-канале Профкома.
 
-#admin messages
+# Admin messages
 hello-admin = Показываю меню организатора \n Вы самые лучшие\.\.\.
 ask-for-event = За какое мероприятие хотите начислить
 ask-for-id = Введите код участника
@@ -55,12 +74,12 @@ give-points = Баллы успешно начислены
 wrong-id = Участника с таким кодом не существует, попробуйте еще раз
 cancel-code-scanner-message = Сканирование кода отменено 
 back-to-menu = Возвращаю обратно в меню
-wait-send-support = Отправьте ответ
-support-sent = Ответ отправлен
-canel-send-support = Отправка ответа отменена
-support-answer = Ответ на вопрос:
+check-pk-apply = Пользователь { $fullname } запросил проверку на наличие статуса 
+Профкомовца
+something-went-wrong = Ошибка, проверьте логи
+select-status-cb = Одобрите или отклоните заяку (сейчас статус не изменен)
 
-#edit shop messages
+# Shop messages
 edit-shop-menu = Редактирование магазина
 cancel_edit_shop = Редактирование отменено
 ask-for-category-create = Введите название категории и прикрепите изображение категории
@@ -78,24 +97,41 @@ no-photo = Фото не прикреплено, попробуйте еще р�
 no-text = У категории нет названия, попробуйте еще раз
 failed-download = Ошибка загрузки фото, попробуйте еще раз
 
-#account messages
-account-temp = Мой аккаунт
-input-new-name = Введите новое ФИО
-cancel-change-name = Редактирование ФИО отменено
-name-changed = ФИО успешо изменено\! Приятно познакомиться
-already-in-pc = Мы знаем\) Это отмечено в твоем профиле
+# Common buttons
+btn-cancel = Отмена
+btn-yes = Да
+btn-no = Нет
+btn-back = Назад
+cancel = Отмена
+cancel_message = Запрос в службу поддержки отменён
 
 # Menu buttons
 btn-support = Поддержка
 btn-schedule = Расписание
 btn-my-code = Мой код
-btn-cancel = Отмена
 btn-enter-promocode = Ввести Промокод
 btn-profile = Профиль
 btn-shop = Магазин
-btn-yes = Да
-btn-no = Нет
-btn-back = Назад
+
+# Account buttons
+btn-edit-name = Редактировать ФИО
+btn-already-in-pc = Я вообще-то в пк
+
+# Registration buttons
+btn-send-for-check = Отправить на ручную проверку
+btn-just-kidding = Нет, я пошутил
+apply-check = Заявка на проверку статуса **Профкомовца**
+    {"*"}*Статус**: { $status }
+    {"*"}*Запросил**: { $fullname }{ $username ->
+[undefined]{""}
+*[other] \(@{ $username }\)
+    }
+
+apply-checked =  { apply-check }
+    { $verified_by ->
+[undefined]{""}
+*[other] **Проверил**: { $verified_by }
+    }
 
 # Admin buttons
 btn-admin-panel = Админ панель
@@ -114,14 +150,9 @@ btn-delete-item = Удалить товар
 btn-add-custom-prize = Добавить приз
 btn-send-support = Отправить ответ
 btn-cancel-support = Отмена
-
-# Account buttons
-btn-edit-name = Редактировать ФИО
-btn-already-in-pc = Я вообще-то в пк
-
-# Registration buttons
-btn-send-for-check = Отправить на ручную проверку
-btn-just-kidding = Нет, я пошутил
+btn-approve-apply = Принять
+btn-decline-apply = Оклонить
+btn-review-apply = Пересмотреть
 
 # Shop category buttons
 btn-tshirts = Футболки
@@ -146,11 +177,3 @@ log-user-data-fetched = Получены данные пользователя
 log-admin-action = Выполнено действие администратора
 log-profile-action = Действие в профиле
 log-name-changed = Изменено имя пользователя
-
-
-#profile messages
-user_is = Пользователь:
-balance_is = Баланс:
-deeplink-valid = Баллы начислены
-deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
-deeplink-badrequest = Вы уже получали данные за это мероприятие
