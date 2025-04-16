@@ -4,7 +4,7 @@ from aiogram import BaseMiddleware, types
 from aiogram.dispatcher.event.bases import CancelHandler
 
 
-class DropEmptyCallbackMiddleware(BaseMiddleware):
+class DropEmptyCallbackMw(BaseMiddleware):
 	""" Auto answer and drop events with callback data is space """
 
 	async def __call__(self,
