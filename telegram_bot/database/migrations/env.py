@@ -62,6 +62,7 @@ def run_migrations_offline() -> None:
 		context.run_migrations()
 
 
+# noinspection PyUnusedLocal
 def process_revision_directives(
 		context: MigrationContext,
 		revision: str | Iterable[str | None] | Iterable[str],

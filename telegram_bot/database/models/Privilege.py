@@ -34,3 +34,7 @@ class Privilege(Base):
 
 	# Back ref events.created_by_id -> privileges.id
 	created_events: Mapped[list['Event']] = relationship('Event', back_populates='creator')
+
+	# Back ref event_privileges.responsible_id -> privileges.id
+	event_privileges: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='responsible',
+	                                                                     foreign_keys='EventPrivilegeGrant.responsible_id')

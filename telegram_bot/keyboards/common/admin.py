@@ -1,7 +1,8 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
+
+def admin_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-edit-shop")),
@@ -15,11 +16,14 @@ def get_admin_kb(l10n) -> ReplyKeyboardMarkup:
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-back-to-menu")),
 	)
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-create-promo"))
+	)
 
 	return builder.as_markup(resize_keyboard=True)
 
 
-def get_edit_item_kb(l10n):
+def edit_item_kb(l10n):
 	builder = ReplyKeyboardBuilder()
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-add-category")),
@@ -29,7 +33,7 @@ def get_edit_item_kb(l10n):
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-menu"))
 
 
-def get_edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
+def edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-add-category")),

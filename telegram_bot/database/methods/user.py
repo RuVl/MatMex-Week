@@ -8,9 +8,9 @@ from config import ATTENDING_EVENT_POINTS
 from database.models import User, EventAttendance
 
 
-async def create_user(session: AsyncSession, telegram_id: int, full_name: str, balance: float = 0.0) -> User:
+async def create_user(session: AsyncSession, telegram_id: int, telegram_username: str, full_name: str, balance: float = 0.0) -> User:
 	"""Создаёт нового пользователя с указанными параметрами."""
-	user = User(telegram_id=telegram_id, full_name=full_name, balance=balance)
+	user = User(telegram_id=telegram_id, telegram_username=telegram_username, full_name=full_name, balance=balance)
 	session.add(user)
 	await session.commit()
 	await session.refresh(user)

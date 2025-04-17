@@ -8,7 +8,7 @@ from database.enums import ApplyStatus
 from database.models import PkApply
 
 
-async def create_privilege_request(session: AsyncSession, creator_id: int) -> PkApply:
+async def create_apply(session: AsyncSession, creator_id: int) -> PkApply:
 	"""Создаёт заявку на привилегированный статус."""
 	request = PkApply(creator_id=creator_id)
 	session.add(request)
@@ -17,9 +17,9 @@ async def create_privilege_request(session: AsyncSession, creator_id: int) -> Pk
 	return request
 
 
-async def update_request_status(session: AsyncSession, request_id: int, status: ApplyStatus, reviewed_by_id: int) -> PkApply:
+async def update_apply_status(session: AsyncSession, apply_id: int, status: ApplyStatus, reviewed_by_id: int) -> PkApply:
 	"""Обновляет статус заявки."""
-	request = await session.get(PkApply, request_id, options=[
+	request = await session.get(PkApply, apply_id, options=[
 		selectinload(PkApply.creator),
 		selectinload(PkApply.reviewed_by)
 	])
@@ -30,10 +30,10 @@ async def update_request_status(session: AsyncSession, request_id: int, status: 
 		await session.commit()
 		return request
 	else:
-		raise ValueError(f"Заявка с id {request_id} не найдена")
+		raise ValueError(f"Заявка с id {apply_id} не найдена")
 
 
-async def get_pending_requests(session: AsyncSession) -> list[PkApply]:
+async def get_pending_applies(session: AsyncSession) -> list[PkApply]:
 	"""Возвращает список заявок со статусом 'pending' с данными о создателях."""
 	result = await session.execute(
 		select(PkApply)
@@ -43,8 +43,8 @@ async def get_pending_requests(session: AsyncSession) -> list[PkApply]:
 	return result.scalars().all()
 
 
-async def get_user_request(session: AsyncSession, created_by_id: int) -> PkApply | None:
-	"""Возвращает последнюю заявку пользователя или None, если не найдена."""
+async def get_user_apply(session: AsyncSession, created_by_id: int) -> PkApply | None:
+	"""Возвращает заявку пользователя или None, если не найдена."""
 	result = await session.execute(
 		select(PkApply)
 		.where(PkApply.creator_id == created_by_id)
@@ -52,12 +52,11 @@ async def get_user_request(session: AsyncSession, created_by_id: int) -> PkApply
 			selectinload(PkApply.creator),
 			selectinload(PkApply.reviewed_by)
 		)
-		.order_by(PkApply.id.desc())  # Последняя заявка по ID
 	)
 	return result.scalar_one_or_none()
 
 
-async def get_requests_by_reviewer(session: AsyncSession, reviewed_by_id: int) -> list[PkApply]:
+async def get_applies_by_reviewer(session: AsyncSession, reviewed_by_id: int) -> list[PkApply]:
 	"""Возвращает список заявок, рассмотренных указанным пользователем."""
 	result = await session.execute(
 		select(PkApply)

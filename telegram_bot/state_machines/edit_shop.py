@@ -1,5 +1,6 @@
 from aiogram.fsm.state import StatesGroup, State
 
+
 class EditShopActions(StatesGroup):
 	EDIT_SHOP = State()
 

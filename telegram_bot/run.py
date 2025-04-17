@@ -4,6 +4,7 @@ import structlog
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.types import BotCommand
 from structlog.typing import FilteringBoundLogger
 
 from env import TelegramKeys
@@ -21,6 +22,9 @@ async def main():
 		token=TelegramKeys.API_TOKEN,
 		default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2)
 	)
+	await bot.set_my_commands([
+		BotCommand(command='start', description='Запустить бота'),
+	])
 
 	# Init dispatcher
 	dp = Dispatcher(storage=get_storage())
@@ -34,6 +38,7 @@ async def main():
 	try:
 		await dp.start_polling(
 			bot,
+			skip_updates=TelegramKeys.DEBUG,  # skip updates if debug
 			allowed_updates=dp.resolve_used_update_types()  # Get only registered updates
 		)
 	finally:
@@ -42,4 +47,5 @@ async def main():
 
 
 # Start bot
-asyncio.run(main())
+if __name__ == '__main__':
+	asyncio.run(main())

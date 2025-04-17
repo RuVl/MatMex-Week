@@ -72,7 +72,7 @@ async def remove_all_privileges(session: AsyncSession, user_id: int):
 	"""Удаляет все привилегии пользователя и каскадно убирает привилегии у тех, кому он их выдал."""
 	user = await session.get(User, user_id, options=[
 		selectinload(User.privileges),
-		selectinload(User.issued_privileges).selectinload(Privilege.user)
+		selectinload(User.issued_privileges).selectinload(Privilege.owner)
 	])
 	if not user:
 		raise ValueError(f"Пользователь с id {user_id} не найден")

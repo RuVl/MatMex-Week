@@ -22,11 +22,11 @@ from .merch_category import (
 	create_category,
 )
 from .pk_apply import (
-	create_privilege_request,
-	update_request_status,
-	get_pending_requests,
-	get_user_request,
-	get_requests_by_reviewer,
+	create_apply,
+	update_apply_status,
+	get_pending_applies,
+	get_user_apply,
+	get_applies_by_reviewer,
 )
 from .privilege import (
 	get_privilege_by_user,
@@ -73,11 +73,11 @@ __all__ = [
 	"get_user_by_code",
 
 	# PkApply methods
-	"create_privilege_request",
-	"update_request_status",
-	"get_pending_requests",
-	"get_user_request",
-	"get_requests_by_reviewer",
+	"create_apply",
+	"update_apply_status",
+	"get_pending_applies",
+	"get_user_apply",
+	"get_applies_by_reviewer",
 
 	# Privilege methods
 	"get_privilege_by_user",
