@@ -30,19 +30,15 @@ async def handle_promocode_list(msg: types.Message, state: FSMContext, l10n: Flu
 	async with async_session() as session:
 		user = await get_user_by_telegram_id(session, msg.from_user.id)
 		lst = await get_user_activations(session, user.id)
-		str_lst = ''
-		for pa in lst:
-			str_pa = escape_md_v2(pa.promocode.code)
-			str_lst += (str_pa + "\n")
+		str_lst = '\n'.join(escape_md_v2(pa.promocode.code) for pa in lst)
 		await msg.answer(str_lst)
 
 
 @promocode_router.message(PromocodeActions.ENTER_PROMOCODE)
-async def handle_promocode_input(msg: types.Message, state: FSMContext, l10n: FluentLocalization, cached_user: User, log: FilteringBoundLogger):
+async def handle_promocode_input(msg: types.Message, state: FSMContext, l10n: FluentLocalization, cached_user: User):
 	promocode_code = msg.text.strip()
 
 	async with async_session() as session:
-		user_id = (await get_user_by_telegram_id(session, msg.from_user.id)).id
-		act_promo = await activate_promocode(session, promocode_code, user_id)
+		act_promo = await activate_promocode(session, promocode_code, cached_user.id)
 		msg_answer = act_promo[1]
 		await msg.answer(msg_answer)
