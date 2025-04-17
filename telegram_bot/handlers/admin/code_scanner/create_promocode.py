@@ -55,13 +55,13 @@ async def ask_about_usages(msg: types.Message, state: FSMContext, l10n: FluentLo
 	async with async_session() as session:
 		state_data = await state.get_data()
 		max_usages = int(msg.text)
-		user_id = (await get_user_by_telegram_id(session, msg.from_user.id)).privileges_id
+		user = await get_user_by_telegram_id(session, msg.from_user.id)
 		#todo чек на определенные права
 		#todo проверка на максимальное использование
-		if user_id is None:
+		if user.privileges_id is None:
 			await msg.answer(l10n.format_value("you-have-not-rights"))
 		else:
-			await create_promocode(session, state_data.get("name_of_code"), state_data.get("cost_of_code"), user_id, max_usages, None)
+			await create_promocode(session, state_data.get("name_of_code"), state_data.get("cost_of_code"), user.privileges_id, max_usages, None)
 			await msg.answer(l10n.format_value("promo_added"), reply_markup=admin_kb(l10n))
 			await state.set_state(AdminActions.ADMIN_PANEL)
 
