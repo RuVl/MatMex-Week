@@ -105,7 +105,7 @@ async def activate_promocode(session: AsyncSession, code: str, user_id: int) -> 
 	user.balance += promocode.cost
 
 	await session.commit()
-	return True, f"Промокод активирован! Начислено {promocode.cost} баллов", promocode.cost
+	return True, f"Промокод активирован\. Начислено {promocode.cost} баллов", promocode.cost
 
 
 async def deactivate_promocode(session: AsyncSession, promocode_id: int) -> bool:

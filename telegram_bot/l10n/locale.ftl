@@ -85,6 +85,7 @@ wrong-cost = Введи допустимое число для цены
 promo_added = Промокод добавлен\. Возвращаю тебя в меню админов
 promo_exist = Такой промокод существует
 wrong-usages = Некорректное число максимальных использований
+you-have-not-rights = У тебя нет прав
 
 # Shop messages
 edit-shop-menu = Редактирование магазина
@@ -110,7 +111,9 @@ btn-yes = Да
 btn-no = Нет
 btn-back = Назад
 cancel = Отмена
-cancel_message = Запрос в службу поддержки отменён
+cancel_message = Запрос отменён
+btn-user-codes = Использованные коды
+
 
 # Menu buttons
 btn-support = Поддержка
@@ -164,6 +167,7 @@ btn-shoppers = Шопперы
 # Placeholders
 placeholder-menu = Выберите элемент меню
 placeholder-category = Выберите категорию
+placeholder-code = Введите промокод
 
 # Log messages
 log-handler-called = Вызван обработчик

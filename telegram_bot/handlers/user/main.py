@@ -17,6 +17,7 @@ from database.methods.user import mark_user_attended_event_by_code, update_user_
 from filters import LocalizedTextFilter
 from handlers.user.account import account_router
 from handlers.user.help import support_router
+from handlers.user.promocode import promocode_router
 from handlers.user.register import register_router
 from handlers.user.shop import shop_router
 
@@ -25,7 +26,8 @@ user_router.include_routers(
 	register_router,  # регистрация пользователя
 	account_router,  # профиль пользователя
 	support_router,  # поддержка пользователя
-	shop_router  # отображение магазина у пользователя
+	shop_router,  # отображение магазина у пользователя
+	promocode_router
 )
 
 

@@ -11,7 +11,7 @@ from database.methods import create_promocode, get_promocode_by_code, get_user_b
 from filters import LocalizedTextFilter, AdminPromocodeCreatingFilter
 from keyboards.common import admin_kb, cancel_kb, yes_no_kb, get_account_menu_kb, menu_kb
 from state_machines import AccrualOfPointsActions, AdminActions
-from state_machines import PromocodeActions
+from state_machines import AdminPromocodeActions
 
 code_scanner_router = Router()
 code_scanner_router.message.filter(
@@ -22,32 +22,32 @@ code_scanner_router.message.filter(
 @code_scanner_router.message(LocalizedTextFilter("btn-create-promo"))
 async def ask_for_promocode(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("ask-promo-for-creating"), reply_markup=cancel_kb(l10n))
-	await state.set_state(PromocodeActions.ENTER_PROMOCODE)
+	await state.set_state(AdminPromocodeActions.ENTER_PROMOCODE)
 
-@code_scanner_router.message(PromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-yes"))
+@code_scanner_router.message(AdminPromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-yes"))
 async def ask_about_attending_cost(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("ask-for-cost-promocode"), reply_markup=types.ReplyKeyboardRemove())
-	await state.set_state(PromocodeActions.ASK_FOR_COST)
+	await state.set_state(AdminPromocodeActions.ASK_FOR_COST)
 
-@code_scanner_router.message(PromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-no"))
+@code_scanner_router.message(AdminPromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-no"))
 async def ask_for_promocode_with_no(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("ask-promo-for-creating"), reply_markup=cancel_kb(l10n))
 
-@code_scanner_router.message(PromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-cancel"))
+@code_scanner_router.message(AdminPromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-cancel"))
 async def back_to_menu(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=admin_kb(l10n))
 	await state.set_state(AdminActions.ADMIN_PANEL)
 
-@code_scanner_router.message(PromocodeActions.ASK_FOR_COST)
+@code_scanner_router.message(AdminPromocodeActions.ASK_FOR_COST)
 async def ask_about_cost(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	if not await AdminPromocodeCreatingFilter().__call__(msg):
 		await msg.answer(l10n.format_value("wrong-cost"))
 		return
 	await state.update_data(cost_of_code = int(msg.text))
 	await msg.answer(l10n.format_value("ask-for-max-uses"))
-	await state.set_state(PromocodeActions.ASK_FOR_MAX_USAGES)
+	await state.set_state(AdminPromocodeActions.ASK_FOR_MAX_USAGES)
 
-@code_scanner_router.message(PromocodeActions.ASK_FOR_MAX_USAGES)
+@code_scanner_router.message(AdminPromocodeActions.ASK_FOR_MAX_USAGES)
 async def ask_about_usages(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	if not await AdminPromocodeCreatingFilter().__call__(msg):
 		await msg.answer(l10n.format_value("wrong-usages"))
@@ -55,14 +55,17 @@ async def ask_about_usages(msg: types.Message, state: FSMContext, l10n: FluentLo
 	async with async_session() as session:
 		state_data = await state.get_data()
 		max_usages = int(msg.text)
-		user_id = (await get_user_by_telegram_id(session, msg.from_user.id)).id
+		user_id = (await get_user_by_telegram_id(session, msg.from_user.id)).privileges_id
+		#todo чек на определенные права
+		#todo проверка на максимальное использование
+		if user_id is None:
+			await msg.answer(l10n.format_value("you-have-not-rights"))
+		else:
+			await create_promocode(session, state_data.get("name_of_code"), state_data.get("cost_of_code"), user_id, max_usages, None)
+			await msg.answer(l10n.format_value("promo_added"), reply_markup=admin_kb(l10n))
+			await state.set_state(AdminActions.ADMIN_PANEL)
 
-		#todo data of expiring
-		await create_promocode(session, state_data.get("name_of_code"), state_data.get("cost_of_code"), user_id, max_usages, None)
-	await msg.answer(l10n.format_value("promo_added"), reply_markup=admin_kb(l10n))
-	await state.set_state(AdminActions.ADMIN_PANEL)
-
-@code_scanner_router.message(PromocodeActions.ENTER_PROMOCODE)
+@code_scanner_router.message(AdminPromocodeActions.ENTER_PROMOCODE)
 async def ask_about_attending(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	async with async_session() as session:
 		code = await get_promocode_by_code(session, msg.text)

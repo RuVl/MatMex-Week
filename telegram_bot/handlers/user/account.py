@@ -11,7 +11,6 @@ from state_machines.account import AccountActions
 
 account_router = Router()
 
-
 @account_router.message(LocalizedTextFilter("btn-profile"))
 async def handle_profile_open(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-profile-action", action="open_profile")
