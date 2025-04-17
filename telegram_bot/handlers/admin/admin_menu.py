@@ -8,9 +8,10 @@ from keyboards.common import admin_kb, menu_kb
 from state_machines.admin import AdminActions
 from .code_scanner import code_scanner_router
 from .edit_shop import edit_shop_router
+from .grant_privileges import grant_privileges_router
 
 admin_menu_router = Router()
-admin_menu_router.include_routers(code_scanner_router, edit_shop_router)
+admin_menu_router.include_routers(code_scanner_router, edit_shop_router, grant_privileges_router)
 
 
 @admin_menu_router.message(LocalizedTextFilter("btn-admin-panel"))

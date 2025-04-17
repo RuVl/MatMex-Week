@@ -1,1 +1,1 @@
-from .admin import verification_request_ikb, verified_request_ikb
+from .admin import verification_request_ikb, verified_request_ikb, user_rights_ikb, names_ikb

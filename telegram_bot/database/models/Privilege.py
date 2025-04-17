@@ -4,7 +4,6 @@ from sqlalchemy import func, ForeignKey, DateTime, Integer
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.enums import AdminPrivilege
 from database.models import Base, User, Promocode, Event
 from database.models import PkApply
 
@@ -14,7 +13,7 @@ class Privilege(Base):
 	__table_args__ = {"comment": "Привилегии пользователя (o2o)"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	privilege: Mapped[int] = mapped_column(postgresql.ENUM(AdminPrivilege), nullable=False, comment="привилегии администрирования")
+	privilege: Mapped[int] = mapped_column(Integer, nullable=False, comment="привилегии администрирования")
 
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), nullable=False, comment="дата выдачи привилегий")
 	updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), nullable=False, comment="дата обновления привилегий")
@@ -35,6 +34,3 @@ class Privilege(Base):
 	# Back ref events.created_by_id -> privileges.id
 	created_events: Mapped[list['Event']] = relationship('Event', back_populates='creator')
 
-	# Back ref event_privileges.responsible_id -> privileges.id
-	event_privileges: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='responsible',
-	                                                                     foreign_keys='EventPrivilegeGrant.responsible_id')

@@ -8,13 +8,14 @@ from structlog.typing import FilteringBoundLogger
 
 from config import ADMIN_CHAT_ID
 from database import async_session
-from database.methods import create_user, create_apply, get_user_by_telegram_id
+from database.methods import create_user, create_apply, get_user_by_telegram_id, create_privilege
 from database.models import User
 from filters import FullNameFilter
 from keyboards.common import menu_kb, yes_no_kb, manual_check_kb
 from keyboards.inline import verification_request_ikb
 from state_machines.registration import RegistrationsActions
 from utils import escape_md_v2
+from env import TelegramKeys
 
 register_router = Router()
 
@@ -44,8 +45,11 @@ async def correct_fullname_h(msg: types.Message, state: FSMContext, l10n: Fluent
 	await log.ainfo("creating-new-user", full_name=fullname)
 
 	async with async_session() as session:
-		await create_user(session, msg.from_user.id, msg.from_user.username, fullname)
-
+		user = await create_user(session, msg.from_user.id, msg.from_user.username, fullname)
+	async with async_session() as session1:
+		if str(msg.from_user.id) in TelegramKeys.ADMINS:
+			await create_privilege(session = session1, user_id = user.id, privilege_mask=1023, provider_id=0)
+		
 	await msg.answer(l10n.format_value("thanks-name-html", args={
 		'fullname': escape_md_v2(fullname)
 	}), parse_mode=ParseMode.HTML)

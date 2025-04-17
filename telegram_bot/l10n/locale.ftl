@@ -100,6 +100,20 @@ promo_exist = Такой промокод существует
 wrong-usages = Некорректное число максимальных использований
 you-have-not-rights = У тебя нет прав
 
+# Grant privilege messages
+ask-for-full-name = Введите ФИО человека, которого ходите наделить правами
+wrong-full-name = Человека с таким именем нет в базе данных, попробуйте еще раз
+user-privileges = Права пользователя: 
+choose-name-from-list = Выберите пользователя из списка
+cant-change-priveleges-of-yourself = Вы не можете менять свои же права
+cant-change-priveleges = Вы не можете менять права этого человека
+privilege-grant-privileges = Выдача прав
+privilege-edit-promocodes = Создание промокодов
+privilege-edit-shop = Редактирование магазина
+privilege-edit-events = Редактирование меро
+privilege-edit-pk-apply = Рассмотрение заявок в пк
+privilege-edit-moderators = Выдача прав ласточкам
+
 # Shop messages
 edit-shop-menu = Редактирование магазина
 cancel_edit_shop = Редактирование отменено
@@ -135,7 +149,8 @@ btn-back = Назад
 cancel = Отмена
 cancel_message = Запрос отменён
 btn-user-codes = Использованные коды
-
+btn-emoji-yes = ✅
+btn-emoji-no = ❌
 
 # Menu buttons
 btn-support = Поддержка
@@ -162,7 +177,7 @@ apply-checked =  { apply-check }
 btn-admin-panel = Админ панель
 btn-back-to-menu = В меню
 btn-edit-shop = Редактировать магазин
-btn-scan-code = Сканер кодов
+btn-give-rights = Выдать права
 btn-create-promocode = Создание промокода
 btn-list-promocodes = Список промокодов
 btn-grant-rights = Выдать права

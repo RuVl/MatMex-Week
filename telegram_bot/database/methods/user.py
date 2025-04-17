@@ -49,6 +49,14 @@ async def get_user_by_code(session: AsyncSession, code: uuid.UUID) -> User | Non
 	result = await session.execute(query)
 	return result.scalar_one_or_none()
 
+async def get_users_by_full_name(session: AsyncSession, full_name: str) -> list[User]:
+	"""Возвращает пользователя по UUID-code."""
+	query = (
+		select(User)
+		.where(User.full_name == full_name)
+	)
+	result = await session.execute(query)
+	return result.scalars().all()
 
 async def update_user_balance(session: AsyncSession, user_id: int, amount: float) -> User:
 	"""Обновляет баланс пользователя, добавляя или вычитая сумму."""

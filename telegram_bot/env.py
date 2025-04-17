@@ -6,7 +6,7 @@ class TelegramKeys:
 	DEBUG: Final[bool] = bool(environ.get('DEBUG', default=False))
 	API_TOKEN: Final[str] = environ.get('TG_API_TOKEN')
 	WITHOUT_TYPING: Final[bool] = bool(environ.get('WITHOUT_TYPING', default=False))
-
+	ADMINS: Final[list[str]] = environ.get('ADMINS').split(' ')
 
 class PostgresKeys:
 	HOST: Final[str] = environ.get('DOCKER_POSTGRES_HOST', default='localhost')

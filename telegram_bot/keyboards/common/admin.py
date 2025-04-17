@@ -8,10 +8,7 @@ def admin_kb(l10n) -> ReplyKeyboardMarkup:
 		KeyboardButton(text=l10n.format_value("btn-edit-shop")),
 	)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-scan-code")),
-	)
-	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-add-custom-prize")),
+		KeyboardButton(text=l10n.format_value("btn-give-rights")),
 	)
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-back-to-menu")),

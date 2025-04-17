@@ -29,11 +29,13 @@ from .pk_apply import (
 	get_applies_by_reviewer,
 )
 from .privilege import (
+    create_privilege,
 	get_privilege_by_user,
 	add_privilege,
 	remove_privilege,
 	remove_all_privileges,
 	get_privileges_by_provider,
+ 	is_provider_to,
 )
 from .promo import (
 	create_promocode,
@@ -60,6 +62,7 @@ from .user import (
 	update_user_fullname,
 	give_point_for_event_by_user_id,
 	get_user_by_code
+ 	get_users_by_full_name,
 )
 
 __all__ = [
@@ -71,6 +74,7 @@ __all__ = [
 	"update_user_fullname",
 	"give_point_for_event_by_user_id",
 	"get_user_by_code",
+	"get_users_by_full_name",
 
 	# PkApply methods
 	"create_apply",
@@ -80,12 +84,13 @@ __all__ = [
 	"get_applies_by_reviewer",
 
 	# Privilege methods
+	"create_privilege",
 	"get_privilege_by_user",
 	"add_privilege",
 	"remove_privilege",
 	"remove_all_privileges",
 	"get_privileges_by_provider",
-
+	"is_provider_to",
 	# Promocode methods
 	"create_promocode",
 	"get_promocode_by_code",
