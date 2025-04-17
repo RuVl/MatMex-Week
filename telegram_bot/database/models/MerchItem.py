@@ -1,4 +1,5 @@
-from sqlalchemy import Boolean, String, ForeignKey, Integer, Float, Enum
+from sqlalchemy import Boolean, String, ForeignKey, Integer, Float
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.enums import MerchSize
@@ -13,7 +14,7 @@ class MerchItem(Base):
 	image_path: Mapped[str] = mapped_column(String(255), nullable=False)
 
 	name: Mapped[str] = mapped_column(String(255), nullable=False, comment="название товара")
-	size: Mapped[str] = mapped_column(Enum(MerchSize), nullable=False, comment="размер товара")
+	size: Mapped[str] = mapped_column(postgresql.ENUM(MerchSize), nullable=False, comment="размер товара")
 
 	full_price: Mapped[float] = mapped_column(Float, nullable=False, comment="цена без скидки")
 	discount_price: Mapped[float] = mapped_column(Float, nullable=False, comment="стоимость со скидкой")

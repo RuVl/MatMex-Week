@@ -1,5 +1,4 @@
 from aiogram import Router, types
-from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
@@ -19,14 +18,12 @@ async def handle_profile_open(msg: types.Message, state: FSMContext, l10n: Fluen
 
 	async with async_session() as session:
 		user = await get_user_by_telegram_id(session, msg.from_user.id)
-		user_name = user.full_name
-		user_balance = int(user.balance)
-
-
-		await msg.answer(l10n.format_value("account-temp") + "\n" +
-		l10n.format_value("user_is") + " " + user_name + "\n" +
-		l10n.format_value("balance_is") + " " + str(user_balance) + "i", reply_markup=get_account_menu_kb(l10n))
-#TODO добавить купленные товары
+		await msg.answer(l10n.format_value("welcome-account", args={
+			'fullname': user.full_name,
+			'balance': user.balance
+		}), reply_markup=get_account_menu_kb(l10n))
+		
+		# TODO добавить купленные товары
 		await state.set_state(AccountActions.ACCOUNT_PANEL)
 		await log.adebug("log-state-changed", state=AccountActions.ACCOUNT_PANEL.state)
 
@@ -46,6 +43,7 @@ async def handle_edit_name_cancel(msg: types.Message, state: FSMContext, l10n: F
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 	await log.adebug("log-state-changed", state=AccountActions.ACCOUNT_PANEL.state)
 
+
 @account_router.message(AccountActions.NAME_WAITING, FullNameFilter())
 async def handle_edit_name_submit(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-profile-action", action="edit_name_submitted")
@@ -61,7 +59,9 @@ async def handle_edit_name_submit(msg: types.Message, state: FSMContext, l10n: F
 		else:
 			await log.aerror("user-not-found", telegram_id=msg.from_user.id)
 
-	await msg.answer(l10n.format_value("name-changed") + ", " + new_name + r'\!', reply_markup=get_account_menu_kb(l10n))
+	await msg.answer(l10n.format_value("name-changed", args={
+		'fullname': new_name
+	}), reply_markup=get_account_menu_kb(l10n))
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 	await log.adebug("log-state-changed", state=AccountActions.ACCOUNT_PANEL.state)
 

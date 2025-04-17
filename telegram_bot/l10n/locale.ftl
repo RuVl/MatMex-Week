@@ -7,7 +7,7 @@ roll-back-name = Введи ФИО
 
 helping = Задай свой вопрос в поддержку
 send-helping = Ваш вопрос отправлен в службу поддержки\. Ожидайте ответа\.
-new-support-question = Новый вопрос в поддержку\. Ответьте на следующее сообщение\:  
+new-support-question = Новый вопрос в поддержку\. Ответьте на следующее сообщение:  
 
 cancel = Отмена
 cancel_message = Запрос отменён
@@ -79,10 +79,12 @@ no-text = У категории нет названия, попробуйте е
 failed-download = Ошибка загрузки фото, попробуйте еще раз
 
 #account messages
-account-temp = Добро пожаловать в личный кабинет\!
+welcome-account = Добро пожаловать в личный кабинет\!
+    Пользователь: { $fullname }
+    Баланс: { $balance }i
 input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
-name-changed = ФИО успешо изменено\! Приятно познакомиться
+name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
 already-in-pc = Мы знаем\) Это отмечено в твоем профиле
 
 # Menu buttons
@@ -149,8 +151,7 @@ log-name-changed = Изменено имя пользователя
 
 
 #profile messages
-user_is = Пользователь:
-balance_is = Баланс:
-deeplink-valid = Баллы начислены
+points-awarded = Баллы начислены
+no-rights = Нет достаточных прав
 deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
-deeplink-badrequest = Вы уже получали данные за это мероприятие
+already-received = Вы уже получали данные за это мероприятие

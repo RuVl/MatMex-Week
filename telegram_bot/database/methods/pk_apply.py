@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,7 +26,7 @@ async def update_request_status(session: AsyncSession, request_id: int, status: 
 	if request:
 		request.status = status
 		request.reviewed_by_id = reviewed_by_id
-		request.reviewed_at = datetime.utcnow()
+		request.reviewed_at = datetime.now(timezone.utc)
 		await session.commit()
 		return request
 	else:
@@ -37,7 +37,7 @@ async def get_pending_requests(session: AsyncSession) -> list[PkApply]:
 	"""Возвращает список заявок со статусом 'pending' с данными о создателях."""
 	result = await session.execute(
 		select(PkApply)
-		.where(PkApply.status == ApplyStatus.pending)
+		.where(PkApply.status == ApplyStatus.PENDING)
 		.options(selectinload(PkApply.creator))
 	)
 	return result.scalars().all()
