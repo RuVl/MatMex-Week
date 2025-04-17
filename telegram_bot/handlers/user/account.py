@@ -6,7 +6,7 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.methods import get_user_by_telegram_id, update_user_fullname
 from filters import FullNameFilter, LocalizedTextFilter
-from keyboards.common import get_menu_kb, get_account_menu_kb, get_cancel_kb
+from keyboards.common import menu_kb, get_account_menu_kb, cancel_kb
 from state_machines.states_account import AccountActions
 
 account_router = Router()
@@ -77,5 +77,6 @@ async def handle_already_in_pc(msg: types.Message, l10n: FluentLocalization, log
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-back-to-menu"))
 async def handle_back_to_menu(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	log.info("log-profile-action", action="back_to_menu")
-	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=get_menu_kb(l10n))
+	menu = await menu_kb(l10n, msg.from_user.id)
+	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=menu)
 	await state.clear()

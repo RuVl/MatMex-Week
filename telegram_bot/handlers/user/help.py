@@ -19,7 +19,8 @@ async def handle_support_button(msg: types.Message, state: FSMContext, l10n: Flu
 
 @support_router.message(HelpActions.MESSAGE_OR_CANCEL, LocalizedTextFilter("btn-cancel"))
 async def handle_support_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("cancel_message"), reply_markup=menu_kb(l10n))
+	menu = await menu_kb(l10n, msg.from_user.id)
+	await msg.answer(l10n.format_value("cancel_message"), reply_markup=menu)
 	await state.clear()
 
 
@@ -29,5 +30,6 @@ async def handle_support_message(msg: types.Message, state: FSMContext, l10n: Fl
 	                           text=l10n.format_value("new-support-question"))
 	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID,
 	                           text=msg.text + "\n||" + SupportFactory(user_id=msg.from_user.id, message_id=msg.message_id).pack() + "||")
-	await msg.answer(l10n.format_value("send-helping"), reply_markup=menu_kb(l10n))
+	menu = await menu_kb(l10n, msg.from_user.id)
+	await msg.answer(l10n.format_value("send-helping"), reply_markup=menu)
 	await state.clear()

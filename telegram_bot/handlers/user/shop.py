@@ -31,10 +31,10 @@ async def handle_shop_button(msg: types.Message, state: FSMContext, l10n: Fluent
 @shop_router.message(PurchasesActions.CHOOSE_CATEGORY, LocalizedTextFilter("btn-back"))
 async def handle_shop_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	text = l10n.format_value("cancel_edit_shop")
-
+	menu = await menu_kb(l10n, msg.from_user.id)
 	await msg.answer(
 		text,
-		reply_markup=menu_kb(l10n)
+		reply_markup=menu
 	)
 	await state.clear()
 

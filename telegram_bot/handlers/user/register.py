@@ -29,9 +29,10 @@ async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalizatio
 
 		await state.set_state(RegistrationsActions.NAME_WAITING)
 	else:
+		menu = await menu_kb(l10n, msg.from_user.id)
 		await msg.answer(l10n.format_value("hi-user", args={
 			'fullname': escape_md_v2(cached_user.full_name),
-		}), reply_markup=menu_kb(l10n))
+		}), reply_markup=menu)
 		await state.clear()
 
 
@@ -66,7 +67,8 @@ async def handle_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocali
 		await msg.answer(l10n.format_value("send-for-manual-check"), reply_markup=manual_check_kb(l10n))
 		await state.set_state(RegistrationsActions.MANUAL_MEMBER_CHECK)
 	elif answer == l10n.format_value('btn-no'):
-		await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu_kb(l10n))
+		menu = await menu_kb(l10n, msg.from_user.id)
+		await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu)
 		await state.clear()  # end
 	else:
 		await msg.answer(l10n.format_value("ask-valid-answer"), reply_markup=yes_no_kb(l10n))
@@ -88,11 +90,11 @@ async def handle_manual_check_confirm(msg: types.Message, state: FSMContext, l10
 			'username': escape_md_v2(user.telegram_username),
 			'verified_by': None
 		}), reply_markup=verification_request_ikb(l10n, apply_id=apply.id))
-
-		await msg.answer(l10n.format_value("wait-until-checked"), reply_markup=menu_kb(l10n))
+		menu = await menu_kb(l10n, msg.from_user.id)
+		await msg.answer(l10n.format_value("wait-until-checked"), reply_markup=menu)
 		await state.clear()  # end
 	elif answer == l10n.format_value('btn-just-kidding'):
-		await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu_kb(l10n))
+		await msg.answer(l10n.format_value("ask-to-join"), reply_markup=menu)
 		await state.clear()  # end
 	else:
 		await msg.answer(l10n.format_value("ask-valid-answer"), reply_markup=manual_check_kb(l10n))
