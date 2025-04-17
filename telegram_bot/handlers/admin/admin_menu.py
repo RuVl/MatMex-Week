@@ -3,16 +3,17 @@ from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from filters import LocalizedTextFilter
+from filters import LocalizedTextFilter, PrivilegeCallbackFilter, PrivilegeMessageFilter
 from keyboards.common import admin_kb, menu_kb
 from state_machines.admin import AdminActions
 from .code_scanner import code_scanner_router
 from .edit_shop import edit_shop_router
 from .grant_privileges import grant_privileges_router
-
+#TODO: 1023 placeholder
 admin_menu_router = Router()
 admin_menu_router.include_routers(code_scanner_router, edit_shop_router, grant_privileges_router)
-
+admin_menu_router.message.filter(PrivilegeMessageFilter(1023))
+admin_menu_router.callback_query.filter(PrivilegeCallbackFilter(1023))
 
 @admin_menu_router.message(LocalizedTextFilter("btn-admin-panel"))
 async def handle_admin_panel(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):

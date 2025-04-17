@@ -5,8 +5,9 @@ from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
 from database.methods import get_privilege_by_user, get_users_by_full_name, create_privilege, get_user_by_telegram_id, add_privilege, remove_privilege, is_provider_to
+from database.enums import AdminPrivilege
 from database import async_session
-from filters import LocalizedTextFilter
+from filters import LocalizedTextFilter, PrivilegeMessageFilter, PrivilegeCallbackFilter
 from keyboards.common import admin_kb, cancel_kb
 from keyboards.inline import user_rights_ikb, names_ikb
 from keyboards.callback_factories import PrivilegeButtonFactory, UserFactory
@@ -14,6 +15,8 @@ from state_machines.grant_privileges import GrantPrivilegesActions
 from state_machines.admin import AdminActions
 
 grant_privileges_router = Router()
+grant_privileges_router.message.filter(PrivilegeMessageFilter(AdminPrivilege.GRANT_PRIVELEGES.value))
+grant_privileges_router.callback_query.filter(PrivilegeCallbackFilter(AdminPrivilege.GRANT_PRIVELEGES.value))
 
 @grant_privileges_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-give-rights"))
 async def handle_grant_privileges(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
