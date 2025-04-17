@@ -16,6 +16,9 @@ def admin_kb(l10n) -> ReplyKeyboardMarkup:
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-back-to-menu")),
 	)
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-create-promo"))
+	)
 
 	return builder.as_markup(resize_keyboard=True)
 

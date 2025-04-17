@@ -28,3 +28,9 @@ class FromBotToAdminFilter(BaseFilter):
 				message.chat.id == SUPPORT_CHAT_ID and
 				message.from_user.id == message.bot.id
 		)
+
+class AdminPromocodeCreatingFilter(BaseFilter):
+	async def __call__(self, msg: Message) -> bool:
+		return ( msg.text.isdecimal() and
+		          int(msg.text) > 0
+		)

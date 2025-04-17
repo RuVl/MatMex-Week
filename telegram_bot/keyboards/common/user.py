@@ -65,3 +65,12 @@ async def category_kb(l10n) -> ReplyKeyboardMarkup:
 		KeyboardButton(text=l10n.format_value("btn-back")),
 	)
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-category"))
+
+def user_codes_kb(l10n):
+	builder = ReplyKeyboardBuilder()
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-user-codes")),
+	).row(
+		KeyboardButton(text=l10n.format_value("btn-cancel")),
+	)
+	return builder.as_markup(resize_keyboard=True)

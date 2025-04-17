@@ -7,7 +7,7 @@ tell-about-pc = Кстати, цены в магазине зависят от �
 roll-back-name = Введи ФИО
 thanks-name-html = Приятно познакомиться { $fullname }!
 ask-pc = Ты состоишь в профкоме\?
-wrong-name = Неправиьный формат ФИО, попробуй еще раз
+wrong-name = Неправильный формат ФИО, попробуй еще раз
 send-for-manual-check = Если ты действительно состоишь в Профкоме, то я могу отправить запрос на ручную проверку
 wait-until-checked = Отлично\! Членство в профкоме отправлено на ручную проверку\. Пока не подтвердится, что ты профкомовец, мерч будет без скидки
 ask-to-join = Если хочешь вступить в профком, приходи в кабинет 3528
@@ -67,7 +67,7 @@ schedule-text-html = 🎉 65-я Неделя Матмеха
 
 # Admin messages
 hello-admin = Показываю меню организатора \n Вы самые лучшие\.\.\.
-ask-for-event = За какое мероприятие хотите начислить
+ask-promo-for-creating = Введите промокод для создания
 ask-for-id = Введите код участника
 wrong-event-or-no-rights = У вас нет прав начисления баллов за это меро, либо такого меро не существует
 give-points = Баллы успешно начислены
@@ -78,6 +78,14 @@ check-pk-apply = Пользователь { $fullname } запросил про�
 Профкомовца
 something-went-wrong = Ошибка, проверьте логи
 select-status-cb = Одобрите или отклоните заяку (сейчас статус не изменен)
+ask-for-attend-promocode = Вы точно хотите создать этот промокод\?
+ask-for-cost-promocode = Введите стоимость промокода
+ask-for-max-uses = Введите максимальное количество использований
+wrong-cost = Введи допустимое число для цены
+promo_added = Промокод добавлен\. Возвращаю тебя в меню админов
+promo_exist = Такой промокод существует
+wrong-usages = Некорректное число максимальных использований
+you-have-not-rights = У тебя нет прав
 
 # Shop messages
 edit-shop-menu = Редактирование магазина
@@ -103,7 +111,9 @@ btn-yes = Да
 btn-no = Нет
 btn-back = Назад
 cancel = Отмена
-cancel_message = Запрос в службу поддержки отменён
+cancel_message = Запрос отменён
+btn-user-codes = Использованные коды
+
 
 # Menu buttons
 btn-support = Поддержка
@@ -146,6 +156,7 @@ btn-cancel-support = Отмена
 btn-approve-apply = Принять
 btn-decline-apply = Оклонить
 btn-review-apply = Пересмотреть
+btn-create-promo = Создать промокод
 
 # Shop category buttons
 btn-tshirts = Футболки
@@ -156,6 +167,7 @@ btn-shoppers = Шопперы
 # Placeholders
 placeholder-menu = Выберите элемент меню
 placeholder-category = Выберите категорию
+placeholder-code = Введите промокод
 
 # Log messages
 log-handler-called = Вызван обработчик

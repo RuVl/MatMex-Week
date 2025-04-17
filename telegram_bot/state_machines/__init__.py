@@ -8,3 +8,4 @@ from .moderation import ModerationActions
 from .promocode import PromocodeActions
 from .purchases import PurchasesActions
 from .registration import RegistrationsActions
+from .admin_promocode import AdminPromocodeActions
