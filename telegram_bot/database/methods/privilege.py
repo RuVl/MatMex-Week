@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -49,7 +49,7 @@ async def add_privilege(session: AsyncSession, user_id: int, privilege_flag: int
 		raise ValueError(f"У пользователя с id {user_id} нет привилегий")
 
 	user.privileges.privilege |= privilege_flag  # Добавляем флаг
-	user.privileges.updated_at = datetime.now()
+	user.privileges.updated_at = datetime.now(timezone.utc)
 	await session.commit()
 	return user.privileges
 
@@ -63,7 +63,7 @@ async def remove_privilege(session: AsyncSession, user_id: int, privilege_flag: 
 		raise ValueError(f"У пользователя с id {user_id} нет привилегий")
 
 	user.privileges.privilege &= ~privilege_flag  # Убираем флаг
-	user.privileges.updated_at = datetime.now()
+	user.privileges.updated_at = datetime.now(timezone.utc)
 	await session.commit()
 	return user.privileges
 

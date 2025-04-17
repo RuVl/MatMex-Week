@@ -4,7 +4,8 @@ from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from database.models import User, Event, EventAttendance
+from config import ATTENDING_EVENT_POINTS
+from database.models import User, EventAttendance
 
 
 async def create_user(session: AsyncSession, telegram_id: int, telegram_username: str, full_name: str, balance: float = 0.0) -> User:
@@ -73,36 +74,28 @@ async def update_user_fullname(session: AsyncSession, user_id: int, full_name: s
 		raise ValueError(f"Пользователь с id {user_id} не найден")
 
 
-async def mark_user_attended_event_by_code(session: AsyncSession, user_code: str, event_id: int) -> bool:
-	"""Отмечает определённого пользователя присутствующим на определённом мероприятии"""
+async def give_point_for_event_by_user_id(session: AsyncSession, user_id: int, event_id: int) -> bool:
+	""" Отмечает определённого пользователя присутствующим на определённом мероприятии """
+
+	query = (
+		select(EventAttendance)
+		.where(EventAttendance.user_id == user_id, EventAttendance.event_id == event_id)
+	)
+	result = await session.execute(query)
+	attendance = result.scalar_one_or_none()
+
+	if attendance is not None:
+		return False  # Уже посетил
+	
 	try:
-		# 1. Найти пользователя по code
-		query = select(User).where(User.code == user_code)
-		result = await session.execute(query)
-		user = result.scalar_one_or_none()
-		if user is None:
-			return False
-
-		# 2. Найти мероприятие по event_id
-		event = await session.get(Event, event_id)
-		if event is None:
-			return False
-
-		# 3. Проверить, посетил ли пользователь уже это мероприятие
-		query = select(EventAttendance).where(EventAttendance.user_id == user.id, EventAttendance.event_id == event.id)
-		result = await session.execute(query)
-		attendance = result.scalar_one_or_none()
-
-		if attendance:
-			return False  # Уже посетил
-
-		# 4. Если пользователь еще не записан на мероприятие, то записать и отметить как посетил
-		attendance = EventAttendance(user_id=user.id, event_id=event.id)
+		# Если пользователь еще не записан на мероприятие, то записать и отметить как посетил
+		attendance = EventAttendance(user_id=user_id, event_id=event_id)
 		session.add(attendance)
 		await session.commit()
+		
+		await update_user_balance(session, user_id, ATTENDING_EVENT_POINTS)
+	except Exception as e:
+		await session.rollback()
+		raise e
 
-		return True
-
-	except Exception:
-		await session.rollback()  # Important: Rollback in case of error
-		return False
+	return True

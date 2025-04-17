@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,7 +26,7 @@ async def update_apply_status(session: AsyncSession, apply_id: int, status: Appl
 	if request:
 		request.status = status
 		request.reviewed_by_id = reviewed_by_id
-		request.reviewed_at = datetime.now()
+		request.reviewed_at = datetime.now(timezone.utc)
 		await session.commit()
 		return request
 	else:

@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from sqlalchemy import func, ForeignKey, DateTime, Enum, Integer
+from sqlalchemy import func, ForeignKey, DateTime, Integer
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.enums import AdminPrivilege
 from database.models import Base, User, Promocode, Event
-from database.models import EventPrivilegeGrant
 from database.models import PkApply
 
 
@@ -14,7 +14,7 @@ class Privilege(Base):
 	__table_args__ = {"comment": "Привилегии пользователя (o2o)"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	privilege: Mapped[AdminPrivilege] = mapped_column(Enum(AdminPrivilege), nullable=False, comment="привилегии администрирования")
+	privilege: Mapped[int] = mapped_column(postgresql.ENUM(AdminPrivilege), nullable=False, comment="привилегии администрирования")
 
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), nullable=False, comment="дата выдачи привилегий")
 	updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), nullable=False, comment="дата обновления привилегий")

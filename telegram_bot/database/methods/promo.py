@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -55,8 +55,8 @@ async def check_promocode_valid(session: AsyncSession, code: str, user_id: int) 
 
 	if not promocode.is_active:
 		return False, "Промокод деактивирован", 0
-
-	if promocode.expires_at and promocode.expires_at < datetime.now():
+	
+	if promocode.expires_at and promocode.expires_at < datetime.now(timezone.utc):
 		return False, "Срок действия промокода истек", 0
 
 	# Проверяем количество активаций
@@ -131,7 +131,7 @@ async def get_promocodes_by_creator(session: AsyncSession, creator_id: int) -> l
 
 async def get_active_promocodes(session: AsyncSession) -> list[Promocode]:
 	"""Возвращает список активных промокодов, которые ещё не истекли."""
-	current_time = datetime.now()
+	current_time = datetime.now(timezone.utc)
 	query = (
 		select(Promocode)
 		.where(Promocode.is_active == True)

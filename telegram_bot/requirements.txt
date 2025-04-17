@@ -6,6 +6,7 @@ redis[hiredis]~=5.2.1
 
 # Database
 alembic~=1.15.2  # migrations
+alembic-postgresql-enum~=1.7.0  # psql enum migrations
 SQLAlchemy[asyncio]~=2.0.40  # ORM
 asyncpg~=0.30.0  # driver
 

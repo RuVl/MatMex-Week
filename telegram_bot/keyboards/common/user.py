@@ -14,7 +14,7 @@ def get_account_menu_kb(l10n) -> ReplyKeyboardMarkup:
 		KeyboardButton(text=l10n.format_value("btn-already-in-pc")),
 	)
 	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-back")),
+		KeyboardButton(text=l10n.format_value("btn-back-to-menu")),
 	)
 
 	return builder.as_markup(resize_keyboard=True)

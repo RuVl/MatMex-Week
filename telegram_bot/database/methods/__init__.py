@@ -1,3 +1,22 @@
+from .event import (
+	create_event,
+	update_event,
+	delete_event,
+	get_event_by_id,
+	get_all_events,
+	get_active_events,
+	get_upcoming_events,
+	get_events_by_creator
+)
+from .event_privilege_grant import (
+	get_user_event_grants,
+	get_event_grant_by_id,
+	add_event_privilege_grant,
+	get_grants_by_event,
+	update_event_privilege_grant,
+	delete_event_privilege_grant,
+	get_active_user_event_grants,
+)
 from .merch_category import (
 	get_all_categories,
 	create_category,
@@ -39,7 +58,7 @@ from .user import (
 	get_user_by_telegram_id,
 	update_user_balance,
 	update_user_fullname,
-	mark_user_attended_event_by_code,
+	give_point_for_event_by_user_id,
 	get_user_by_code
 )
 
@@ -50,7 +69,7 @@ __all__ = [
 	"get_user_by_telegram_id",
 	"update_user_balance",
 	"update_user_fullname",
-	"mark_user_attended_event_by_code",
+	"give_point_for_event_by_user_id",
 	"get_user_by_code",
 
 	# PkApply methods
@@ -87,4 +106,23 @@ __all__ = [
 	# MerchCategory methods
 	"get_all_categories",
 	"create_category",
+
+	# EventPrivilegesGrant methods
+	"get_user_event_grants",
+	"get_event_grant_by_id",
+	"add_event_privilege_grant",
+	"get_grants_by_event",
+	"update_event_privilege_grant",
+	"delete_event_privilege_grant",
+	"get_active_user_event_grants",
+
+	# Event methods
+	"create_event",
+	"update_event",
+	"delete_event",
+	"get_event_by_id",
+	"get_all_events",
+	"get_active_events",
+	"get_upcoming_events",
+	"get_events_by_creator"
 ]
