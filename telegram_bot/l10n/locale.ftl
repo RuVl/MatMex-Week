@@ -12,7 +12,7 @@ send-helping = Ваш вопрос отправлен в службу подде
 new-support-question = Новый вопрос в поддержку\. Ответьте на следующее сообщение:  
 
 cancel = Отмена
-cancel_message = Запрос отменён
+cancel-message = Запрос отменён
 promocode_enter = Введите промокод
 sad-promo-message = Твой промокод недействителен\(
 good-promo-message = Поздравляю! Промокод добавлен
@@ -168,7 +168,6 @@ btn-yes = Да
 btn-no = Нет
 btn-back = Назад
 cancel = Отмена
-cancel_message = Запрос отменён
 btn-user-codes = Использованные коды
 btn-emoji-yes = ✅
 btn-emoji-no = ❌

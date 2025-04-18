@@ -47,4 +47,4 @@ class PrivilegeFilter(BaseFilter):
 		async with async_session() as session:
 			user = await get_user_by_telegram_id(session, event.from_user.id)
 			privilege = await get_privilege_by_user(session, user.id)
-		return bool(privilege.privilege & self.privelege)
+		return bool(privilege and (privilege.privilege & self.privelege))

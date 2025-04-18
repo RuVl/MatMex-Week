@@ -20,7 +20,7 @@ async def handle_support_button(msg: types.Message, state: FSMContext, l10n: Flu
 @support_router.message(HelpActions.MESSAGE_OR_CANCEL, LocalizedTextFilter("btn-cancel"))
 async def handle_support_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	menu = await menu_kb(l10n, msg.from_user.id)
-	await msg.answer(l10n.format_value("cancel_message"), reply_markup=menu)
+	await msg.answer(l10n.format_value("cancel-message"), reply_markup=menu)
 	await state.clear()
 
 
