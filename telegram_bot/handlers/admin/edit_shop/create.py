@@ -57,7 +57,7 @@ async def handle_create_item_btn(msg: types.Message, state: FSMContext, l10n: Fl
 	await state.set_state(EditShopActions.CREATE_ITEM)
 	await log.adebug("log-state-changed", state=EditShopActions.CREATE_ITEM.state)
 
-@edit_shop_create_router.callback_query(EditShopActions.CREATE_ITEM)
+@edit_shop_create_router.callback_query(EditShopActions.CREATE_ITEM, EditShopCategoryFactory.filter())
 async def handle_create_item(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_item")
 	callback_data = EditShopCategoryFactory.unpack(callback.data)

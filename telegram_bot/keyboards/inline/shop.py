@@ -26,7 +26,7 @@ async def get_edit_shop_category_ikb(l10n) -> InlineKeyboardMarkup:
 			InlineKeyboardButton(text=category.name, callback_data=EditShopCategoryFactory(category_id = category.id).pack()),
 		)
 	builder.row(
-		InlineKeyboardButton(text=l10n.format_value("btn-cancel"), callback_data="btn-cancel"),
+		InlineKeyboardButton(text=l10n.format_value("btn-cancel"), callback_data="btn_cancel"),
 	)
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-category"))
 
@@ -65,6 +65,6 @@ def get_item_size_ikb(l10n) -> InlineKeyboardMarkup:
 			InlineKeyboardButton(text=size.value, callback_data=size.value),
 		)
 	builder.row(
-		InlineKeyboardButton(text=l10n.format_value("btn-cancel"), callback_data="btn-cancel"),
+		InlineKeyboardButton(text=l10n.format_value("btn-cancel"), callback_data="btn_cancel"),
 	)
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-item-size"))
