@@ -65,11 +65,9 @@ async def handle_user_choise(callback: types.CallbackQuery, state: FSMContext, l
 
 	async with async_session() as session:
 		admin_privileges = await get_privilege_by_user(session, admin.id)
-		if not admin_privileges:
-			admin_privileges = await create_privilege(session=session, user_id=admin.id, privilege_mask=0, provider_id=admin.id)
 		subject_privileges = await get_privilege_by_user(session, subject.id)
 		if not subject_privileges:
-			subject_privileges = await create_privilege(session=session, user_id=subject.id, privilege_mask=0, provider_id=admin.id)
+			subject_privileges = await create_privilege(session=session, user_id=subject.id, privilege_mask=0, provider_id=admin_privileges.id)
 		can_grant = await is_provider_to(session, admin_privileges.id, subject_privileges.id)
 
 	if not can_grant:
