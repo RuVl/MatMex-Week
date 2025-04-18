@@ -8,6 +8,7 @@ from database.methods import get_category_by_id, get_item_by_id
 from filters import LocalizedTextFilter
 from keyboards.callback_factories import ShopBackToCategoriesFactory, ShopCategoryFactory, ShopItemFactory
 from keyboards.inline import get_back_to_item_ikb, get_category_ikb, get_item_ikb
+from utils import escape_md_v2
 
 shop_router = Router()
 
@@ -56,18 +57,15 @@ async def handle_choose_item(callback: types.CallbackQuery, l10n: FluentLocaliza
 	data = ShopItemFactory.unpack(callback.data)
 	async with async_session() as session:
 		item = await get_item_by_id(session, data.item_id)
-	# TODO: markdownv2 точки
-	# TODO ЧЁ ЗА ХУЙНЯ??
-	item_chars = (
-		f"{l10n.format_value(" in -stock") if item.in_stock else l10n.format_value("not - in -stock")}\n"
-		f"{l10n.format_value("item-name")} {item.name}\n"
-		f"{l10n.format_value("item-size")} {item.size}\n"
-		f"{l10n.format_value("full-price")} {int(item.full_price)}\n"
-		f"{l10n.format_value("discount-price")} {int(item.discount_price)}\n"
-		f"{l10n.format_value("available-count")} {item.available_count}\n"
-	)
 	await callback.bot.edit_message_media(
-		media=InputMediaPhoto(media=FSInputFile(item.image_path), caption=item_chars),
+		media=InputMediaPhoto(media=FSInputFile(item.image_path),
+			caption=l10n.format_value("item-value", args={
+				'item_name': escape_md_v2(item.name),
+				'item_size': item.size,
+				'full_price': item.full_price,
+				'discount_price': item.discount_price,
+				'available_count': item.available_count
+			})),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id,
 		reply_markup=get_back_to_item_ikb(l10n, item, data.can_delete)

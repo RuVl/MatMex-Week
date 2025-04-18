@@ -11,10 +11,12 @@ from state_machines.edit_events import EditEventsActions
 from filters.main import LocalizedTextFilter, PrivilegeFilter
 from database.enums import AdminPrivilege
 from .create import edit_events_create_router
+from .delete import edit_events_delete_router
 
 edit_events_main_router = Router()
 edit_events_main_router.include_routers(
-	edit_events_create_router)
+    edit_events_create_router,
+    edit_events_delete_router)
 edit_events_main_router.message.filter(
 	PrivilegeFilter(AdminPrivilege.EDIT_EVENTS))
 edit_events_main_router.callback_query.filter(
@@ -29,12 +31,12 @@ async def handle_edit_events(msg: types.Message, state: FSMContext, l10n: Fluent
 	await state.set_state(EditEventsActions.EDIT_EVENTS)
 	await log.adebug("log-state-changed", state="cleared")
 
+
 @edit_events_main_router.callback_query(
 	or_f(
 		EditEventsActions.CHOOSE_EVENT_NAME,
 		EditEventsActions.CHOOSE_EVENT_START_TIME,
 		EditEventsActions.CHOOSE_EVENT_END_TIME,
-		EditEventsActions.CHOOSE_EVENT_GRANTS,
 	),
 	F.data == "btn_cancel"
 )

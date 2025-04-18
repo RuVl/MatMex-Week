@@ -61,8 +61,6 @@ async def ask_about_usages(msg: types.Message, state: FSMContext, l10n: FluentLo
 		state_data = await state.get_data()
 		max_usages = int(msg.text)
 		user = await get_user_by_telegram_id(session, msg.from_user.id)
-		# todo чек на определенные права
-		# todo проверка на максимальное использование
 		if user.privileges_id is None:
 			await msg.answer(l10n.format_value("you-have-not-rights"))
 		else:

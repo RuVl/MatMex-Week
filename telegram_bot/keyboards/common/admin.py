@@ -40,10 +40,14 @@ def edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 
 	return builder.as_markup(resize_keyboard=True)
 
+
 def edit_events_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-add-event")),
+	)
+	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-delete-event")),
 	)
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-back")),

@@ -8,5 +8,3 @@ class EditEventsActions(StatesGroup):
 	CHOOSE_EVENT_NAME = State()
 	CHOOSE_EVENT_START_TIME = State()
 	CHOOSE_EVENT_END_TIME = State()
-	CHOOSE_EVENT_GRANTS = State()
-
