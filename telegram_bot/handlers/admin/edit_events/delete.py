@@ -25,7 +25,7 @@ async def handle_back_to_categories(callback: types.CallbackQuery, l10n: FluentL
 			await delete_event(session, data.event_id)
 	events = await events_ikb(l10n, data.can_delete)
 	await callback.bot.edit_message_text(
-		text=l10n.format_value("schedule-keyboard"),
+		text=l10n.format_value("delete-events"),
 		reply_markup=events,
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id)
