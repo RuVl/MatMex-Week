@@ -1,10 +1,11 @@
 from .account import AccountActions
 from .accrual_of_points import AccrualOfPointsActions
 from .admin import AdminActions
-from .admin_promocode import AdminPromocodeActions, AdminPromocodeActions
+from .admin_promocode import AdminPromocodeActions
+from .edit_events import EditEventsActions
 from .edit_shop import EditShopActions
 from .event import EventActions
-from .grant_privileges import GrantPrivilegesActions, GrantPrivilegesActions
+from .grant_privileges import GrantPrivilegesActions
 from .help import HelpActions
 from .moderation import ModerationActions
 from .promocode import PromocodeActions

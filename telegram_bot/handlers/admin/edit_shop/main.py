@@ -64,6 +64,6 @@ async def handle_cancel_edit_item(callback: types.CallbackQuery, state: FSMConte
 
 @edit_shop_main_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-back"))
 async def handle_back(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await log.adebug("log-admin-action", action="handle_create_category")
+	await log.adebug("log-admin-action", action="handle_back")
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=admin_kb(l10n))
 	await state.set_state(AdminActions.ADMIN_PANEL)
