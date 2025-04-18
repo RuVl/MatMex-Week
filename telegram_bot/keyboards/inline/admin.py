@@ -30,7 +30,7 @@ def verified_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeybo
 	]])
 
 privilege_names = dict([
-	[AdminPrivilege.GRANT_PRIVELEGES.value, "privilege-grant-privileges"],
+	[AdminPrivilege.GRANT_PRIVILEGES.value, "privilege-grant-privileges"],
 	[AdminPrivilege.EDIT_PROMOCODES.value, "privilege-edit-promocodes"],
 	[AdminPrivilege.EDIT_SHOP.value, "privilege-edit-shop"],
 	[AdminPrivilege.EDIT_EVENTS.value, "privilege-edit-events"],

@@ -15,8 +15,8 @@ from state_machines.grant_privileges import GrantPrivilegesActions
 from state_machines.admin import AdminActions
 
 grant_privileges_router = Router()
-grant_privileges_router.message.filter(PrivilegeMessageFilter(AdminPrivilege.GRANT_PRIVELEGES.value))
-grant_privileges_router.callback_query.filter(PrivilegeCallbackFilter(AdminPrivilege.GRANT_PRIVELEGES.value))
+grant_privileges_router.message.filter(PrivilegeMessageFilter(AdminPrivilege.GRANT_PRIVILEGES.value))
+grant_privileges_router.callback_query.filter(PrivilegeCallbackFilter(AdminPrivilege.GRANT_PRIVILEGES.value))
 
 @grant_privileges_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-give-rights"))
 async def handle_grant_privileges(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -54,7 +54,7 @@ async def handle_user_choise(callback: types.CallbackQuery, state: FSMContext, l
 		subject = await get_user_by_telegram_id(session, data.telegram_id)
 		admin = await get_user_by_telegram_id(session, callback.from_user.id)
 	if subject.id == admin.id:
-		await callback.answer(l10n.format_value("cant-change-priveleges-of-yourself"))
+		await callback.answer(l10n.format_value("cant-change-privileges-of-yourself"))
 		return
 
 	async with async_session() as session:
@@ -67,7 +67,7 @@ async def handle_user_choise(callback: types.CallbackQuery, state: FSMContext, l
 		can_grant = await is_provider_to(session, admin_privileges.id, subject_privileges.id)
 
 	if not can_grant:
-		await callback.message.answer(l10n.format_value("cant-change-priveleges-you-did-not-provide"), reply_markup=admin_kb(l10n))
+		await callback.message.answer(l10n.format_value("cant-change-privileges"), reply_markup=admin_kb(l10n))
 		return
 
 	await callback.message.answer(
@@ -81,7 +81,7 @@ async def handle_privileges_kb(callback: types.CallbackQuery, l10n: FluentLocali
 	await log.adebug("log-admin-action", action="handle_privileges_kb")
 	data = PrivilegeButtonFactory.unpack(callback.data)
 	if data.admin_id == data.subject_id:
-		await callback.answer(l10n.format_value("cant-change-priveleges-of-yourself"))
+		await callback.answer(l10n.format_value("cant-change-privileges-of-yourself"))
 		return
 
 	if not data.granted:
@@ -96,7 +96,7 @@ async def handle_privileges_kb(callback: types.CallbackQuery, l10n: FluentLocali
 		subject_privileges = await get_privilege_by_user(session, data.subject_id)
 		can_grant = await is_provider_to(session, admin_privileges.id, subject_privileges.id)
 	if not can_grant:
-		await callback.answer(l10n.format_value("cant-change-priveleges"), reply_markup=admin_kb(l10n))
+		await callback.answer(l10n.format_value("cant-change-privileges"), reply_markup=admin_kb(l10n))
 		return	
 	await callback.answer(str(subject_privileges.privilege))
 	await callback.message.edit_reply_markup(
