@@ -44,9 +44,6 @@ async def handle_create_category(msg: types.Message, state: FSMContext, l10n: Fl
 
 	async with async_session() as session:
 		category = await create_category(session=session, name=name, image_path=str(save_location))
-	if category is None:
-		await msg.answer(l10n.format_value("category-name-already-exists"), reply_markup=cancel_kb(l10n))
-		return
 	await msg.answer(l10n.format_value("category-created"), reply_markup=edit_shop_kb(l10n))
 	await state.set_state(EditShopActions.EDIT_SHOP)
 	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
@@ -108,6 +105,7 @@ async def handle_ask_for_item_full_price(msg: types.message, state: FSMContext, 
 	await log.adebug("log-admin-action", action="handle_ask_for_item_full_prcie")
 	state_data = await state.get_data()
 	if not msg.text.isdigit():
+		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("not-a-number"))
 		return
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
@@ -125,6 +123,7 @@ async def handle_ask_for_item_discount_pice(msg: types.Message, state: FSMContex
 	await log.adebug("log-admin-action", action="handle_ask_for_item_discount_pice")
 	state_data = await state.get_data()
 	if not msg.text.isdigit():
+		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("not-a-number"))
 		return
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
@@ -142,6 +141,7 @@ async def handle_ask_for_item_available_count(msg: types.Message, state: FSMCont
 	await log.adebug("log-admin-action", action="ask-for-item-available-count")
 	state_data = await state.get_data()
 	if not msg.text.isdigit():
+		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("not-a-number"))
 		return
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
@@ -158,7 +158,7 @@ async def handle_ask_for_item_available_count(msg: types.Message, state: FSMCont
 async def handle_ask_for_item_in_stock(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_item_in_stock")
 	state_data = await state.get_data()
-	if callback.data == "btn-yes":
+	if callback.data == "btn_yes":
 		await state.update_data(item_in_stock = True)
 	else:
 		await state.update_data(item_in_stock = False)
@@ -175,6 +175,7 @@ async def handle_ask_for_item_image(msg: types.Message, state: FSMContext, l10n:
 	await log.adebug("log-admin-action", action="handle_ask_for_item_image")
 	state_data = await state.get_data()
 	if not msg.photo:
+		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("no-photo"))
 		return
 	save_folder = MEDIA_DIR / "merch_items" 

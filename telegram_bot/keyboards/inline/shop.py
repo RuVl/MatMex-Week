@@ -34,9 +34,10 @@ async def get_edit_shop_category_ikb(l10n) -> InlineKeyboardMarkup:
 def get_item_ikb(l10n, category: MerchCategory, can_delete : bool) -> InlineKeyboardMarkup:
 	builder = InlineKeyboardBuilder()
 	for item in category.merch_items:
-		builder.row(
-			InlineKeyboardButton(text=item.name, callback_data=ShopItemFactory(category_id = category.id, item_id = item.id, can_delete=can_delete).pack()),
-		)
+		if item.in_stock or can_delete:
+			builder.row(
+				InlineKeyboardButton(text=item.name, callback_data=ShopItemFactory(category_id = category.id, item_id = item.id, can_delete=can_delete).pack()),
+			)
 	if can_delete:
 		builder.row(InlineKeyboardButton(
 									text=l10n.format_value("btn-delete-category"), 
