@@ -1,1 +1,1 @@
-from .edit_shop import edit_shop_router
+from .main import edit_shop_main_router

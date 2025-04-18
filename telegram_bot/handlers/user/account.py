@@ -6,7 +6,7 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.methods import get_user_by_telegram_id, update_user_fullname
 from filters import FullNameFilter, LocalizedTextFilter
-from keyboards.common import menu_kb, get_account_menu_kb, cancel_kb
+from keyboards.common import menu_kb, account_menu_kb, cancel_kb
 from state_machines.account import AccountActions
 
 account_router = Router()
@@ -20,7 +20,7 @@ async def handle_profile_open(msg: types.Message, state: FSMContext, l10n: Fluen
 		await msg.answer(l10n.format_value("welcome-account", args={
 			'fullname': user.full_name,
 			'balance': user.balance
-		}), reply_markup=get_account_menu_kb(l10n))
+		}), reply_markup=account_menu_kb(l10n))
 		
 		# TODO добавить купленные товары
 		await state.set_state(AccountActions.ACCOUNT_PANEL)
@@ -37,7 +37,7 @@ async def handle_edit_name_request(msg: types.Message, state: FSMContext, l10n: 
 @account_router.message(AccountActions.NAME_WAITING, LocalizedTextFilter("btn-cancel"))
 async def handle_edit_name_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	log.info("log-profile-action", action="edit_name_cancelled")
-	await msg.answer(l10n.format_value("cancel-change-name"), reply_markup=get_account_menu_kb(l10n))
+	await msg.answer(l10n.format_value("cancel-change-name"), reply_markup=account_menu_kb(l10n))
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 
 
@@ -58,7 +58,7 @@ async def handle_edit_name_submit(msg: types.Message, state: FSMContext, l10n: F
 
 	await msg.answer(l10n.format_value("name-changed", args={
 		'fullname': new_name
-	}), reply_markup=get_account_menu_kb(l10n))
+	}), reply_markup=account_menu_kb(l10n))
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 
 
@@ -71,7 +71,7 @@ async def handle_edit_name_invalid(msg: types.Message, l10n: FluentLocalization,
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-already-in-pc"))
 async def handle_already_in_pc(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
 	log.info("log-profile-action", action="already_in_pc_claimed")
-	await msg.answer(l10n.format_value("already-in-pc"), reply_markup=get_account_menu_kb(l10n))
+	await msg.answer(l10n.format_value("already-in-pc"), reply_markup=account_menu_kb(l10n))
 
 
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-back-to-menu"))

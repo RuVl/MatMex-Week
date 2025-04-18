@@ -1,8 +1,9 @@
 #register messages
 hi = Привет, ну как там твоя учеба?
 hi-user = Привет, { $fullname }, ну как там твоя учеба?
-ask-name = Напиши свое ФИО, чтоб ты мог получить заслуженный мерч в конце нашей недели\!
-tell-about-pc = Кстати, цены в магазине зависят от того, состоишь ли ты в профкоме, а мерч мы
+ask-name = Напиши свое ФИО, чтобы ты мог получить заслуженный мерч в конце нашей недели\!
+tell-about-pc = Кстати, цены в магазине зависят от того, состоишь ли ты в профкоме, а мерч мы выдаем по студбилету, так что указывай корректные ФИО
+
 выдаем по студбилету, так что не ошибайся при вводе данных\!
 roll-back-name = Введи ФИО
 
@@ -79,8 +80,10 @@ schedule-text-html = 🎉 65-я Неделя Матмеха
     Следите за анонсами в нашей группе и Телеграм-канале Профкома.
 
 # Admin messages
-hello-admin = Показываю меню организатора \n Вы самые лучшие\.\.\.
 ask-promo-for-creating = Введите промокод для создания
+hello-admin = Показываю меню организатора\. Вы самые лучшие\.\.\.
+
+ask-for-event = За какое мероприятие хотите начислить
 ask-for-id = Введите код участника
 wrong-event-or-no-rights = У вас нет прав начисления баллов за это меро, либо такого меро не существует
 give-points = Баллы успешно начислены
@@ -121,6 +124,7 @@ ask-for-category-create = Введите название категории и 
 creating-category-cancelled = Создание категории отменено
 category-created = Категория создана
 edit-category = Редактирование категории
+item-creation = Создание товара
 ask-for-name-item = Введите название
 ask-for-size = Введите размер
 ask-for-price = Введите цену
@@ -131,6 +135,23 @@ create-item = Товар создан
 no-photo = Фото не прикреплено, попробуйте еще раз
 no-text = У категории нет названия, попробуйте еще раз
 failed-download = Ошибка загрузки фото, попробуйте еще раз
+ask-for-category = Выберите категорию
+category-name-already-exists = Категория с таким названием уже существует, попробуйте еще раз
+category-deleted = Категория успешно удалена
+category-not-exists = Категории с таким именем не существует, попробуйте еще раз
+ask-for-item-name = Введите название товара
+ask-for-item-size = Укажите размер товара
+ask-for-item-full-price = Введите цену товара
+ask-for-item-discount-price = Введите цену товара по скидке
+ask-for-item-available-count = Введите, сколько товара есть на складе
+ask-for-item-in-stock = Укажите, активна ли продажа
+ask-for-item-image = Прикрепите изображение товара
+item-create-error = Не получилось создать товар, товар с таким именем уже существует
+item-created = Товар успешно создан
+item-not-exists = Товар с таким именем не существует, попробуйте еще раз
+item-deleted = Товар успешно удален
+not-a-number = Пожалуйста введите число
+not-a-yes-no = Введите Да или Нет
 
 # Account messages
 welcome-account = Добро пожаловать в личный кабинет\!
@@ -151,6 +172,16 @@ cancel_message = Запрос отменён
 btn-user-codes = Использованные коды
 btn-emoji-yes = ✅
 btn-emoji-no = ❌
+
+#shop messages
+shop-hello = Магазин
+item-name = Название:
+item-size = Размер:
+full-price = Цена:
+discount-price = Цена по скидке:
+available-count = На складе:
+in-stock = Товар в продаже
+not-in-stock = Товар закончился
 
 # Menu buttons
 btn-support = Поддержка
@@ -185,8 +216,9 @@ btn-add-category = Добавить категорию
 btn-edit-category = Редактировать категорию
 btn-add-item = Добавить товар
 btn-edit-item = Редактировать товар
-btn-del-item = Удалить товар
-btn-delete-item = Удалить товар
+btn-delete-item-or-category = Удалить товар или категорию
+btn-delete-category = Удалить эту категорию
+btn-delete-item = Удалить этот товар
 btn-add-custom-prize = Добавить приз
 btn-send-support = Отправить ответ
 btn-cancel-support = Отмена
@@ -194,6 +226,15 @@ btn-approve-apply = Принять
 btn-decline-apply = Оклонить
 btn-review-apply = Пересмотреть
 btn-create-promo = Создать промокод
+btn-delete-category = Удалить категорию
+
+# Account buttons
+btn-edit-name = Редактировать ФИО
+btn-already-in-pc = Я вообще-то в пк
+
+# Registration buttons
+btn-send-for-check = Отправить на ручную проверку
+btn-just-kidding = Нет, я пошутил
 
 # Shop category buttons
 btn-tshirts = Футболки
@@ -205,6 +246,9 @@ btn-shoppers = Шопперы
 placeholder-menu = Выберите элемент меню
 placeholder-category = Выберите категорию
 placeholder-code = Введите промокод
+placeholder-item = Выберите товар
+placeholder-item-size = Выберите размер товара
+placeholder-get-back-to-item = Назад к товарам
 
 # Log messages
 log-handler-called = Вызван обработчик

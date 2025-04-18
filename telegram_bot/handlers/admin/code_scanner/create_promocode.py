@@ -9,7 +9,7 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.methods import create_promocode, get_promocode_by_code, get_user_by_telegram_id
 from filters import LocalizedTextFilter, AdminPromocodeCreatingFilter
-from keyboards.common import admin_kb, cancel_kb, yes_no_kb, get_account_menu_kb, menu_kb
+from keyboards.common import admin_kb, cancel_kb, yes_no_kb, account_menu_kb, menu_kb
 from state_machines import AccrualOfPointsActions, AdminActions
 from state_machines import AdminPromocodeActions
 
