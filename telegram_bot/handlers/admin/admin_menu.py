@@ -8,12 +8,13 @@ from keyboards.common import admin_kb, menu_kb
 from state_machines.admin import AdminActions
 from .code_scanner import code_scanner_router
 from .edit_shop import edit_shop_main_router
+from .edit_events import edit_events_main_router
 from .grant_privileges import grant_privileges_router
 from database.enums import AdminPrivilege
 
 admin_menu_router = Router()
 admin_menu_router.include_routers(
-	code_scanner_router, edit_shop_main_router, grant_privileges_router)
+	code_scanner_router, edit_shop_main_router, grant_privileges_router, edit_events_main_router)
 admin_menu_router.message.filter(PrivilegeFilter(AdminPrivilege.ALL))
 admin_menu_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.ALL))
 

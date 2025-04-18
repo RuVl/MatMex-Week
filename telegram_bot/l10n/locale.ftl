@@ -153,6 +153,15 @@ item-deleted = Товар успешно удален
 not-a-number = Пожалуйста введите число
 not-a-yes-no = Введите Да или Нет
 
+# Event edit messages:
+event-creation = Создание мероприятия
+ask-for-event-name = Введите название мероприятия
+wrong-datetime = Неправильный формат времени
+ask-for-event-start-time = Введите, когда начинается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
+ask-for-event-end-time = Введите, когда заканчивается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
+ask-for-event-end-grants = Введите, сколько баллов дает мероприятие
+event-created = Мероприятие создано!
+
 # Account messages
 welcome-account = Добро пожаловать в личный кабинет\!
     Пользователь: { $fullname }
@@ -207,6 +216,7 @@ apply-checked =  { apply-check }
 btn-admin-panel = Админ панель
 btn-back-to-menu = В меню
 btn-edit-shop = Редактировать магазин
+btn-edit-events = Редактировать мероприятия
 btn-give-rights = Выдать права
 btn-create-promocode = Создание промокода
 btn-list-promocodes = Список промокодов
@@ -214,6 +224,7 @@ btn-grant-rights = Выдать права
 btn-add-category = Добавить категорию
 btn-edit-category = Редактировать категорию
 btn-add-item = Добавить товар
+btn-add-event = Добавить мероприятие
 btn-edit-item = Редактировать товар
 btn-delete-item-or-category = Удалить товар или категорию
 btn-delete-category = Удалить эту категорию
