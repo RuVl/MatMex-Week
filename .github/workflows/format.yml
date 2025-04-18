@@ -2,9 +2,9 @@ name: Format with Tabs (PEP8 + Python 3.11)
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 jobs:
   format:
