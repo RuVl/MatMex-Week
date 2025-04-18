@@ -64,9 +64,9 @@ def run_migrations_offline() -> None:
 
 # noinspection PyUnusedLocal
 def process_revision_directives(
-		context: MigrationContext,
-		revision: str | Iterable[str | None] | Iterable[str],
-		directives: list[MigrationScript],
+	context: MigrationContext,
+	revision: str | Iterable[str | None] | Iterable[str],
+	directives: list[MigrationScript],
 ):
 	assert config.cmd_opts is not None
 	if getattr(config.cmd_opts, 'autogenerate', False):

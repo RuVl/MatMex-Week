@@ -2,7 +2,6 @@ import enum
 
 
 @enum.verify(enum.NAMED_FLAGS)
-
 class AdminPrivilege(enum.IntFlag):
 	NONE = 0
 	GRANT_PRIVILEGES = 1 << 0

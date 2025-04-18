@@ -41,7 +41,7 @@ async def menu_kb(l10n, user_telegram_id: int) -> ReplyKeyboardMarkup:
 	is_admin = True
 	if not user_privilege or user_privilege.privilege == 0:
 		is_admin = False
-	
+
 	builder = ReplyKeyboardBuilder()
 	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-support")),
@@ -58,6 +58,7 @@ async def menu_kb(l10n, user_telegram_id: int) -> ReplyKeyboardMarkup:
 		builder.row(KeyboardButton(text=l10n.format_value("btn-admin-panel")))
 
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-menu"))
+
 
 def user_codes_kb(l10n):
 	builder = ReplyKeyboardBuilder()

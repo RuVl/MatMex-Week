@@ -12,17 +12,19 @@ class SupportFactory(CallbackData, prefix='support'):
 	user_id: int
 	message_id: int
 
+
 class PrivilegeButtonFactory(CallbackData, prefix='privilege_button'):
-    privilege: int
-    granted: bool
-    admin_id: int
-    subject_id: int
+	privilege: int
+	granted: bool
+	admin_id: int
+	subject_id: int
+
 
 class UserFactory(CallbackData, prefix='user_data'):
-    full_name: str
-    telegram_id: int
-    telegram_username: str
-    
+	full_name: str
+	telegram_id: int
+	telegram_username: str
+
 
 class ShopCategoryFactory(CallbackData, prefix='shop_choose_category'):
 	category_id: int
@@ -32,7 +34,7 @@ class ShopCategoryFactory(CallbackData, prefix='shop_choose_category'):
 class ShopDeleteCategoryFactory(CallbackData, prefix='shop_delete_category'):
 	category_id: int
 	can_delete: bool
- 
+
 
 class ShopItemFactory(CallbackData, prefix='shop_choose_item'):
 	category_id: int
@@ -44,7 +46,7 @@ class ShopDeleteItemFactory(CallbackData, prefix='shop_delete_item'):
 	category_id: int
 	item_id: int
 	can_delete: bool
- 
+
 
 class ShopBackToCategoriesFactory(CallbackData, prefix='back_to_categories'):
 	can_delete: bool

@@ -4,29 +4,31 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.models import MerchItem
 
-async def create_item(session: AsyncSession, 
-                      name : str, 
-                      image_path : str,
-                      size : int, 
-                      full_price : float,
-                      discount_price : float,
-                      available_count : int,
-                      in_stock : bool,
-                      category_id : int,) -> MerchItem:
-	item = MerchItem(name = name, 
-                          image_path = image_path, 
-                          size = size, 
-                          full_price = full_price, 
-                          discount_price = discount_price,
-                          available_count = available_count,
-                          in_stock = in_stock,
-                          category_id = category_id)
+
+async def create_item(session: AsyncSession,
+					  name: str,
+					  image_path: str,
+					  size: int,
+					  full_price: float,
+					  discount_price: float,
+					  available_count: int,
+					  in_stock: bool,
+					  category_id: int,) -> MerchItem:
+	item = MerchItem(name=name,
+					 image_path=image_path,
+					 size=size,
+					 full_price=full_price,
+					 discount_price=discount_price,
+					 available_count=available_count,
+					 in_stock=in_stock,
+					 category_id=category_id)
 	session.add(item)
 	await session.commit()
 	await session.refresh(item)
 	return item
 
-async def get_item_by_id(session: AsyncSession, item_id : int) -> MerchItem | None:
+
+async def get_item_by_id(session: AsyncSession, item_id: int) -> MerchItem | None:
 	query = (
 		select(MerchItem)
 		.where(MerchItem.id == item_id)
@@ -34,7 +36,8 @@ async def get_item_by_id(session: AsyncSession, item_id : int) -> MerchItem | No
 	result = await session.execute(query)
 	return result.scalars().first()
 
-async def remove_item_by_id(session: AsyncSession, item_id : int) -> bool:
+
+async def remove_item_by_id(session: AsyncSession, item_id: int) -> bool:
 	item = await get_item_by_id(session, item_id)
 	if item:
 		if os.path.exists(item.image_path):

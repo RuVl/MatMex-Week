@@ -25,13 +25,13 @@ from .pk_apply import (
 	get_applies_by_reviewer,
 )
 from .privilege import (
-    create_privilege,
+	create_privilege,
 	get_privilege_by_user,
 	add_privilege,
 	remove_privilege,
 	remove_all_privileges,
 	get_privileges_by_provider,
- 	is_provider_to,
+	is_provider_to,
 )
 from .promo import (
 	create_promocode,
@@ -58,7 +58,7 @@ from .user import (
 	update_user_fullname,
 	give_point_for_event_by_user_id,
 	get_user_by_code,
- 	get_users_by_full_name,
+	get_users_by_full_name,
 )
 from .merch_category import (
 	get_all_categories,
@@ -142,7 +142,7 @@ __all__ = [
 	"get_events_by_creator",
 
 
-	#MerchItem methods
+	# MerchItem methods
 	"create_item",
 	"get_item_by_id",
 	"remove_item_by_id",

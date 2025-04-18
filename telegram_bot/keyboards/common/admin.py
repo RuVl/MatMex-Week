@@ -19,6 +19,7 @@ def admin_kb(l10n) -> ReplyKeyboardMarkup:
 
 	return builder.as_markup(resize_keyboard=True)
 
+
 def edit_shop_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
 	builder.row(

@@ -8,6 +8,7 @@ from config import SUPPORT_CHAT_ID
 from database.methods import get_user_by_telegram_id, get_privilege_by_user
 from database import async_session
 
+
 class LocalizedTextFilter(BaseFilter):
 	def __init__(self, l10n_key: str):
 		self.l10n_key = l10n_key
@@ -25,23 +26,25 @@ class LocalizedTextFilter(BaseFilter):
 class FromBotToAdminFilter(BaseFilter):
 	async def __call__(self, message: Message) -> bool:
 		return (
-				message.reply_to_message and
-				message.chat.id == SUPPORT_CHAT_ID and
-				message.from_user.id == message.bot.id
+			message.reply_to_message and
+			message.chat.id == SUPPORT_CHAT_ID and
+			message.from_user.id == message.bot.id
 		)
+
 
 class AdminPromocodeCreatingFilter(BaseFilter):
 	async def __call__(self, msg: Message) -> bool:
-		return ( msg.text.isdecimal() and
-		          int(msg.text) > 0
-		)
+		return (msg.text.isdecimal() and
+				int(msg.text) > 0
+				)
+
+
 class PrivilegeFilter(BaseFilter):
-	def __init__(self, privelege : int):
+	def __init__(self, privelege: int):
 		self.privelege = privelege
+
 	async def __call__(self, event: Message | CallbackQuery) -> bool:
 		async with async_session() as session:
 			user = await get_user_by_telegram_id(session, event.from_user.id)
 			privilege = await get_privilege_by_user(session, user.id)
 		return bool(privilege.privilege & self.privelege)
-
-

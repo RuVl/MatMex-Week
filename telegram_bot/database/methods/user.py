@@ -10,7 +10,8 @@ from database.models import User, EventAttendance
 
 async def create_user(session: AsyncSession, telegram_id: int, telegram_username: str, full_name: str, balance: float = 0.0) -> User:
 	"""Создаёт нового пользователя с указанными параметрами."""
-	user = User(telegram_id=telegram_id, telegram_username=telegram_username, full_name=full_name, balance=balance)
+	user = User(telegram_id=telegram_id, telegram_username=telegram_username,
+				full_name=full_name, balance=balance)
 	session.add(user)
 	await session.commit()
 	await session.refresh(user)
@@ -49,6 +50,7 @@ async def get_user_by_code(session: AsyncSession, code: uuid.UUID) -> User | Non
 	result = await session.execute(query)
 	return result.scalar_one_or_none()
 
+
 async def get_users_by_full_name(session: AsyncSession, full_name: str) -> list[User]:
 	"""Возвращает пользователя по UUID-code."""
 	query = (
@@ -57,6 +59,7 @@ async def get_users_by_full_name(session: AsyncSession, full_name: str) -> list[
 	)
 	result = await session.execute(query)
 	return result.scalars().all()
+
 
 async def update_user_balance(session: AsyncSession, user_id: int, amount: float) -> User:
 	"""Обновляет баланс пользователя, добавляя или вычитая сумму."""
@@ -94,13 +97,13 @@ async def give_point_for_event_by_user_id(session: AsyncSession, user_id: int, e
 
 	if attendance is not None:
 		return False  # Уже посетил
-	
+
 	try:
 		# Если пользователь еще не записан на мероприятие, то записать и отметить как посетил
 		attendance = EventAttendance(user_id=user_id, event_id=event_id)
 		session.add(attendance)
 		await session.commit()
-		
+
 		await update_user_balance(session, user_id, ATTENDING_EVENT_POINTS)
 	except Exception as e:
 		await session.rollback()

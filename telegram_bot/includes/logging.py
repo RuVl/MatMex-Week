@@ -70,8 +70,10 @@ def get_processors(log_config: LoggerKeys) -> list:
 
 	match log_config.RENDERER:
 		case 'json':
-			processors.append(structlog.processors.JSONRenderer(serializer=custom_json_serializer))
+			processors.append(structlog.processors.JSONRenderer(
+				serializer=custom_json_serializer))
 		case 'console':
-			processors.append(structlog.dev.ConsoleRenderer(colors=log_config.USE_COLORS_IN_CONSOLE, pad_level=True))
+			processors.append(structlog.dev.ConsoleRenderer(
+				colors=log_config.USE_COLORS_IN_CONSOLE, pad_level=True))
 
 	return processors
