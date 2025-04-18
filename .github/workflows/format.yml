@@ -1,0 +1,37 @@
+name: Format with Tabs (PEP8 + Python 3.11)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install autopep8
+        run: |
+          python -m pip install --upgrade pip
+          pip install autopep8
+
+      - name: Format with autopep8
+        run: |
+          autopep8 . --recursive --in-place
+
+      - name: Convert 4-space indents to tabs
+        run: |
+          find . -name "*.py" -exec bash -c 'unexpand -t 4 --first-only "$0" > tmp && mv tmp "$0"' {} \;
+
+      - name: Fail if changes were made
+        run: |
+          git diff --exit-code || (echo "Code is not formatted properly." && exit 1)
