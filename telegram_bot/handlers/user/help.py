@@ -27,9 +27,9 @@ async def handle_support_cancel(msg: types.Message, state: FSMContext, l10n: Flu
 @support_router.message(HelpActions.MESSAGE_OR_CANCEL)
 async def handle_support_message(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID,
-	                           text=l10n.format_value("new-support-question"))
+							   text=l10n.format_value("new-support-question"))
 	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID,
-	                           text=msg.text + "\n||" + SupportFactory(user_id=msg.from_user.id, message_id=msg.message_id).pack() + "||")
+							   text=msg.text + "\n||" + SupportFactory(user_id=msg.from_user.id, message_id=msg.message_id).pack() + "||")
 	menu = await menu_kb(l10n, msg.from_user.id)
 	await msg.answer(l10n.format_value("send-helping"), reply_markup=menu)
 	await state.clear()

@@ -26,6 +26,7 @@ async def handle_promocode_cancel(msg: types.Message, state: FSMContext, l10n: F
 	await msg.answer(l10n.format_value("cancel_message"), reply_markup=menu)
 	await state.clear()
 
+
 @promocode_router.message(PromocodeActions.ENTER_PROMOCODE, LocalizedTextFilter("btn-user-codes"))
 async def handle_promocode_list(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	async with async_session() as session:

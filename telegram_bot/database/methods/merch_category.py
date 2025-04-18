@@ -6,18 +6,21 @@ from sqlalchemy.orm import selectinload
 from database.models import MerchCategory
 from .merch_item import remove_item_by_id
 
+
 async def get_all_categories(session: AsyncSession) -> list[MerchCategory]:
 	result = await session.execute(
 		select(MerchCategory)
 	)
 	return result.scalars().all()
 
+
 async def create_category(session: AsyncSession, name: str, image_path: str) -> MerchCategory:
-	category = MerchCategory(name = name, image_path = image_path)
+	category = MerchCategory(name=name, image_path=image_path)
 	session.add(category)
 	await session.commit()
 	await session.refresh(category)
 	return category
+
 
 async def get_category_by_id(session: AsyncSession, category_id: int) -> MerchCategory | None:
 	query = (
@@ -27,6 +30,7 @@ async def get_category_by_id(session: AsyncSession, category_id: int) -> MerchCa
 	)
 	result = await session.execute(query)
 	return result.scalars().first()
+
 
 async def remove_category_by_id(session: AsyncSession, category_id: int) -> bool:
 	category = await get_category_by_id(session, category_id)

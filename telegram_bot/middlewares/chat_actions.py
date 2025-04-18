@@ -12,14 +12,14 @@ from .utils import MessageActionWrapper
 
 class ChatActionsMw(BaseMiddleware):
 	def __init__(
-			self,
-			flag_name: str = 'chat_action',
-			*,
-			default_typing_speed: float = 35.0,
-			default_max_delay: float = 3.0,
-			default_max_upload_delay: float = 3.0,
-			default_adaptive: bool = True,
-			enabled: bool = True
+		self,
+		flag_name: str = 'chat_action',
+		*,
+		default_typing_speed: float = 35.0,
+		default_max_delay: float = 3.0,
+		default_max_upload_delay: float = 3.0,
+		default_adaptive: bool = True,
+		enabled: bool = True
 	):
 		self.flag_name = flag_name
 		self._enabled = enabled
@@ -30,13 +30,14 @@ class ChatActionsMw(BaseMiddleware):
 		self._default_adaptive = default_adaptive
 
 	async def __call__(
-			self,
-			handler: Callable,
-			event: TelegramObject,
-			data: dict[str, Any],
+		self,
+		handler: Callable,
+		event: TelegramObject,
+		data: dict[str, Any],
 	) -> Any:
 		if not isinstance(event, (Message, CallbackQuery)):
-			raise RuntimeError(f"{ChatActionsMw.__name__} got an unexpected event type!")
+			raise RuntimeError(
+				f"{ChatActionsMw.__name__} got an unexpected event type!")
 
 		if not self._enabled:
 			return await handler(event, data)

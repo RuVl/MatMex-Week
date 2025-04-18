@@ -38,6 +38,7 @@ async def show_schedule_h(msg: types.Message, l10n: FluentLocalization):
 	image_from_pc = FSInputFile(MEDIA_DIR / "schedule.jpg")
 	await msg.answer_photo(photo=image_from_pc, caption=l10n.format_value("schedule-text-html"), parse_mode=ParseMode.HTML)
 
+
 @user_router.message(LocalizedTextFilter("btn-my-code"))
 async def show_my_qr_h(msg: types.Message):
 	async with async_session() as session:
@@ -66,8 +67,9 @@ async def give_event_points_h(msg: types.Message, command: CommandObject, cached
 
 		# получить привилегии на ивент пользователя
 		event_grants = await get_active_user_event_grants(session, cached_user.id)
-		event_grants: list[EventPrivilegeGrant] = filter(lambda eg: eg.privileges & EventPrivilege.CAN_GIVE_POINTS, event_grants)
-		
+		event_grants: list[EventPrivilegeGrant] = filter(
+			lambda eg: eg.privileges & EventPrivilege.CAN_GIVE_POINTS, event_grants)
+
 		if not event_grants:
 			await msg.answer(l10n.format_value("no-rights"))
 

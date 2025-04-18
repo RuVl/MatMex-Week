@@ -8,12 +8,12 @@ from database.models import Promocode, PromocodeActivation, User
 
 
 async def create_promocode(
-		session: AsyncSession,
-		code: str,
-		cost: int,
-		creator_id: int,
-		max_uses: int | None = None,
-		expires_at: datetime | None = None
+	session: AsyncSession,
+	code: str,
+	cost: int,
+	creator_id: int,
+	max_uses: int | None = None,
+	expires_at: datetime | None = None
 ) -> Promocode:
 	"""Создаёт новый промокод."""
 	promocode = Promocode(
@@ -55,7 +55,7 @@ async def check_promocode_valid(session: AsyncSession, code: str, user_id: int) 
 
 	if not promocode.is_active:
 		return False, "Промокод деактивирован", 0
-	
+
 	if promocode.expires_at and promocode.expires_at < datetime.now(timezone.utc):
 		return False, "Срок действия промокода истек", 0
 
@@ -98,7 +98,8 @@ async def activate_promocode(session: AsyncSession, code: str, user_id: int) -> 
 		return False, "Пользователь не найден", 0
 
 	# Создаём активацию
-	activation = PromocodeActivation(promocode_id=promocode.id, recipient_id=user_id)
+	activation = PromocodeActivation(
+		promocode_id=promocode.id, recipient_id=user_id)
 	session.add(activation)
 
 	# Начисляем баллы

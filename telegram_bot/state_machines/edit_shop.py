@@ -5,7 +5,7 @@ class EditShopActions(StatesGroup):
 	EDIT_SHOP = State()
 
 	CREATE_CATEGORY = State()
- 
+
 	CREATE_ITEM = State()
 	CHOOSE_ITEM_NAME = State()
 	CHOOSE_ITEM_IMAGE = State()

@@ -9,11 +9,11 @@ from database.models import Event
 
 
 async def create_event(
-		session: AsyncSession,
-		name: str,
-		creator_id: int,
-		starts_at: Optional[datetime] = None,
-		ends_at: Optional[datetime] = None
+	session: AsyncSession,
+	name: str,
+	creator_id: int,
+	starts_at: Optional[datetime] = None,
+	ends_at: Optional[datetime] = None
 ) -> Event:
 	"""Создаёт новое мероприятие."""
 	event = Event(
@@ -29,11 +29,11 @@ async def create_event(
 
 
 async def update_event(
-		session: AsyncSession,
-		event_id: int,
-		name: Optional[str] = None,
-		starts_at: Optional[datetime] = None,
-		ends_at: Optional[datetime] = None
+	session: AsyncSession,
+	event_id: int,
+	name: Optional[str] = None,
+	starts_at: Optional[datetime] = None,
+	ends_at: Optional[datetime] = None
 ) -> Event:
 	"""Обновляет информацию о мероприятии."""
 	event = await session.get(Event, event_id, options=[

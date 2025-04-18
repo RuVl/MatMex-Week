@@ -6,6 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from database.models import Privilege, User
 
+
 async def create_privilege(session: AsyncSession, user_id: int, privilege_mask: int, provider_id: int) -> Privilege:
 	"""Создаёт привилегии для пользователя с указанной битовой маской."""
 	user = await session.get(User, user_id)
@@ -99,9 +100,10 @@ async def get_privileges_by_provider(session: AsyncSession, provider_id: int) ->
 	)
 	return result.scalars().all()
 
-async def is_provider_to(session: AsyncSession, provider_id: int, subject_id : int) -> bool:
+
+async def is_provider_to(session: AsyncSession, provider_id: int, subject_id: int) -> bool:
 	subject = await get_privilege_by_user(session, subject_id)
 	provider = await get_privilege_by_user(session, subject.provider_id)
-	while provider.provider_id and provider.provider_id != provider.id and provider.id !=provider_id:
+	while provider.provider_id and provider.provider_id != provider.id and provider.id != provider_id:
 		provider = await get_privilege_by_user(session, provider.provider_id)
 	return provider.id == provider_id

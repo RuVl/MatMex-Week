@@ -11,13 +11,13 @@ from structlog.typing import FilteringBoundLogger
 
 class MessageActionWrapper:
 	def __init__(
-			self,
-			msg: Message,
-			max_delay: float = 3.0,
-			typing_speed: float = 20.0,
-			max_upload_delay: float = 3.0,
-			adaptive: bool = True,
-			log: FilteringBoundLogger = None
+		self,
+		msg: Message,
+		max_delay: float = 3.0,
+		typing_speed: float = 20.0,
+		max_upload_delay: float = 3.0,
+		adaptive: bool = True,
+		log: FilteringBoundLogger = None
 	):
 		self._msg = msg
 		self._max_delay = max_delay
@@ -110,10 +110,10 @@ class MessageActionWrapper:
 
 		kB = file_size / 1024
 		log_size = math.log(kB) if file_size > 0 else 0
-		
+
 		# базовая задержка (при > 3MB - максимальная задержка)
 		base_delay = self._max_upload_delay / 8.27814569536
-		
+
 		delay = min(log_size * base_delay, self._max_upload_delay)
 		return action, delay
 
