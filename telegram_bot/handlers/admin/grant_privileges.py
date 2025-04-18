@@ -7,7 +7,7 @@ from structlog.typing import FilteringBoundLogger
 from database.methods import get_privilege_by_user, get_users_by_full_name, create_privilege, get_user_by_telegram_id, add_privilege, remove_privilege, is_provider_to
 from database.enums import AdminPrivilege
 from database import async_session
-from filters import LocalizedTextFilter, PrivilegeMessageFilter, PrivilegeCallbackFilter
+from filters import LocalizedTextFilter, PrivilegeFilter
 from keyboards.common import admin_kb, cancel_kb
 from keyboards.inline import user_rights_ikb, names_ikb
 from keyboards.callback_factories import PrivilegeButtonFactory, UserFactory
@@ -15,8 +15,8 @@ from state_machines.grant_privileges import GrantPrivilegesActions
 from state_machines.admin import AdminActions
 
 grant_privileges_router = Router()
-grant_privileges_router.message.filter(PrivilegeMessageFilter(AdminPrivilege.GRANT_PRIVILEGES.value))
-grant_privileges_router.callback_query.filter(PrivilegeCallbackFilter(AdminPrivilege.GRANT_PRIVILEGES.value))
+grant_privileges_router.message.filter(PrivilegeFilter(AdminPrivilege.GRANT_PRIVILEGES))
+grant_privileges_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.GRANT_PRIVILEGES))
 
 @grant_privileges_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-give-rights"))
 async def handle_grant_privileges(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -95,9 +95,11 @@ async def handle_privileges_kb(callback: types.CallbackQuery, l10n: FluentLocali
 		admin_privileges = await get_privilege_by_user(session, data.admin_id)
 		subject_privileges = await get_privilege_by_user(session, data.subject_id)
 		can_grant = await is_provider_to(session, admin_privileges.id, subject_privileges.id)
+
 	if not can_grant:
 		await callback.answer(l10n.format_value("cant-change-privileges"), reply_markup=admin_kb(l10n))
-		return	
+		return
+
 	await callback.answer(str(subject_privileges.privilege))
 	await callback.message.edit_reply_markup(
 				reply_markup=user_rights_ikb(l10n, admin_privileges.privilege, subject_privileges.privilege, data.admin_id, data.subject_id))	

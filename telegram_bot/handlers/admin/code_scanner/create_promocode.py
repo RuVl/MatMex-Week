@@ -9,14 +9,14 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.methods import create_promocode, get_promocode_by_code, get_user_by_telegram_id
 from database.enums import AdminPrivilege
-from filters import LocalizedTextFilter, AdminPromocodeCreatingFilter, PrivilegeCallbackFilter, PrivilegeMessageFilter
+from filters import LocalizedTextFilter, AdminPromocodeCreatingFilter, PrivilegeFilter
 from keyboards.common import admin_kb, cancel_kb, yes_no_kb, account_menu_kb, menu_kb
 from state_machines import AccrualOfPointsActions, AdminActions
 from state_machines import AdminPromocodeActions
 
 code_scanner_router = Router()
-code_scanner_router.message.filter(PrivilegeMessageFilter(AdminPrivilege.EDIT_PROMOCODES.value))
-code_scanner_router.callback_query.filter(PrivilegeCallbackFilter(AdminPrivilege.EDIT_PROMOCODES.value))
+code_scanner_router.message.filter(PrivilegeFilter(AdminPrivilege.EDIT_PROMOCODES))
+code_scanner_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.EDIT_PROMOCODES))
 
 @code_scanner_router.message(LocalizedTextFilter("btn-create-promo"))
 async def ask_for_promocode(msg: types.Message, state: FSMContext, l10n: FluentLocalization):

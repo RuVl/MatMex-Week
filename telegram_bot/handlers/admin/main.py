@@ -8,7 +8,7 @@ from database import async_session
 from database.enums import ApplyStatus, AdminPrivilege
 from database.methods import update_apply_status
 from database.models import User
-from filters import FromBotToAdminFilter, PrivilegeCallbackFilter
+from filters import FromBotToAdminFilter, PrivilegeFilter
 from keyboards.callback_factories import SupportFactory, PKApplyFactory
 from keyboards.inline import verified_request_ikb, verification_request_ikb
 from utils import escape_md_v2
@@ -27,7 +27,7 @@ async def handle_send_support(msg: types.Message, l10n: FluentLocalization, log:
 	await msg.answer(l10n.format_value("support-sent"))
 
 
-@admin_router.callback_query(PKApplyFactory.filter(), PrivilegeCallbackFilter(AdminPrivilege.EDIT_PK_APPLY.value))
+@admin_router.callback_query(PKApplyFactory.filter(), PrivilegeFilter(AdminPrivilege.EDIT_PK_APPLY))
 async def apply_verify(clb: CallbackQuery, callback_data: PKApplyFactory, l10n: FluentLocalization, log: FilteringBoundLogger, cached_user: User):
 	match callback_data.decision:
 		case 'approve':

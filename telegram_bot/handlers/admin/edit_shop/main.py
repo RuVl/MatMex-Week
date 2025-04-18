@@ -8,15 +8,15 @@ from structlog.typing import FilteringBoundLogger
 from keyboards.common import edit_shop_kb, admin_kb
 from state_machines.admin import AdminActions
 from state_machines.edit_shop import EditShopActions
-from filters.main import LocalizedTextFilter, PrivilegeCallbackFilter, PrivilegeMessageFilter
+from filters.main import LocalizedTextFilter, PrivilegeFilter
 from database.enums import AdminPrivilege
 from .create import edit_shop_create_router
 from .delete import edit_shop_delete_router
 
 edit_shop_main_router = Router()
 edit_shop_main_router.include_routers(edit_shop_create_router, edit_shop_delete_router)
-edit_shop_main_router.message.filter(PrivilegeMessageFilter(AdminPrivilege.EDIT_SHOP.value))
-edit_shop_main_router.callback_query.filter(PrivilegeCallbackFilter(AdminPrivilege.EDIT_SHOP.value))
+edit_shop_main_router.message.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
+edit_shop_main_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
 
 @edit_shop_main_router.message(AdminActions.ADMIN_PANEL,
                           LocalizedTextFilter("btn-edit-shop"))

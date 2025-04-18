@@ -35,21 +35,13 @@ class AdminPromocodeCreatingFilter(BaseFilter):
 		return ( msg.text.isdecimal() and
 		          int(msg.text) > 0
 		)
-class PrivilegeMessageFilter(BaseFilter):
+class PrivilegeFilter(BaseFilter):
 	def __init__(self, privelege : int):
 		self.privelege = privelege
-	async def __call__(self, message: Message) -> bool:
+	async def __call__(self, event: Message | CallbackQuery) -> bool:
 		async with async_session() as session:
-			user = await get_user_by_telegram_id(session, message.from_user.id)
+			user = await get_user_by_telegram_id(session, event.from_user.id)
 			privilege = await get_privilege_by_user(session, user.id)
 		return bool(privilege.privilege & self.privelege)
 
-class PrivilegeCallbackFilter(BaseFilter):
-	def __init__(self, privelege : int):
-		self.privelege = privelege
-	async def __call__(self, callback: CallbackQuery) -> bool:
-		async with async_session() as session:
-			user = await get_user_by_telegram_id(session, callback.from_user.id)
-			privilege = await get_privilege_by_user(session, user.id)
-		return bool(privilege.privilege & self.privelege)
 

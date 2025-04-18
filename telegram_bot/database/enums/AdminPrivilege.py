@@ -11,3 +11,4 @@ class AdminPrivilege(enum.IntFlag):
 	EDIT_EVENTS = 1 << 3
 	EDIT_PK_APPLY = 1 << 4
 	EDIT_MODERATORS = 1 << 5
+	ALL = (1 << 6) - 1

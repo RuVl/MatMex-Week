@@ -10,6 +10,7 @@ from config import ADMIN_CHAT_ID
 from database import async_session
 from database.methods import create_user, create_apply, get_user_by_telegram_id, create_privilege
 from database.models import User
+from database.enums import AdminPrivilege
 from filters import FullNameFilter
 from keyboards.common import menu_kb, yes_no_kb, manual_check_kb
 from keyboards.inline import verification_request_ikb
@@ -48,7 +49,7 @@ async def correct_fullname_h(msg: types.Message, state: FSMContext, l10n: Fluent
 	async with async_session() as session:
 		user = await create_user(session, msg.from_user.id, msg.from_user.username, fullname)
 		if str(msg.from_user.id) in TelegramKeys.ADMINS:
-			await create_privilege(session = session, user_id = user.id, privilege_mask=1023, provider_id=None)
+			await create_privilege(session = session, user_id = user.id, privilege_mask=AdminPrivilege.ALL, provider_id=None)
 	await msg.answer(l10n.format_value("thanks-name-html", args={
 		'fullname': escape_md_v2(fullname)
 	}), parse_mode=ParseMode.HTML)

@@ -104,6 +104,4 @@ async def is_provider_to(session: AsyncSession, provider_id: int, subject_id : i
 	provider = await get_privilege_by_user(session, subject.provider_id)
 	while provider.provider_id and provider.provider_id != provider.id and provider.id !=provider_id:
 		provider = await get_privilege_by_user(session, provider.provider_id)
-	if provider.id == provider_id:
-		return True
-	return False
+	return provider.id == provider_id
