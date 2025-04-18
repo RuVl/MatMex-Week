@@ -1,16 +1,15 @@
 from aiogram import Router, types
-from aiogram.enums import ParseMode
 from aiogram.types import FSInputFile, InputMediaPhoto
 from fluent.runtime import FluentLocalization
 
 from config import MEDIA_DIR
-from state_machines.purchases import PurchasesActions
 from filters import LocalizedTextFilter
 from keyboards.inline import get_category_ikb, get_item_ikb, get_back_to_item_ikb
 from keyboards.callback_factories import ShopCategoryFactory, ShopItemFactory, ShopBackToCategoriesFactory
+from utils import escape_md_v2
 
 from database import async_session
-from database.methods import get_category_by_id, get_item_by_id, remove_category_by_id, remove_item_by_id
+from database.methods import get_category_by_id, get_item_by_id
 
 shop_router = Router()
 
@@ -35,7 +34,7 @@ async def handle_choose_category(callback: types.CallbackQuery, l10n: FluentLoca
 
 	await callback.bot.edit_message_media(
 		media=InputMediaPhoto(media=FSInputFile(category.image_path),
-							  caption=l10n.format_value("ask-for-item-name")),
+                        caption=l10n.format_value("ask-for-item-name")),
 		reply_markup=get_item_ikb(l10n, category, data.can_delete),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id)
@@ -48,7 +47,7 @@ async def handle_back_to_categories(callback: types.CallbackQuery, l10n: FluentL
 	category_ikb = await get_category_ikb(l10n, data.can_delete)
 	await callback.bot.edit_message_media(
 		media=InputMediaPhoto(media=image_from_pc,
-							  caption=l10n.format_value("shop-hello")),
+                        caption=l10n.format_value("shop-hello")),
 		reply_markup=category_ikb,
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id)
@@ -59,18 +58,15 @@ async def handle_choose_item(callback: types.CallbackQuery, l10n: FluentLocaliza
 	data = ShopItemFactory.unpack(callback.data)
 	async with async_session() as session:
 		item = await get_item_by_id(session, data.item_id)
-	# TODO: markdownv2 точки
-	item_chars = (
-		f"{l10n.format_value(" in -stock") if item.in_stock else l10n.format_value("not - in -stock")}\n"
-		f"{l10n.format_value("item-name")} {item.name}\n"
-		f"{l10n.format_value("item-size")} {item.size}\n"
-		f"{l10n.format_value("full-price")} {int(item.full_price)}\n"
-		f"{l10n.format_value("discount-price")} {int(item.discount_price)}\n"
-		f"{l10n.format_value("available-count")} {item.available_count}\n"
-	)
 	await callback.bot.edit_message_media(
 		media=InputMediaPhoto(media=FSInputFile(item.image_path),
-							  caption=item_chars),
+                        caption=l10n.format_value("item-value",  args={
+                            'itemname': escape_md_v2(item.name),
+                            'itemsize': item.size,
+                            'fullprice': item.full_price,
+                            'discountprice': item.discount_price,
+                            'availablecount': item.available_count
+                        })),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id,
 		reply_markup=get_back_to_item_ikb(l10n, item, data.can_delete))

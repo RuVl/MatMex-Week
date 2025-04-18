@@ -57,6 +57,7 @@ good-promo-message = Поздравляю! Промокод добавлен \({
 code_message = Твой промокод:
 
 # Schedule 
+schedule-keyboard = Информация о меоприятиях
 schedule-text-html = 🎉 65-я Неделя Матмеха
     Солнечные лучи заливают улицы, весна уверенно вступает в свои права! ☀️
     А значит — самое время поделиться новостями о предстоящей 65-й Неделе Матмеха!
@@ -153,14 +154,21 @@ item-deleted = Товар успешно удален
 not-a-number = Пожалуйста введите число
 not-a-yes-no = Введите Да или Нет
 
-# Event edit messages:
+# Scedule messages:
 event-creation = Создание мероприятия
+delete-events = Удаление мероприятия
+delete-this-event = Удалить это мероприятие
 ask-for-event-name = Введите название мероприятия
 wrong-datetime = Неправильный формат времени
 ask-for-event-start-time = Введите, когда начинается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
 ask-for-event-end-time = Введите, когда заканчивается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
-ask-for-event-end-grants = Введите, сколько баллов дает мероприятие
-event-created = Мероприятие создано!
+ask-for-event-grants = Введите, сколько баллов дает мероприятие
+event-created = Мероприятие создано\!
+event-value = Мероприятие
+    { $eventname }
+    Начинается: { $startsat }
+    Заканчивается: { $endsat }
+    За посещение начисляется { $eventgives }i
 
 # Account messages
 welcome-account = Добро пожаловать в личный кабинет\!
@@ -183,13 +191,12 @@ btn-emoji-no = ❌
 
 #shop messages
 shop-hello = Магазин
-item-name = Название:
-item-size = Размер:
-full-price = Цена:
-discount-price = Цена по скидке:
-available-count = На складе:
-in-stock = Товар в продаже
-not-in-stock = Товар закончился
+item-value = Товар
+    Название: { $itemname }
+    Размер: { $itemsize }
+    Цена: { $fullprice }
+    Цена по скидке: { $discountprice }
+    На складе: { $availablecount }
 
 # Menu buttons
 btn-support = Поддержка
@@ -225,6 +232,7 @@ btn-add-category = Добавить категорию
 btn-edit-category = Редактировать категорию
 btn-add-item = Добавить товар
 btn-add-event = Добавить мероприятие
+btn-delete-event = Удалить мероприятие
 btn-edit-item = Редактировать товар
 btn-delete-item-or-category = Удалить товар или категорию
 btn-delete-category = Удалить эту категорию
@@ -259,6 +267,7 @@ placeholder-code = Введите промокод
 placeholder-item = Выберите товар
 placeholder-item-size = Выберите размер товара
 placeholder-get-back-to-item = Назад к товарам
+placeholder-event = Выберите мероприятие
 
 # Log messages
 log-handler-called = Вызван обработчик

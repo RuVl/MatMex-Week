@@ -21,6 +21,7 @@ from handlers.user.help import support_router
 from handlers.user.promocode import promocode_router
 from handlers.user.register import register_router
 from handlers.user.shop import shop_router
+from handlers.user.schedule import schedule_router
 
 user_router = Router()
 user_router.include_routers(
@@ -28,15 +29,9 @@ user_router.include_routers(
 	account_router,  # профиль пользователя
 	support_router,  # поддержка пользователя
 	shop_router,  # отображение магазина у пользователя
+	schedule_router,  # отображение расписание у пользователя
 	promocode_router
 )
-
-
-@user_router.message(LocalizedTextFilter("btn-schedule"))
-@flags.chat_action()
-async def show_schedule_h(msg: types.Message, l10n: FluentLocalization):
-	image_from_pc = FSInputFile(MEDIA_DIR / "schedule.jpg")
-	await msg.answer_photo(photo=image_from_pc, caption=l10n.format_value("schedule-text-html"), parse_mode=ParseMode.HTML)
 
 
 @user_router.message(LocalizedTextFilter("btn-my-code"))

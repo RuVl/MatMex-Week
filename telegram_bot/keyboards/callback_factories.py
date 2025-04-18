@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal
 
 from aiogram.filters.callback_data import CallbackData
@@ -54,3 +55,17 @@ class ShopBackToCategoriesFactory(CallbackData, prefix='back_to_categories'):
 
 class EditShopCategoryFactory(CallbackData, prefix='edit_shop_choose_category'):
 	category_id: int
+
+
+class EventFactory(CallbackData, prefix='event_button'):
+	event_id: int
+	can_delete: bool
+
+
+class DeleteEventFactory(CallbackData, prefix='delete_event_buttton'):
+	event_id: int
+	can_delete: bool
+
+
+class BackToEventsFactory(CallbackData, prefix='back_to_events_button'):
+	can_delete: bool

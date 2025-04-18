@@ -46,7 +46,7 @@ async def handle_ask_for_event_start_time(msg: types.message, state: FSMContext,
 	await log.adebug("log-admin-action", action="handle_ask_for_event_start_time")
 	state_data = await state.get_data()
 	try:
-		dt = datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
+		datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
 	except ValueError:
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
@@ -58,7 +58,7 @@ async def handle_ask_for_event_start_time(msg: types.message, state: FSMContext,
 		reply_markup=cancel_ikb(l10n),
 		chat_id=msg.chat.id,
 		message_id=state_data.get("event_message_id"))
-	await state.update_data(event_start_time=dt)
+	await state.update_data(event_start_time=msg.text.strip())
 	await state.set_state(EditEventsActions.CHOOSE_EVENT_END_TIME)
 	await log.adebug("log-state-changed", state=EditEventsActions.CHOOSE_EVENT_END_TIME.state)
 
@@ -66,41 +66,26 @@ async def handle_ask_for_event_start_time(msg: types.message, state: FSMContext,
 @edit_events_create_router.message(EditEventsActions.CHOOSE_EVENT_END_TIME)
 async def handle_ask_for_event_end_time(msg: types.message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_event_end_time")
-	state_data = await state.get_data()
 	try:
-		dt = datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
+		datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
 	except ValueError:
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
 
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
-	await msg.bot.edit_message_text(
-		l10n.format_value("ask-for-event-grants"),
-		reply_markup=cancel_ikb(l10n),
-		chat_id=msg.chat.id,
-		message_id=state_data.get("event_message_id"))
-	await state.update_data(event_end_time=dt)
-	await state.set_state(EditEventsActions.CHOOSE_EVENT_GRANTS)
-	await log.adebug("log-state-changed", state=EditEventsActions.CHOOSE_EVENT_GRANTS.state)
-
-
-@edit_events_create_router.message(EditEventsActions.CHOOSE_EVENT_GRANTS)
-async def handle_ask_for_event_grants(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
-	await log.adebug("log-admin-action", action="handle_ask_for_event_grants")
+	await state.update_data(event_end_time=msg.text.strip())
 	state_data = await state.get_data()
-	if not msg.text.isdigit():
-		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
-		await msg.answer(l10n.format_value("not-a-number"))
-		return
+
 	async with async_session() as session:
-		creator = get_user_by_telegram_id(session, msg.from_user.id)
+		creator = await get_user_by_telegram_id(session, msg.from_user.id)
 		await create_event(
 			session=session,
 			name=state_data.get("event_name"),
 			creator_id=creator.id,
-			starts_at=state_data.get("event_start_time"),
-			ends_at=state_data.get("event_end_time"),
+			starts_at=datetime.strptime(state_data.get(
+				"event_start_time"), "%d.%m.%Y %H:%M"),
+			ends_at=datetime.strptime(state_data.get(
+				"event_end_time"), "%d.%m.%Y %H:%M"),
 		)
 
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
