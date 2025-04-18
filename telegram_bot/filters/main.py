@@ -1,11 +1,12 @@
 from aiogram.filters import BaseFilter
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from fluent.runtime import FluentLocalization
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
 from config import SUPPORT_CHAT_ID
-
+from database.methods import get_user_by_telegram_id, get_privilege_by_user
+from database import async_session
 
 class LocalizedTextFilter(BaseFilter):
 	def __init__(self, l10n_key: str):
@@ -34,3 +35,13 @@ class AdminPromocodeCreatingFilter(BaseFilter):
 		return ( msg.text.isdecimal() and
 		          int(msg.text) > 0
 		)
+class PrivilegeFilter(BaseFilter):
+	def __init__(self, privelege : int):
+		self.privelege = privelege
+	async def __call__(self, event: Message | CallbackQuery) -> bool:
+		async with async_session() as session:
+			user = await get_user_by_telegram_id(session, event.from_user.id)
+			privilege = await get_privilege_by_user(session, user.id)
+		return bool(privilege.privilege & self.privelege)
+
+

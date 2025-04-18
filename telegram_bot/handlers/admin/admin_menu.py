@@ -3,15 +3,18 @@ from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from filters import LocalizedTextFilter
+from filters import LocalizedTextFilter, PrivilegeFilter
 from keyboards.common import admin_kb, menu_kb
 from state_machines.admin import AdminActions
 from .code_scanner import code_scanner_router
-from .edit_shop import edit_shop_router
+from .edit_shop import edit_shop_main_router
+from .grant_privileges import grant_privileges_router
+from database.enums import AdminPrivilege
 
 admin_menu_router = Router()
-admin_menu_router.include_routers(code_scanner_router, edit_shop_router)
-
+admin_menu_router.include_routers(code_scanner_router, edit_shop_main_router, grant_privileges_router)
+admin_menu_router.message.filter(PrivilegeFilter(AdminPrivilege.ALL))
+admin_menu_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.ALL))
 
 @admin_menu_router.message(LocalizedTextFilter("btn-admin-panel"))
 async def handle_admin_panel(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
@@ -23,5 +26,6 @@ async def handle_admin_panel(msg: types.Message, state: FSMContext, l10n: Fluent
 @admin_menu_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-back-to-menu"))
 async def handle_back_to_menu(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="back_to_menu")
-	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=menu_kb(l10n))
+	menu = await menu_kb(l10n, msg.from_user.id)
+	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=menu)
 	await state.clear()

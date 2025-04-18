@@ -5,10 +5,10 @@ from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
 from database import async_session
-from database.enums import ApplyStatus
+from database.enums import ApplyStatus, AdminPrivilege
 from database.methods import update_apply_status
 from database.models import User
-from filters import FromBotToAdminFilter
+from filters import FromBotToAdminFilter, PrivilegeFilter
 from keyboards.callback_factories import SupportFactory, PKApplyFactory
 from keyboards.inline import verified_request_ikb, verification_request_ikb
 from utils import escape_md_v2
@@ -16,7 +16,6 @@ from .admin_menu import admin_menu_router
 
 admin_router = Router()  # TODO Check privileges
 admin_router.include_routers(admin_menu_router)
-
 
 @admin_router.message(FromBotToAdminFilter(),
                       F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__))
@@ -28,7 +27,7 @@ async def handle_send_support(msg: types.Message, l10n: FluentLocalization, log:
 	await msg.answer(l10n.format_value("support-sent"))
 
 
-@admin_router.callback_query(PKApplyFactory.filter())
+@admin_router.callback_query(PKApplyFactory.filter(), PrivilegeFilter(AdminPrivilege.EDIT_PK_APPLY))
 async def apply_verify(clb: CallbackQuery, callback_data: PKApplyFactory, l10n: FluentLocalization, log: FilteringBoundLogger, cached_user: User):
 	match callback_data.decision:
 		case 'approve':
