@@ -5,7 +5,6 @@ from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
 from config import SUPPORT_CHAT_ID
-from database.enums import AdminPrivilege
 from database.methods import get_user_by_telegram_id, get_privilege_by_user
 from database import async_session
 

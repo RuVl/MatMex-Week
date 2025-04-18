@@ -61,7 +61,7 @@ from .user import (
 	update_user_balance,
 	update_user_fullname,
 	give_point_for_event_by_user_id,
-	get_user_by_code
+	get_user_by_code,
  	get_users_by_full_name,
 )
 
