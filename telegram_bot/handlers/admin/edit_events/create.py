@@ -12,10 +12,10 @@ from filters.main import LocalizedTextFilter
 from database.methods import create_event, get_user_by_telegram_id
 from database import async_session
 
-edit_events_create_router = Router()
+create_router = Router()
 
 
-@edit_events_create_router.message(EditEventsActions.EDIT_EVENTS, LocalizedTextFilter("btn-add-event"))
+@create_router.message(EditEventsActions.EDIT_EVENTS, LocalizedTextFilter("btn-add-event"))
 async def handle_create_event_btn(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_event_btn")
 	await msg.answer(l10n.format_value("event-creation"), reply_markup=types.ReplyKeyboardRemove())
@@ -25,7 +25,7 @@ async def handle_create_event_btn(msg: types.Message, state: FSMContext, l10n: F
 	await log.adebug("log-state-changed", state=EditEventsActions.CHOOSE_EVENT_NAME.state)
 
 
-@edit_events_create_router.message(EditEventsActions.CHOOSE_EVENT_NAME, F.text)
+@create_router.message(EditEventsActions.CHOOSE_EVENT_NAME, F.text)
 async def handle_ask_for_event_name(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_event_name")
 
@@ -41,7 +41,7 @@ async def handle_ask_for_event_name(msg: types.Message, state: FSMContext, l10n:
 	await log.adebug("log-state-changed", state=EditEventsActions.CHOOSE_EVENT_START_TIME.state)
 
 
-@edit_events_create_router.message(EditEventsActions.CHOOSE_EVENT_START_TIME)
+@create_router.message(EditEventsActions.CHOOSE_EVENT_START_TIME)
 async def handle_ask_for_event_start_time(msg: types.message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_event_start_time")
 	state_data = await state.get_data()
@@ -63,7 +63,7 @@ async def handle_ask_for_event_start_time(msg: types.message, state: FSMContext,
 	await log.adebug("log-state-changed", state=EditEventsActions.CHOOSE_EVENT_END_TIME.state)
 
 
-@edit_events_create_router.message(EditEventsActions.CHOOSE_EVENT_END_TIME)
+@create_router.message(EditEventsActions.CHOOSE_EVENT_END_TIME)
 async def handle_ask_for_event_end_time(msg: types.message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_event_end_time")
 	try:

@@ -10,20 +10,22 @@ from state_machines.admin import AdminActions
 from state_machines.edit_events import EditEventsActions
 from filters.main import LocalizedTextFilter, PrivilegeFilter
 from database.enums import AdminPrivilege
-from .create import edit_events_create_router
-from .delete import edit_events_delete_router
+from .create import create_router
+from .delete import delete_router
 
-edit_events_main_router = Router()
-edit_events_main_router.include_routers(
-    edit_events_create_router,
-    edit_events_delete_router)
-edit_events_main_router.message.filter(
-	PrivilegeFilter(AdminPrivilege.EDIT_EVENTS))
-edit_events_main_router.callback_query.filter(
-	PrivilegeFilter(AdminPrivilege.EDIT_EVENTS))
+edit_events_router = Router()
+edit_events_router.include_routers(
+    create_router,
+    delete_router)
+edit_events_router.message.filter(
+    PrivilegeFilter(AdminPrivilege.EDIT_EVENTS)
+)
+edit_events_router.callback_query.filter(
+    PrivilegeFilter(AdminPrivilege.EDIT_EVENTS)
+)
 
 
-@edit_events_main_router.message(AdminActions.ADMIN_PANEL,
+@edit_events_router.message(AdminActions.ADMIN_PANEL,
                                  LocalizedTextFilter("btn-edit-events"))
 async def handle_edit_events(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_edit_events")
@@ -32,7 +34,7 @@ async def handle_edit_events(msg: types.Message, state: FSMContext, l10n: Fluent
 	await log.adebug("log-state-changed", state="cleared")
 
 
-@edit_events_main_router.callback_query(
+@edit_events_router.callback_query(
 	or_f(
 		EditEventsActions.CHOOSE_EVENT_NAME,
 		EditEventsActions.CHOOSE_EVENT_START_TIME,
@@ -48,7 +50,7 @@ async def handle_cancel_edit_event(callback: types.CallbackQuery, state: FSMCont
 	await log.adebug("log-state-changed", state=EditEventsActions.EDIT_EVENTS.state)
 
 
-@edit_events_main_router.message(EditEventsActions.EDIT_EVENTS, LocalizedTextFilter("btn-back"))
+@edit_events_router.message(EditEventsActions.EDIT_EVENTS, LocalizedTextFilter("btn-back"))
 async def handle_back(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_back")
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=admin_kb(l10n))

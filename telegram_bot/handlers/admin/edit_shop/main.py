@@ -12,17 +12,17 @@ from state_machines.edit_shop import EditShopActions
 from .create import edit_shop_create_router
 from .delete import edit_shop_delete_router
 
-edit_shop_main_router = Router()
-edit_shop_main_router.include_routers(
+edit_shop_router = Router()
+edit_shop_router.include_routers(
 	edit_shop_create_router,
 	edit_shop_delete_router
 )
 
-edit_shop_main_router.message.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
-edit_shop_main_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
+edit_shop_router.message.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
+edit_shop_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
 
 
-@edit_shop_main_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-edit-shop"))
+@edit_shop_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-edit-shop"))
 async def handle_edit_shop(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_edit_shop")
 	await msg.answer(l10n.format_value("edit-shop-menu"), reply_markup=edit_shop_kb(l10n))
@@ -30,7 +30,7 @@ async def handle_edit_shop(msg: types.Message, state: FSMContext, l10n: FluentLo
 	await log.adebug("log-state-changed", state="cleared")
 
 
-@edit_shop_main_router.message(
+@edit_shop_router.message(
 	EditShopActions.CREATE_CATEGORY,
 	LocalizedTextFilter("btn-cancel"),
 )
@@ -42,7 +42,7 @@ async def handle_cancel_edit_category(msg: types.Message, state: FSMContext, l10
 
 
 # TODO ПЕРЕДЕЛАТЬ ЭТУ ПАРАШУ
-@edit_shop_main_router.callback_query(
+@edit_shop_router.callback_query(
 	or_f(
 		EditShopActions.CREATE_ITEM,
 		EditShopActions.CHOOSE_ITEM_NAME,
@@ -62,7 +62,7 @@ async def handle_cancel_edit_item(callback: types.CallbackQuery, state: FSMConte
 	await state.set_state(EditShopActions.EDIT_SHOP)
 
 
-@edit_shop_main_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-back"))
+@edit_shop_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-back"))
 async def handle_back(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_back")
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=admin_kb(l10n))
