@@ -1,13 +1,16 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from fluent.runtime import FluentLocalization
+from datetime import datetime
 
 from database.enums import AdminPrivilege
-from database.models import User
+from database.models import User, EventPrivilegeGrant, Event
 from database.methods import get_user_event_grants, get_all_events
 from database import async_session
-from keyboards.callback_factories import PKApplyFactory, PrivilegeButtonFactory, UserFactory, EventPrivilegeButtonFactory
+from keyboards.callback_factories import PKApplyFactory, PrivilegeButtonFactory, UserFactory, EventPrivilegeButtonFactory, EventToGrantFactory
 
+
+from aiogram import Router, types, flags
 
 def verification_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeyboardMarkup:
 	builder = InlineKeyboardBuilder()
@@ -114,4 +117,32 @@ async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -
 		),
 	)
   
+	return builder.as_markup()
+
+async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPrivilegeGrant], subject_id : int, admin_tg_id : int) -> InlineKeyboardMarkup | None:
+	active_events = []
+	now = datetime.now()
+	async with async_session() as session:
+		all_events = await get_all_events(session)
+	for event in all_events:
+		if not(event.starts_at.replace(tzinfo=None) <= now.replace(tzinfo=None) <= event.ends_at.replace(tzinfo=None)):
+			continue
+		for grant in event_grants:
+			if grant.event_id == event.id:
+				active_events.append((event, grant))
+	if not active_events:
+		return None
+	builder = InlineKeyboardBuilder()
+	for event_pair in active_events:
+		builder.row(
+			InlineKeyboardButton(
+				text=event_pair[0].name,
+				callback_data=EventToGrantFactory(
+					event_id=event_pair[0].id,
+					grant_id=event_pair[1].id,
+					subject_id = subject_id,
+     				admin_tg_id = admin_tg_id
+				).pack()
+			),
+		)
 	return builder.as_markup()

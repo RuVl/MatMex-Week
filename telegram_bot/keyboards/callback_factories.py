@@ -75,3 +75,9 @@ class EventPrivilegeButtonFactory(CallbackData, prefix='event_privilege_button')
 	event_id: int
 	grant_id: int | None
 	subject_id: int
+
+class EventToGrantFactory(CallbackData, prefix='event_to_grant_button'):
+	event_id: int
+	grant_id: int
+	subject_id: int
+	admin_tg_id: int

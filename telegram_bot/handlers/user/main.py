@@ -21,6 +21,8 @@ from handlers.user.promocode import promocode_router
 from handlers.user.register import register_router
 from handlers.user.shop import shop_router
 from handlers.user.schedule import schedule_router
+from keyboards.inline import active_events_ikb
+from keyboards.callback_factories import EventToGrantFactory
 
 user_router = Router()
 user_router.include_routers(
@@ -61,19 +63,26 @@ async def give_event_points_h(msg: types.Message, command: CommandObject, cached
 
 		# получить привилегии на ивент пользователя
 		event_grants = await get_active_user_event_grants(session, cached_user.id)
-		event_grants: list[EventPrivilegeGrant] = filter(
-			lambda eg: eg.privileges & EventPrivilege.CAN_GIVE_POINTS, event_grants)
 
 		if not event_grants:
-			await msg.answer(l10n.format_value("no-rights"))
+			await msg.answer(l10n.format_value("cant-give-points-now"))
+			return
 
-		# TODO кнопка с вопросом на какое мероприятие начислять, если их > 1
-		# Пока что начислим сразу на все мероприятия
-		for event_grant in event_grants:
-			success = await give_point_for_event_by_user_id(session, user.id, event_grant.event_id)
+		active_events = await active_events_ikb(l10n, event_grants, user.id, msg.from_user.id)
+		if not active_events:
+			await msg.answer(l10n.format_value("cant-give-points-now"))
+			return
+		await msg.answer(l10n.format_value("ask-for-event"), reply_markup=active_events)
 
-			if success:
-				await msg.answer(l10n.format_value("points-awarded"))
-				await msg.bot.send_message(user.telegram_id, l10n.format_value("points-awarded"))
-			else:
-				await msg.answer(l10n.format_value("already-received"))
+
+@user_router.callback_query(EventToGrantFactory.filter())
+async def give_event_points_kb_h(callback: types.CallbackQuery, l10n: FluentLocalization):
+	data = EventToGrantFactory.unpack(callback.data)
+	# todo все равно чекать привелегию и время
+	async with async_session() as session:
+		success = await give_point_for_event_by_user_id(session, data.subject_id, data.event_id)
+		if success:
+			await callback.answer(l10n.format_value("points-awarded"))
+			await callback.bot.send_message(data.admin_tg_id, l10n.format_value("points-awarded"))
+		else:
+			await callback.answer(l10n.format_value("already-received"))
