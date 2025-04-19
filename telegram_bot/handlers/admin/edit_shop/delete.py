@@ -3,13 +3,13 @@ from aiogram import Router, types
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from keyboards.inline import get_category_ikb, get_item_ikb
-from keyboards.callback_factories import ShopDeleteCategoryFactory, ShopDeleteItemFactory
 from config import MEDIA_DIR
-from database.methods import remove_item_by_id, remove_category_by_id, get_category_by_id
 from database import async_session
-from state_machines import EditShopActions
+from database.methods import remove_item_by_id, remove_category_by_id, get_category_by_id
 from filters.main import LocalizedTextFilter
+from keyboards.callback_factories import ShopDeleteCategoryFactory, ShopDeleteItemFactory
+from keyboards.inline import get_category_ikb, get_item_ikb
+from state_machines import EditShopActions
 
 edit_shop_delete_router = Router()
 
@@ -39,7 +39,7 @@ async def handle_choose_category(callback: types.CallbackQuery, l10n: FluentLoca
 
 	await callback.bot.edit_message_media(
 		media=types.InputMediaPhoto(media=types.FSInputFile(category.image_path),
-									caption=l10n.format_value("ask-for-item-name")),
+		                            caption=l10n.format_value("ask-for-item-name")),
 		reply_markup=get_item_ikb(l10n, category, data.can_delete),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id)
@@ -55,7 +55,7 @@ async def handle_delete_category(callback: types.CallbackQuery, l10n: FluentLoca
 	category_ikb = await get_category_ikb(l10n, data.can_delete)
 	await callback.bot.edit_message_media(
 		media=types.InputMediaPhoto(media=image_from_pc,
-									caption=l10n.format_value("shop-hello")),
+		                            caption=l10n.format_value("shop-hello")),
 		reply_markup=category_ikb,
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id)

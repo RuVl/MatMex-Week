@@ -44,10 +44,10 @@ class LoggingMw(BaseMiddleware):
 		fsm.set_state = types.MethodType(set_state_with_logging, fsm)
 
 	async def __call__(
-		self,
-		handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-		event: TelegramObject,
-		data: Dict[str, Any],
+			self,
+			handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+			event: TelegramObject,
+			data: Dict[str, Any],
 	) -> Any:
 		telegram_user = data.get(EVENT_FROM_USER_KEY)
 		user_context = self.get_user_context(
@@ -60,7 +60,7 @@ class LoggingMw(BaseMiddleware):
 		handler_obj = data.get("handler")
 		handler_name = (
 			getattr(handler_obj.callback, "__name__",
-					str(handler_obj.callback))
+			        str(handler_obj.callback))
 			if handler_obj and hasattr(handler_obj, "callback") else
 			getattr(handler, "__name__", str(handler))
 		)

@@ -1,18 +1,18 @@
 from aiogram import Router, types
-from aiogram.fsm.context import FSMContext
 from aiogram.filters import or_f
+from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from database.methods import get_privilege_by_user, get_users_by_full_name, create_privilege, get_user_by_telegram_id, add_privilege, remove_privilege, is_provider_to
-from database.enums import AdminPrivilege
 from database import async_session
+from database.enums import AdminPrivilege
+from database.methods import get_privilege_by_user, get_users_by_full_name, create_privilege, get_user_by_telegram_id, add_privilege, remove_privilege, is_provider_to
 from filters import LocalizedTextFilter, PrivilegeFilter
+from keyboards.callback_factories import PrivilegeButtonFactory, UserFactory
 from keyboards.common import admin_kb, cancel_kb
 from keyboards.inline import user_rights_ikb, names_ikb
-from keyboards.callback_factories import PrivilegeButtonFactory, UserFactory
-from state_machines.grant_privileges import GrantPrivilegesActions
 from state_machines.admin import AdminActions
+from state_machines.grant_privileges import GrantPrivilegesActions
 
 grant_privileges_router = Router()
 grant_privileges_router.message.filter(

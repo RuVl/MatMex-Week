@@ -4,9 +4,9 @@ from fluent.runtime import FluentLocalization
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
-from config import SUPPORT_CHAT_ID
-from database.methods import get_user_by_telegram_id, get_privilege_by_user
 from database import async_session
+from database.methods import get_user_by_telegram_id, get_privilege_by_user
+from env import TelegramKeys
 
 
 class LocalizedTextFilter(BaseFilter):
@@ -26,17 +26,17 @@ class LocalizedTextFilter(BaseFilter):
 class FromBotToAdminFilter(BaseFilter):
 	async def __call__(self, message: Message) -> bool:
 		return (
-			message.reply_to_message and
-			message.chat.id == SUPPORT_CHAT_ID and
-			message.from_user.id == message.bot.id
+				message.reply_to_message and
+				message.chat.id == TelegramKeys.ADMIN_CHAT_ID and
+				message.from_user.id == message.bot.id
 		)
 
 
 class AdminPromocodeCreatingFilter(BaseFilter):
 	async def __call__(self, msg: Message) -> bool:
 		return (msg.text.isdecimal() and
-				int(msg.text) > 0
-				)
+		        int(msg.text) > 0
+		        )
 
 
 class PrivilegeFilter(BaseFilter):

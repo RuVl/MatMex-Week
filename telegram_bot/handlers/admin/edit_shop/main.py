@@ -5,11 +5,11 @@ from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
+from database.enums import AdminPrivilege
+from filters.main import LocalizedTextFilter, PrivilegeFilter
 from keyboards.common import edit_shop_kb, admin_kb
 from state_machines.admin import AdminActions
 from state_machines.edit_shop import EditShopActions
-from filters.main import LocalizedTextFilter, PrivilegeFilter
-from database.enums import AdminPrivilege
 from .create import edit_shop_create_router
 from .delete import edit_shop_delete_router
 
@@ -22,7 +22,7 @@ edit_shop_main_router.callback_query.filter(
 
 
 @edit_shop_main_router.message(AdminActions.ADMIN_PANEL,
-							   LocalizedTextFilter("btn-edit-shop"))
+                               LocalizedTextFilter("btn-edit-shop"))
 async def handle_edit_shop(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_edit_shop")
 	await msg.answer(l10n.format_value("edit-shop-menu"), reply_markup=edit_shop_kb(l10n))

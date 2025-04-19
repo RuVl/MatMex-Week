@@ -8,12 +8,12 @@ from database.models import Promocode, PromocodeActivation, User
 
 
 async def create_promocode(
-	session: AsyncSession,
-	code: str,
-	cost: int,
-	creator_id: int,
-	max_uses: int | None = None,
-	expires_at: datetime | None = None
+		session: AsyncSession,
+		code: str,
+		cost: int,
+		creator_id: int,
+		max_uses: int | None = None,
+		expires_at: datetime | None = None
 ) -> Promocode:
 	"""Создаёт новый промокод."""
 	promocode = Promocode(

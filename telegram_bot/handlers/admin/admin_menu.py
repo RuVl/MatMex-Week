@@ -3,13 +3,13 @@ from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
+from database.enums import AdminPrivilege
 from filters import LocalizedTextFilter, PrivilegeFilter
 from keyboards.common import admin_kb, menu_kb
 from state_machines.admin import AdminActions
 from .code_scanner import code_scanner_router
 from .edit_shop import edit_shop_main_router
 from .grant_privileges import grant_privileges_router
-from database.enums import AdminPrivilege
 
 admin_menu_router = Router()
 admin_menu_router.include_routers(

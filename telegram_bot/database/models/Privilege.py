@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from sqlalchemy import func, ForeignKey, DateTime, Integer
-from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models import Base, User, Promocode, Event

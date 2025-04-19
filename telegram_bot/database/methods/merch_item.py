@@ -1,4 +1,5 @@
 import os
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -6,22 +7,22 @@ from database.models import MerchItem
 
 
 async def create_item(session: AsyncSession,
-					  name: str,
-					  image_path: str,
-					  size: int,
-					  full_price: float,
-					  discount_price: float,
-					  available_count: int,
-					  in_stock: bool,
-					  category_id: int,) -> MerchItem:
+                      name: str,
+                      image_path: str,
+                      size: int,
+                      full_price: float,
+                      discount_price: float,
+                      available_count: int,
+                      in_stock: bool,
+                      category_id: int, ) -> MerchItem:
 	item = MerchItem(name=name,
-					 image_path=image_path,
-					 size=size,
-					 full_price=full_price,
-					 discount_price=discount_price,
-					 available_count=available_count,
-					 in_stock=in_stock,
-					 category_id=category_id)
+	                 image_path=image_path,
+	                 size=size,
+	                 full_price=full_price,
+	                 discount_price=discount_price,
+	                 available_count=available_count,
+	                 in_stock=in_stock,
+	                 category_id=category_id)
 	session.add(item)
 	await session.commit()
 	await session.refresh(item)

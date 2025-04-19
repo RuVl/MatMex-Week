@@ -30,7 +30,7 @@ async def create_activation(session: AsyncSession, promocode_id: int, recipient_
 
 
 async def get_activation_by_ids(session: AsyncSession, promocode_id: int,
-								recipient_id: int) -> PromocodeActivation | None:
+                                recipient_id: int) -> PromocodeActivation | None:
 	"""Возвращает запись об активации для промокода и пользователя."""
 	query = (
 		select(PromocodeActivation)

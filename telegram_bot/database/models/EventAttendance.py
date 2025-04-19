@@ -14,7 +14,7 @@ class EventAttendance(Base):
 	event_id: Mapped[int] = mapped_column(
 		Integer, ForeignKey("events.id"), primary_key=True)
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False,
-												 comment="когда создан")
+	                                             comment="когда создан")
 
 	user: Mapped["User"] = relationship(
 		"User", back_populates="event_attendances")

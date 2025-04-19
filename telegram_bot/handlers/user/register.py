@@ -6,17 +6,16 @@ from aiogram.types import ReplyKeyboardRemove
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from config import ADMIN_CHAT_ID
 from database import async_session
+from database.enums import AdminPrivilege
 from database.methods import create_user, create_apply, get_user_by_telegram_id, create_privilege
 from database.models import User
-from database.enums import AdminPrivilege
+from env import TelegramKeys
 from filters import FullNameFilter
 from keyboards.common import menu_kb, yes_no_kb, manual_check_kb
 from keyboards.inline import verification_request_ikb
 from state_machines.registration import RegistrationsActions
 from utils import escape_md_v2
-from env import TelegramKeys
 
 register_router = Router()
 
@@ -84,7 +83,7 @@ async def handle_manual_check_confirm(msg: types.Message, state: FSMContext, l10
 			apply = await create_apply(session, user.id)
 
 		await log.ainfo("created-apply-for-check", apply_id=apply.id, user_id=user.id, fullname=user.full_name)
-		await msg.bot.send_message(ADMIN_CHAT_ID, l10n.format_value("apply-check", args={
+		await msg.bot.send_message(TelegramKeys.ADMIN_CHAT_ID, l10n.format_value("apply-check", args={
 			'status': apply.status,
 			'fullname': escape_md_v2(user.full_name),
 			'username': escape_md_v2(user.telegram_username),

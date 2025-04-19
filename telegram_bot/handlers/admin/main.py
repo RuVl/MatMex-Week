@@ -19,7 +19,7 @@ admin_router.include_routers(admin_menu_router)
 
 
 @admin_router.message(FromBotToAdminFilter(),
-					  F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__))
+                      F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__))
 async def handle_send_support(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="send_support")
 	original = msg.reply_to_message

@@ -11,13 +11,13 @@ from structlog.typing import FilteringBoundLogger
 
 class MessageActionWrapper:
 	def __init__(
-		self,
-		msg: Message,
-		max_delay: float = 3.0,
-		typing_speed: float = 20.0,
-		max_upload_delay: float = 3.0,
-		adaptive: bool = True,
-		log: FilteringBoundLogger = None
+			self,
+			msg: Message,
+			max_delay: float = 3.0,
+			typing_speed: float = 20.0,
+			max_upload_delay: float = 3.0,
+			adaptive: bool = True,
+			log: FilteringBoundLogger = None
 	):
 		self._msg = msg
 		self._max_delay = max_delay

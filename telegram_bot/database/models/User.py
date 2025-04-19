@@ -48,4 +48,4 @@ class User(Base):
 
 	# Back ref event_privileges.responsible_id -> users.id
 	event_privileges: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='responsible',
-																		 foreign_keys='EventPrivilegeGrant.responsible_id')
+	                                                                     foreign_keys='EventPrivilegeGrant.responsible_id')

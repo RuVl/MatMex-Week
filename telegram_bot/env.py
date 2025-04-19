@@ -4,10 +4,13 @@ from typing import Final
 
 class TelegramKeys:
 	DEBUG: Final[bool] = bool(environ.get('DEBUG', default=False))
+	WITHOUT_TYPING: Final[bool] = bool(environ.get('WITHOUT_TYPING', default=False))
+
 	API_TOKEN: Final[str] = environ.get('TG_API_TOKEN')
-	WITHOUT_TYPING: Final[bool] = bool(
-		environ.get('WITHOUT_TYPING', default=False))
 	ADMINS: Final[list[str]] = environ.get('ADMINS').split(',')
+
+	SUPPORT_CHAT_ID: Final[str] = environ.get('SUPPORT_CHAT_ID')
+	ADMIN_CHAT_ID: Final[str] = environ.get('ADMIN_CHAT_ID')
 
 
 class PostgresKeys:

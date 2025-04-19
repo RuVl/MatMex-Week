@@ -1,21 +1,22 @@
-
 import os
+
 from aiogram import F
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
+from config import MEDIA_DIR
+from database import async_session
+from database.methods import create_category, get_category_by_id, create_item
+from filters.main import LocalizedTextFilter
+from keyboards.callback_factories import EditShopCategoryFactory
 from keyboards.common import edit_shop_kb, cancel_kb
 from keyboards.inline import get_edit_shop_category_ikb, cancel_ikb, get_item_size_ikb, yes_no_cancel_ikb
-from keyboards.callback_factories import EditShopCategoryFactory
 from state_machines.edit_shop import EditShopActions
-from filters.main import LocalizedTextFilter
-from config import MEDIA_DIR
-from database.methods import create_category, get_category_by_id, create_item
-from database import async_session
 
 edit_shop_create_router = Router()
+
 
 # TODO: подписывать этап редактирования
 

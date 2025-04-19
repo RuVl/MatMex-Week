@@ -1,13 +1,12 @@
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
-from structlog.typing import FilteringBoundLogger
 
 from database import async_session
-from database.methods import activate_promocode, get_user_by_telegram_id, get_active_promocodes, get_user_activations
+from database.methods import activate_promocode, get_user_by_telegram_id, get_user_activations
 from database.models import User
 from filters import LocalizedTextFilter
-from keyboards.common import menu_kb, cancel_kb, user_codes_kb
+from keyboards.common import menu_kb, user_codes_kb
 from state_machines import PromocodeActions
 from utils import escape_md_v2
 

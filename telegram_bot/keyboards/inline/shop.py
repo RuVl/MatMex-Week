@@ -2,10 +2,11 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from database import async_session
+from database.enums import MerchSize
 from database.methods import get_all_categories
 from database.models import MerchCategory, MerchItem
-from database.enums import MerchSize
-from keyboards.callback_factories import ShopCategoryFactory, ShopItemFactory, ShopDeleteItemFactory, ShopDeleteCategoryFactory, ShopBackToCategoriesFactory, EditShopCategoryFactory
+from keyboards.callback_factories import ShopCategoryFactory, ShopItemFactory, ShopDeleteItemFactory, ShopDeleteCategoryFactory, ShopBackToCategoriesFactory, \
+	EditShopCategoryFactory
 
 
 async def get_category_ikb(l10n, can_delete: bool) -> InlineKeyboardMarkup:

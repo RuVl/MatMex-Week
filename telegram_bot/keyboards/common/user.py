@@ -2,9 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from database import async_session
-from database.methods import get_all_categories, get_privilege_by_user, get_user_by_telegram_id
-from database.models import MerchCategory
-from database.enums import MerchSize
+from database.methods import get_privilege_by_user, get_user_by_telegram_id
 
 
 def account_menu_kb(l10n) -> ReplyKeyboardMarkup:

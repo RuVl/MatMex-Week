@@ -9,11 +9,11 @@ from database.models import EventPrivilegeGrant, Event
 
 
 async def add_event_privilege_grant(
-	session: AsyncSession,
-	user_id: int,
-	privilege_id: int,
-	event_id: int,
-	privileges: EventPrivilege
+		session: AsyncSession,
+		user_id: int,
+		privilege_id: int,
+		event_id: int,
+		privileges: EventPrivilege
 ) -> EventPrivilegeGrant:
 	"""Добавляет пользователю привилегии на мероприятие."""
 	grant = EventPrivilegeGrant(
@@ -29,9 +29,9 @@ async def add_event_privilege_grant(
 
 
 async def update_event_privilege_grant(
-	session: AsyncSession,
-	grant_id: int,
-	privileges: EventPrivilege
+		session: AsyncSession,
+		grant_id: int,
+		privileges: EventPrivilege
 ) -> EventPrivilegeGrant:
 	"""Обновляет привилегии пользователя на мероприятие."""
 	grant = await session.get(EventPrivilegeGrant, grant_id, options=[

@@ -17,6 +17,17 @@ from .event_privilege_grant import (
 	delete_event_privilege_grant,
 	get_active_user_event_grants,
 )
+from .merch_category import (
+	get_all_categories,
+	create_category,
+	get_category_by_id,
+	remove_category_by_id,
+)
+from .merch_item import (
+	create_item,
+	get_item_by_id,
+	remove_item_by_id,
+)
 from .pk_apply import (
 	create_apply,
 	update_apply_status,
@@ -60,18 +71,6 @@ from .user import (
 	get_user_by_code,
 	get_users_by_full_name,
 )
-from .merch_category import (
-	get_all_categories,
-	create_category,
-	get_category_by_id,
-	remove_category_by_id,
-)
-from .merch_item import (
-	create_item,
-	get_item_by_id,
-	remove_item_by_id,
-)
-
 
 __all__ = [
 	# User methods
@@ -140,7 +139,6 @@ __all__ = [
 	"get_active_events",
 	"get_upcoming_events",
 	"get_events_by_creator",
-
 
 	# MerchItem methods
 	"create_item",
