@@ -8,16 +8,16 @@ from database import async_session
 from state_machines import EditEventsActions
 from filters.main import LocalizedTextFilter
 
-edit_events_delete_router = Router()
+delete_router = Router()
 
 
-@edit_events_delete_router.message(EditEventsActions.EDIT_EVENTS, LocalizedTextFilter("btn-delete-event"))
+@delete_router.message(EditEventsActions.EDIT_EVENTS, LocalizedTextFilter("btn-delete-event"))
 async def handle_delete_event_btn(msg: types.Message, l10n: FluentLocalization):
 	events = await events_ikb(l10n, True)
 	await msg.answer(text=l10n.format_value("delete-events"), reply_markup=events)
 
 
-@edit_events_delete_router.callback_query(DeleteEventFactory.filter())
+@delete_router.callback_query(DeleteEventFactory.filter())
 async def handle_back_to_categories(callback: types.CallbackQuery, l10n: FluentLocalization):
 	data = DeleteEventFactory.unpack(callback.data)
 	async with async_session() as session:

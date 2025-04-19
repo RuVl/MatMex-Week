@@ -15,12 +15,12 @@ from config import MEDIA_DIR
 from database.methods import create_category, get_category_by_id, create_item
 from database import async_session
 
-edit_shop_create_router = Router()
+create_router = Router()
 
 # TODO: подписывать этап редактирования
 
 
-@edit_shop_create_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-add-category"))
+@create_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-add-category"))
 async def handle_create_category_btn(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_category_btn")
 	await msg.answer(l10n.format_value("ask-for-category-create"), reply_markup=cancel_kb(l10n))
@@ -28,7 +28,7 @@ async def handle_create_category_btn(msg: types.Message, state: FSMContext, l10n
 	await log.adebug("log-state-changed", state=EditShopActions.CREATE_CATEGORY.state)
 
 
-@edit_shop_create_router.message(EditShopActions.CREATE_CATEGORY)
+@create_router.message(EditShopActions.CREATE_CATEGORY)
 async def handle_create_category(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_category")
 	if not msg.photo:
@@ -51,7 +51,7 @@ async def handle_create_category(msg: types.Message, state: FSMContext, l10n: Fl
 	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 
-@edit_shop_create_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-add-item"))
+@create_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-add-item"))
 async def handle_create_item_btn(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_item_btn")
 	category_ikb = await get_edit_shop_category_ikb(l10n)
@@ -61,10 +61,9 @@ async def handle_create_item_btn(msg: types.Message, state: FSMContext, l10n: Fl
 	await log.adebug("log-state-changed", state=EditShopActions.CREATE_ITEM.state)
 
 
-@edit_shop_create_router.callback_query(EditShopActions.CREATE_ITEM, EditShopCategoryFactory.filter())
-async def handle_create_item(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
+@create_router.callback_query(EditShopActions.CREATE_ITEM, EditShopCategoryFactory.filter())
+async def handle_create_item(callback: types.CallbackQuery, callback_data: EditShopCategoryFactory, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_create_item")
-	callback_data = EditShopCategoryFactory.unpack(callback.data)
 	async with async_session() as session:
 		category = await get_category_by_id(session, callback_data.category_id)
 	if category:
@@ -78,7 +77,7 @@ async def handle_create_item(callback: types.CallbackQuery, state: FSMContext, l
 		await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_NAME.state)
 
 
-@edit_shop_create_router.message(EditShopActions.CHOOSE_ITEM_NAME, F.text)
+@create_router.message(EditShopActions.CHOOSE_ITEM_NAME, F.text)
 async def handle_ask_for_item_name(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_item_name")
 	state_data = await state.get_data()
@@ -93,7 +92,7 @@ async def handle_ask_for_item_name(msg: types.Message, state: FSMContext, l10n: 
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_SIZE.state)
 
 
-@edit_shop_create_router.callback_query(EditShopActions.CHOOSE_ITEM_SIZE)
+@create_router.callback_query(EditShopActions.CHOOSE_ITEM_SIZE)
 async def handle_ask_for_item_size(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_item_size")
 	state_data = await state.get_data()
@@ -107,7 +106,7 @@ async def handle_ask_for_item_size(callback: types.CallbackQuery, state: FSMCont
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_FULL_PRICE.state)
 
 
-@edit_shop_create_router.message(EditShopActions.CHOOSE_ITEM_FULL_PRICE)
+@create_router.message(EditShopActions.CHOOSE_ITEM_FULL_PRICE)
 async def handle_ask_for_item_full_price(msg: types.message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_item_full_prcie")
 	state_data = await state.get_data()
@@ -126,7 +125,7 @@ async def handle_ask_for_item_full_price(msg: types.message, state: FSMContext, 
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE.state)
 
 
-@edit_shop_create_router.message(EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE)
+@create_router.message(EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE)
 async def handle_ask_for_item_discount_pice(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_item_discount_pice")
 	state_data = await state.get_data()
@@ -145,7 +144,7 @@ async def handle_ask_for_item_discount_pice(msg: types.Message, state: FSMContex
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT.state)
 
 
-@edit_shop_create_router.message(EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT)
+@create_router.message(EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT)
 async def handle_ask_for_item_available_count(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="ask-for-item-available-count")
 	state_data = await state.get_data()
@@ -164,7 +163,7 @@ async def handle_ask_for_item_available_count(msg: types.Message, state: FSMCont
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_IN_STOCK.state)
 
 
-@edit_shop_create_router.callback_query(EditShopActions.CHOOSE_ITEM_IN_STOCK)
+@create_router.callback_query(EditShopActions.CHOOSE_ITEM_IN_STOCK)
 async def handle_ask_for_item_in_stock(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_item_in_stock")
 	state_data = await state.get_data()
@@ -181,7 +180,7 @@ async def handle_ask_for_item_in_stock(callback: types.CallbackQuery, state: FSM
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_IMAGE.state)
 
 
-@edit_shop_create_router.message(EditShopActions.CHOOSE_ITEM_IMAGE)
+@create_router.message(EditShopActions.CHOOSE_ITEM_IMAGE)
 async def handle_ask_for_item_image(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_ask_for_item_image")
 	state_data = await state.get_data()

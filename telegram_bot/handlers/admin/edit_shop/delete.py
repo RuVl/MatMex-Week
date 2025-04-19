@@ -11,10 +11,10 @@ from database import async_session
 from state_machines import EditShopActions
 from filters.main import LocalizedTextFilter
 
-edit_shop_delete_router = Router()
+delete_router = Router()
 
 
-@edit_shop_delete_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-delete-item-or-category"))
+@delete_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-delete-item-or-category"))
 async def handle_delete_category_btn(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_delete_category_btn")
 	text = l10n.format_value("shop-hello")
@@ -28,7 +28,7 @@ async def handle_delete_category_btn(msg: types.Message, l10n: FluentLocalizatio
 	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 
-@edit_shop_delete_router.callback_query(ShopDeleteItemFactory.filter(F))
+@delete_router.callback_query(ShopDeleteItemFactory.filter(F))
 async def handle_choose_category(callback: types.CallbackQuery, l10n: FluentLocalization):
 	data = ShopDeleteItemFactory.unpack(callback.data)
 	async with async_session() as session:
@@ -45,7 +45,7 @@ async def handle_choose_category(callback: types.CallbackQuery, l10n: FluentLoca
 		message_id=callback.message.message_id)
 
 
-@edit_shop_delete_router.callback_query(ShopDeleteCategoryFactory.filter(F))
+@delete_router.callback_query(ShopDeleteCategoryFactory.filter(F))
 async def handle_delete_category(callback: types.CallbackQuery, l10n: FluentLocalization):
 	data = ShopDeleteCategoryFactory.unpack(callback.data)
 	async with async_session() as session:
