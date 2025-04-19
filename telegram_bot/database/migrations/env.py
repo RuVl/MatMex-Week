@@ -3,6 +3,8 @@ import logging
 from logging.config import fileConfig
 from typing import Iterable
 
+# noinspection PyUnresolvedReferences
+import alembic_postgresql_enum
 from alembic import context
 from alembic.operations import MigrationScript
 from alembic.runtime.migration import MigrationContext
@@ -62,9 +64,9 @@ def run_migrations_offline() -> None:
 
 # noinspection PyUnusedLocal
 def process_revision_directives(
-		context: MigrationContext,
-		revision: str | Iterable[str | None] | Iterable[str],
-		directives: list[MigrationScript],
+	context: MigrationContext,
+	revision: str | Iterable[str | None] | Iterable[str],
+	directives: list[MigrationScript],
 ):
 	assert config.cmd_opts is not None
 	if getattr(config.cmd_opts, 'autogenerate', False):

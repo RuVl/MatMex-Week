@@ -8,15 +8,17 @@ from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import FSInputFile
 from aiogram.utils.deep_linking import create_start_link
 from fluent.runtime import FluentLocalization
-from structlog.typing import FilteringBoundLogger
 
-from config import MEDIA_DIR, STANDARD_SCALE, STANDARD_AMOUNT
+from config import MEDIA_DIR, QR_CODE_SCALE
 from database import async_session
-from database.methods import get_user_by_telegram_id
-from database.methods.user import mark_user_attended_event_by_code, update_user_balance, get_user_by_code
+from database.enums import EventPrivilege
+from database.methods import get_user_by_telegram_id, get_active_user_event_grants
+from database.methods import give_point_for_event_by_user_id, get_user_by_code
+from database.models import User, EventPrivilegeGrant
 from filters import LocalizedTextFilter
 from handlers.user.account import account_router
 from handlers.user.help import support_router
+from handlers.user.promocode import promocode_router
 from handlers.user.register import register_router
 from handlers.user.shop import shop_router
 
@@ -25,64 +27,59 @@ user_router.include_routers(
 	register_router,  # регистрация пользователя
 	account_router,  # профиль пользователя
 	support_router,  # поддержка пользователя
-	shop_router  # отображение магазина у пользователя
+	shop_router,  # отображение магазина у пользователя
+	promocode_router
 )
 
 
 @user_router.message(LocalizedTextFilter("btn-schedule"))
 @flags.chat_action()
-async def handle_schedule_button(msg: types.Message, l10n: FluentLocalization):
-	text = l10n.format_value("schedule-text-html")
-
+async def show_schedule_h(msg: types.Message, l10n: FluentLocalization):
 	image_from_pc = FSInputFile(MEDIA_DIR / "schedule.jpg")
-	await msg.answer_photo(image_from_pc, caption=text, parse_mode=ParseMode.HTML)
+	await msg.answer_photo(photo=image_from_pc, caption=l10n.format_value("schedule-text-html"), parse_mode=ParseMode.HTML)
 
 
 @user_router.message(LocalizedTextFilter("btn-my-code"))
-async def code_button_pressed(msg: types.Message):
-	telegram_id = msg.from_user.id
+async def show_my_qr_h(msg: types.Message):
 	async with async_session() as session:
-		user = await get_user_by_telegram_id(session, telegram_id)
-		data = str(user.code)
+		user = await get_user_by_telegram_id(session, msg.from_user.id)
 
-		# username_bot = (await msg.bot.me()).username
-		link = await create_start_link(bot=msg.bot, payload=data, encode=True)
-		# message_type = "https://t.me/" + username_bot + "?start=" + data
+	# Create the link and qr-code
+	link = await create_start_link(bot=msg.bot, payload=str(user.code), encode=True)
+	qrcode = segno.make(link, micro=False)
 
-		qrcode = segno.make(link, micro=False)
+	# Save qr-code to buffer
+	buffer = io.BytesIO()
+	qrcode.save(buffer, kind='png', scale=QR_CODE_SCALE)
+	buffer.seek(0)
 
-		buffer = io.BytesIO()
-		qrcode.save(buffer, kind='png', scale=STANDARD_SCALE)
-
-		buffer.seek(0)
-		await msg.answer_photo(photo=types.BufferedInputFile(buffer.read(), "qrcode.png"), ParseMode=ParseMode.HTML)
+	await msg.answer_photo(photo=types.BufferedInputFile(buffer.read(), "qrcode.png"))
 
 
 @user_router.message(CommandStart(deep_link=True, deep_link_encoded=True))
-async def handle_start_deeplink(message: types.Message, command: CommandObject, l10n: FluentLocalization,
-                                log: FilteringBoundLogger):
-	payload = command.args
-	await log.ainfo(payload)
-	try:
-		alo = uuid.UUID(payload)
-		async with async_session() as session:
-			# todo доработать с event_id, не хардкодно
-			result = await mark_user_attended_event_by_code(session, payload, 3)
-			await log.adebug("Result is" + str(result))
-			if result:
-				user = await get_user_by_code(session, alo)
-				await update_user_balance(session, user.id, STANDARD_AMOUNT)
-				await message.answer(
-					l10n.format_value("deeplink-valid", {"uuid": payload})
-				)
+async def give_event_points_h(msg: types.Message, command: CommandObject, cached_user: User, l10n: FluentLocalization):
+	async with async_session() as session:
+		# Получаем пользователя, которому начислить баллы
+		user = await get_user_by_code(session, uuid.UUID(command.args))
+		if user is None:
+			await msg.answer(l10n.format_value("deeplink-invalid"))
+			return
+
+		# получить привилегии на ивент пользователя
+		event_grants = await get_active_user_event_grants(session, cached_user.id)
+		event_grants: list[EventPrivilegeGrant] = filter(
+			lambda eg: eg.privileges & EventPrivilege.CAN_GIVE_POINTS, event_grants)
+
+		if not event_grants:
+			await msg.answer(l10n.format_value("no-rights"))
+
+		# TODO кнопка с вопросом на какое мероприятие начислять, если их > 1
+		# Пока что начислим сразу на все мероприятия
+		for event_grant in event_grants:
+			success = await give_point_for_event_by_user_id(session, user.id, event_grant.event_id)
+
+			if success:
+				await msg.answer(l10n.format_value("points-awarded"))
+				await msg.bot.send_message(user.telegram_id, l10n.format_value("points-awarded"))
 			else:
-				await message.answer(
-					l10n.format_value("deeplink-badrequest")
-				)
-
-
-
-	except ValueError:
-		await message.answer(
-			l10n.format_value("deeplink-invalid")
-		)
+				await msg.answer(l10n.format_value("already-received"))

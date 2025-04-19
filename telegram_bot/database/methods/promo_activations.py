@@ -17,7 +17,8 @@ async def create_activation(session: AsyncSession, promocode_id: int, recipient_
 	if result.scalar_one():
 		return None  # Пользователь уже активировал этот промокод
 
-	activation = PromocodeActivation(promocode_id=promocode_id, recipient_id=recipient_id)
+	activation = PromocodeActivation(
+		promocode_id=promocode_id, recipient_id=recipient_id)
 	session.add(activation)
 	try:
 		await session.commit()
@@ -29,7 +30,7 @@ async def create_activation(session: AsyncSession, promocode_id: int, recipient_
 
 
 async def get_activation_by_ids(session: AsyncSession, promocode_id: int,
-                                recipient_id: int) -> PromocodeActivation | None:
+								recipient_id: int) -> PromocodeActivation | None:
 	"""Возвращает запись об активации для промокода и пользователя."""
 	query = (
 		select(PromocodeActivation)

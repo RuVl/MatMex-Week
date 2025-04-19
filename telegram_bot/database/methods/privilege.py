@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -49,7 +49,7 @@ async def add_privilege(session: AsyncSession, user_id: int, privilege_flag: int
 		raise ValueError(f"У пользователя с id {user_id} нет привилегий")
 
 	user.privileges.privilege |= privilege_flag  # Добавляем флаг
-	user.privileges.updated_at = datetime.now()
+	user.privileges.updated_at = datetime.now(timezone.utc)
 	await session.commit()
 	return user.privileges
 
@@ -63,7 +63,7 @@ async def remove_privilege(session: AsyncSession, user_id: int, privilege_flag: 
 		raise ValueError(f"У пользователя с id {user_id} нет привилегий")
 
 	user.privileges.privilege &= ~privilege_flag  # Убираем флаг
-	user.privileges.updated_at = datetime.now()
+	user.privileges.updated_at = datetime.now(timezone.utc)
 	await session.commit()
 	return user.privileges
 
@@ -99,3 +99,11 @@ async def get_privileges_by_provider(session: AsyncSession, provider_id: int) ->
 		.options(selectinload(Privilege.user))
 	)
 	return result.scalars().all()
+
+
+async def is_provider_to(session: AsyncSession, provider_id: int, subject_id: int) -> bool:
+	subject = await get_privilege_by_user(session, subject_id)
+	provider = await get_privilege_by_user(session, subject.provider_id)
+	while provider.provider_id and provider.provider_id != provider.id and provider.id != provider_id:
+		provider = await get_privilege_by_user(session, provider.provider_id)
+	return provider.id == provider_id

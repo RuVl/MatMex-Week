@@ -1,6 +1,21 @@
-from .merch_category import (
-	get_all_categories,
-	create_category,
+from .event import (
+	create_event,
+	update_event,
+	delete_event,
+	get_event_by_id,
+	get_all_events,
+	get_active_events,
+	get_upcoming_events,
+	get_events_by_creator
+)
+from .event_privilege_grant import (
+	get_user_event_grants,
+	get_event_grant_by_id,
+	add_event_privilege_grant,
+	get_grants_by_event,
+	update_event_privilege_grant,
+	delete_event_privilege_grant,
+	get_active_user_event_grants,
 )
 from .pk_apply import (
 	create_apply,
@@ -10,11 +25,13 @@ from .pk_apply import (
 	get_applies_by_reviewer,
 )
 from .privilege import (
+	create_privilege,
 	get_privilege_by_user,
 	add_privilege,
 	remove_privilege,
 	remove_all_privileges,
 	get_privileges_by_provider,
+	is_provider_to,
 )
 from .promo import (
 	create_promocode,
@@ -39,9 +56,22 @@ from .user import (
 	get_user_by_telegram_id,
 	update_user_balance,
 	update_user_fullname,
-	mark_user_attended_event_by_code,
-	get_user_by_code
+	give_point_for_event_by_user_id,
+	get_user_by_code,
+	get_users_by_full_name,
 )
+from .merch_category import (
+	get_all_categories,
+	create_category,
+	get_category_by_id,
+	remove_category_by_id,
+)
+from .merch_item import (
+	create_item,
+	get_item_by_id,
+	remove_item_by_id,
+)
+
 
 __all__ = [
 	# User methods
@@ -50,8 +80,9 @@ __all__ = [
 	"get_user_by_telegram_id",
 	"update_user_balance",
 	"update_user_fullname",
-	"mark_user_attended_event_by_code",
+	"give_point_for_event_by_user_id",
 	"get_user_by_code",
+	"get_users_by_full_name",
 
 	# PkApply methods
 	"create_apply",
@@ -61,12 +92,13 @@ __all__ = [
 	"get_applies_by_reviewer",
 
 	# Privilege methods
+	"create_privilege",
 	"get_privilege_by_user",
 	"add_privilege",
 	"remove_privilege",
 	"remove_all_privileges",
 	"get_privileges_by_provider",
-
+	"is_provider_to",
 	# Promocode methods
 	"create_promocode",
 	"get_promocode_by_code",
@@ -87,4 +119,31 @@ __all__ = [
 	# MerchCategory methods
 	"get_all_categories",
 	"create_category",
+	"get_category_by_id",
+	"remove_category_by_id",
+
+	# EventPrivilegesGrant methods
+	"get_user_event_grants",
+	"get_event_grant_by_id",
+	"add_event_privilege_grant",
+	"get_grants_by_event",
+	"update_event_privilege_grant",
+	"delete_event_privilege_grant",
+	"get_active_user_event_grants",
+
+	# Event methods
+	"create_event",
+	"update_event",
+	"delete_event",
+	"get_event_by_id",
+	"get_all_events",
+	"get_active_events",
+	"get_upcoming_events",
+	"get_events_by_creator",
+
+
+	# MerchItem methods
+	"create_item",
+	"get_item_by_id",
+	"remove_item_by_id",
 ]

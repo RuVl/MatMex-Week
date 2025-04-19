@@ -2,10 +2,12 @@ import enum
 
 
 @enum.verify(enum.NAMED_FLAGS)
-class AdminPrivilege(enum.IntFlag, boundary=enum.STRICT):
-	TODO1 = 0b00000
-	TODO2 = 0b00001
-	TODO3 = 0b00010
-	TODO4 = 0b00100
-	TODO5 = 0b01000
-	TODO6 = 0b10000
+class AdminPrivilege(enum.IntFlag):
+	NONE = 0
+	GRANT_PRIVILEGES = 1 << 0
+	EDIT_PROMOCODES = 1 << 1
+	EDIT_SHOP = 1 << 2
+	EDIT_EVENTS = 1 << 3
+	EDIT_PK_APPLY = 1 << 4
+	EDIT_MODERATORS = 1 << 5
+	ALL = (1 << 6) - 1
