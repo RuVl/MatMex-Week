@@ -287,5 +287,6 @@ log-name-changed = Изменено имя пользователя
 # Profile messages
 points-awarded = Баллы начислены
 no-rights = Нет достаточных прав
+cant-give-points-now = В данный момент нет мероприятий за которые вы можете выдать баллы
 deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
 already-received = Вы уже получали данные за это мероприятие
