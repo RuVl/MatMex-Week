@@ -245,6 +245,7 @@ btn-decline-apply = Оклонить
 btn-review-apply = Пересмотреть
 btn-create-promo = Создать промокод
 btn-delete-category = Удалить категорию
+btn-give-event-privileges = Выдать право начислять баллы
 
 # Account buttons
 btn-edit-name = Редактировать ФИО

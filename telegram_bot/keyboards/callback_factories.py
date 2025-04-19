@@ -69,3 +69,9 @@ class DeleteEventFactory(CallbackData, prefix='delete_event_buttton'):
 
 class BackToEventsFactory(CallbackData, prefix='back_to_events_button'):
 	can_delete: bool
+
+
+class EventPrivilegeButtonFactory(CallbackData, prefix='event_privilege_button'):
+	event_id: int
+	grant_id: int | None
+	subject_id: int
