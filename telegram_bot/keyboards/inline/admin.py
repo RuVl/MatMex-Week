@@ -4,7 +4,9 @@ from fluent.runtime import FluentLocalization
 
 from database.enums import AdminPrivilege
 from database.models import User
-from keyboards.callback_factories import PKApplyFactory, PrivilegeButtonFactory, UserFactory
+from database.methods import get_user_event_grants, get_all_events
+from database import async_session
+from keyboards.callback_factories import PKApplyFactory, PrivilegeButtonFactory, UserFactory, EventPrivilegeButtonFactory
 
 
 def verification_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeyboardMarkup:
@@ -81,4 +83,35 @@ def names_ikb(users: list[User]):
 			text=f"{user.full_name} : {user.telegram_username}",
 			callback_data=data,
 		))
+	return builder.as_markup()
+
+async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -> InlineKeyboardMarkup:
+	builder = InlineKeyboardBuilder()
+	async with async_session() as session:
+		subject_event_grants = await get_user_event_grants(session, subject_id)
+		all_events = await get_all_events(session)
+	for event in all_events:
+		grant_id = None
+		for event_grant in subject_event_grants:
+			if event_grant.event_id == event.id:
+				grant_id = event_grant.id
+				break
+		builder.row(
+		InlineKeyboardButton(
+			text=event.name,
+			callback_data=EventPrivilegeButtonFactory(
+				event_id=event.id,
+				grant_id=grant_id,
+				subject_id=subject_id).pack()
+		),
+		InlineKeyboardButton(
+			text=l10n.format_value(
+				"btn-emoji-yes" if grant_id is not None else "btn-emoji-no"),
+			callback_data=EventPrivilegeButtonFactory(
+				event_id=event.id,
+				grant_id=grant_id,
+				subject_id=subject_id).pack()
+		),
+	)
+  
 	return builder.as_markup()

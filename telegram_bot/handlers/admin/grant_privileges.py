@@ -59,9 +59,6 @@ async def handle_user_choise(callback: types.CallbackQuery, state: FSMContext, l
 	async with async_session() as session:
 		subject = await get_user_by_telegram_id(session, data.telegram_id)
 		admin = await get_user_by_telegram_id(session, callback.from_user.id)
-	if subject.id == admin.id:
-		await callback.answer(l10n.format_value("cant-change-privileges-of-yourself"))
-		return
 
 	async with async_session() as session:
 		admin_privileges = await get_privilege_by_user(session, admin.id)
@@ -75,7 +72,7 @@ async def handle_user_choise(callback: types.CallbackQuery, state: FSMContext, l
 		return
 
 	await callback.message.answer(
-		l10n.format_value("user-privileges") + callback.message.text,
+		f"{l10n.format_value("user-privileges")} {data.full_name}",
 		reply_markup=user_rights_ikb(l10n, admin_privileges.privilege, subject_privileges.privilege, admin.id, subject.id))
 	await callback.message.delete()
 	await state.set_state(GrantPrivilegesActions.PRIVILEGES_KB)
@@ -89,13 +86,6 @@ async def handle_privileges_kb(callback: types.CallbackQuery, l10n: FluentLocali
 		await callback.answer(l10n.format_value("cant-change-privileges-of-yourself"))
 		return
 
-	if not data.granted:
-		async with async_session() as session:
-			await add_privilege(session, data.subject_id, data.privilege)
-	else:
-		async with async_session() as session:
-			await remove_privilege(session, data.subject_id, data.privilege)
-
 	async with async_session() as session:
 		admin_privileges = await get_privilege_by_user(session, data.admin_id)
 		subject_privileges = await get_privilege_by_user(session, data.subject_id)
@@ -104,6 +94,13 @@ async def handle_privileges_kb(callback: types.CallbackQuery, l10n: FluentLocali
 	if not can_grant:
 		await callback.answer(l10n.format_value("cant-change-privileges"), reply_markup=admin_kb(l10n))
 		return
+
+	if not data.granted:
+		async with async_session() as session:
+			await add_privilege(session, data.subject_id, data.privilege)
+	else:
+		async with async_session() as session:
+			await remove_privilege(session, data.subject_id, data.privilege)
 
 	await callback.answer(str(subject_privileges.privilege))
 	await callback.message.edit_reply_markup(

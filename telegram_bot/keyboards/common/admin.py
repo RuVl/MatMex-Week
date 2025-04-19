@@ -5,6 +5,9 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 def admin_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
 	builder.row(
+		KeyboardButton(text=l10n.format_value("btn-give-event-privileges"))
+	)
+	builder.row(
 		KeyboardButton(text=l10n.format_value("btn-edit-shop")),
 	)
 	builder.row(
