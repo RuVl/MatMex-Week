@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, aliased
 
 from database.models import Privilege, User
 
@@ -102,10 +102,27 @@ async def get_privileges_by_provider(session: AsyncSession, provider_id: int) ->
 
 
 async def is_provider_to(session: AsyncSession, provider_id: int, subject_id: int) -> bool:
-	subject = await get_privilege_by_user(session, subject_id)
-	provider = await get_privilege_by_user(session, subject.provider_id)
-	if provider_id == subject_id:
-		return True
-	while provider.provider_id and provider.provider_id != provider.id and provider.id != provider_id:
-		provider = await get_privilege_by_user(session, provider.provider_id)
-	return provider.id == provider_id
+    if provider_id == subject_id:
+        return True
+
+    privileges = Privilege.__table__
+
+    base = select(
+        privileges.c.id,
+        privileges.c.provider_id
+    ).where(privileges.c.id == subject_id)
+
+    recursive = base.cte(name="privilege_tree", recursive=True)
+    recursive_alias = aliased(recursive)
+
+    recursive = recursive.union_all(
+        select(
+            privileges.c.id,
+            privileges.c.provider_id
+        ).where(privileges.c.id == recursive_alias.c.provider_id)
+    )
+
+    query = select(recursive.c.id).where(recursive.c.id == provider_id)
+    result = await session.execute(query)
+
+    return result.scalar() is not None
