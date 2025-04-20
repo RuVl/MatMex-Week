@@ -11,17 +11,13 @@ class PromocodeActivation(Base):
 	__table_args__ = {"comment": "Активация промокодов (m2m)"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
-	activated_at: Mapped[datetime] = mapped_column(DateTime(
-		timezone=True), server_default=func.now(), nullable=False, comment="когда активировали")
+	activated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="когда активировали")
 
 	# Какой промокод активировали
-	promocode_id: Mapped[int] = mapped_column(Integer, ForeignKey(
-		'promocodes.id'), nullable=False, comment="какой промокод активировали")
-	promocode: Mapped['Promocode'] = relationship(
-		"Promocode", back_populates="activations", foreign_keys=[promocode_id])
+	promocode_id: Mapped[int] = mapped_column(Integer, ForeignKey('promocodes.id'), nullable=False, comment="какой промокод активировали")
+	promocode: Mapped['Promocode'] = relationship("Promocode", back_populates="activations", foreign_keys=[promocode_id])
 
 	# Кто активировал
 	recipient_id: Mapped[int] = mapped_column(Integer, ForeignKey(
 		'users.id'), nullable=False, comment="кто активировал")
-	recipient: Mapped['User'] = relationship(
-		'User', back_populates="promocode_activations", foreign_keys=[recipient_id])
+	recipient: Mapped['User'] = relationship('User', back_populates="promocode_activations", foreign_keys=[recipient_id])

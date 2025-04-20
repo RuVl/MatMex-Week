@@ -13,10 +13,10 @@ class MessageActionWrapper:
 	def __init__(
 			self,
 			msg: Message,
-			max_delay: float = 3.0,
-			typing_speed: float = 20.0,
-			max_upload_delay: float = 3.0,
-			adaptive: bool = True,
+			max_delay: float,
+			typing_speed: float,
+			max_upload_delay: float,
+			adaptive: bool,
 			log: FilteringBoundLogger = None
 	):
 		self._msg = msg
@@ -104,7 +104,6 @@ class MessageActionWrapper:
 			except OSError:
 				pass  # no permissions
 
-		self._log.info("FILE SIZE IS: ", file_size=file_size)
 		if file_size is None:
 			return action, self._max_delay
 

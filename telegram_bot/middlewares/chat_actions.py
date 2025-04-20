@@ -15,9 +15,9 @@ class ChatActionsMw(BaseMiddleware):
 			self,
 			flag_name: str = 'chat_action',
 			*,
-			default_typing_speed: float = 35.0,
-			default_max_delay: float = 3.0,
-			default_max_upload_delay: float = 3.0,
+			default_typing_speed: float = 70.0,
+			default_max_delay: float = 0.75,
+			default_max_upload_delay: float = 1.0,
 			default_adaptive: bool = True,
 			enabled: bool = True
 	):
