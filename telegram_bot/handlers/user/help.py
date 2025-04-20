@@ -8,6 +8,9 @@ from keyboards.common import menu_kb, cancel_kb
 from keyboards.callback_factories import SupportFactory
 from state_machines.help import HelpActions
 
+from database import async_session
+from database.methods import get_user_by_telegram_id
+
 support_router = Router()
 
 
@@ -26,10 +29,16 @@ async def handle_support_cancel(msg: types.Message, state: FSMContext, l10n: Flu
 
 @support_router.message(HelpActions.MESSAGE_OR_CANCEL)
 async def handle_support_message(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID,
-							   text=l10n.format_value("new-support-question"))
-	await msg.bot.send_message(chat_id=SUPPORT_CHAT_ID,
-							   text=msg.text + "\n||" + SupportFactory(user_id=msg.from_user.id, message_id=msg.message_id).pack() + "||")
+	async with async_session() as session:
+		user = await get_user_by_telegram_id(session, msg.from_user.id)
+	await msg.bot.send_message(
+            chat_id=SUPPORT_CHAT_ID,
+            text=l10n.format_value("support-question",
+									args={
+             							  "fullname": user.full_name,
+             							  "question": msg.text,
+										  "metadata": SupportFactory(user_id=msg.from_user.id, message_id=msg.message_id).pack()
+										 }))
 	menu = await menu_kb(l10n, msg.from_user.id)
 	await msg.answer(l10n.format_value("send-helping"), reply_markup=menu)
 	await state.clear()

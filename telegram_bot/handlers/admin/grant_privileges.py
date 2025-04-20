@@ -97,10 +97,10 @@ async def handle_privileges_kb(callback: types.CallbackQuery, l10n: FluentLocali
 
 	if not data.granted:
 		async with async_session() as session:
-			await add_privilege(session, data.subject_id, data.privilege)
+			subject_privileges = await add_privilege(session, data.subject_id, data.privilege)
 	else:
 		async with async_session() as session:
-			await remove_privilege(session, data.subject_id, data.privilege)
+			subject_privileges = await remove_privilege(session, data.subject_id, data.privilege)
 
 	await callback.answer(str(subject_privileges.privilege))
 	await callback.message.edit_reply_markup(
