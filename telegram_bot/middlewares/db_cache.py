@@ -1,11 +1,11 @@
 import base64
 import pickle
 from datetime import timedelta
-from typing import Callable, Dict, Any, Awaitable
+from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
-from aiogram.dispatcher.middlewares.user_context import EVENT_FROM_USER_KEY, EVENT_CHAT_KEY
-from aiogram.types import TelegramObject, User, Chat
+from aiogram.dispatcher.middlewares.user_context import EVENT_CHAT_KEY, EVENT_FROM_USER_KEY
+from aiogram.types import Chat, TelegramObject, User
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
@@ -28,10 +28,10 @@ class UserCacheMw(BaseMiddleware):
 	"""Middleware to load and cache user info from the DB in Redis."""
 
 	def __init__(self, /,
-				 redis_prefix: str = 'cached_user',
-				 ttl: timedelta = timedelta(minutes=5),
-				 middleware_key: str = 'cached_user',
-				 ):
+	             redis_prefix: str = 'cached_user',
+	             ttl: timedelta = timedelta(minutes=5),
+	             middleware_key: str = 'cached_user',
+	             ):
 		self.redis = get_redis(decode_responses=True)
 		self.prefix = redis_prefix
 		self.ttl_seconds = int(ttl.total_seconds())
@@ -62,10 +62,10 @@ class UserCacheMw(BaseMiddleware):
 			return None
 
 	async def __call__(
-		self,
-		handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-		event: TelegramObject,
-		data: Dict[str, Any],
+			self,
+			handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+			event: TelegramObject,
+			data: Dict[str, Any],
 	) -> Any:
 		tg_user: User = data.get(EVENT_FROM_USER_KEY)
 		chat: Chat = data.get(EVENT_CHAT_KEY)

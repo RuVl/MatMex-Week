@@ -9,7 +9,7 @@ from structlog.typing import FilteringBoundLogger
 
 from env import TelegramKeys
 from handlers import register_handlers
-from includes import get_structlog_config, get_storage
+from includes import get_storage, get_structlog_config
 from middlewares import register_middlewares
 
 

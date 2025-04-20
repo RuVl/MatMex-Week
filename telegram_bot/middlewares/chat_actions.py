@@ -1,9 +1,9 @@
-from typing import Callable, Any
+from typing import Any, Callable
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
-from aiogram.dispatcher.middlewares.user_context import EVENT_FROM_USER_KEY, EVENT_CHAT_KEY
-from aiogram.types import Message, CallbackQuery, TelegramObject
+from aiogram.dispatcher.middlewares.user_context import EVENT_CHAT_KEY, EVENT_FROM_USER_KEY
+from aiogram.types import CallbackQuery, Message, TelegramObject
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
@@ -12,14 +12,14 @@ from .utils import MessageActionWrapper
 
 class ChatActionsMw(BaseMiddleware):
 	def __init__(
-		self,
-		flag_name: str = 'chat_action',
-		*,
-		default_typing_speed: float = 35.0,
-		default_max_delay: float = 3.0,
-		default_max_upload_delay: float = 3.0,
-		default_adaptive: bool = True,
-		enabled: bool = True
+			self,
+			flag_name: str = 'chat_action',
+			*,
+			default_typing_speed: float = 70.0,
+			default_max_delay: float = 0.75,
+			default_max_upload_delay: float = 1.0,
+			default_adaptive: bool = True,
+			enabled: bool = True
 	):
 		self.flag_name = flag_name
 		self._enabled = enabled
@@ -30,14 +30,13 @@ class ChatActionsMw(BaseMiddleware):
 		self._default_adaptive = default_adaptive
 
 	async def __call__(
-		self,
-		handler: Callable,
-		event: TelegramObject,
-		data: dict[str, Any],
+			self,
+			handler: Callable,
+			event: TelegramObject,
+			data: dict[str, Any],
 	) -> Any:
 		if not isinstance(event, (Message, CallbackQuery)):
-			raise RuntimeError(
-				f"{ChatActionsMw.__name__} got an unexpected event type!")
+			raise RuntimeError(f"{ChatActionsMw.__name__} got an unexpected event type!")
 
 		if not self._enabled:
 			return await handler(event, data)
