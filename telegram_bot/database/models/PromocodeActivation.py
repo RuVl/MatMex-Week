@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, Integer, func
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models import Base, User, Promocode
+from database.models import Base, Promocode, User
 
 
 class PromocodeActivation(Base):
@@ -18,6 +18,5 @@ class PromocodeActivation(Base):
 	promocode: Mapped['Promocode'] = relationship("Promocode", back_populates="activations", foreign_keys=[promocode_id])
 
 	# Кто активировал
-	recipient_id: Mapped[int] = mapped_column(Integer, ForeignKey(
-		'users.id'), nullable=False, comment="кто активировал")
+	recipient_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False, comment="кто активировал")
 	recipient: Mapped['User'] = relationship('User', back_populates="promocode_activations", foreign_keys=[recipient_id])

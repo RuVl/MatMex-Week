@@ -1,5 +1,5 @@
-from sqlalchemy import String, Integer
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models import Base, MerchItem
 

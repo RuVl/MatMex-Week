@@ -1,16 +1,15 @@
-from aiogram import F
-from aiogram import Router, types
+from aiogram import F, Router, types
 from aiogram.types import CallbackQuery
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
 from database import async_session
-from database.enums import ApplyStatus, AdminPrivilege
+from database.enums import AdminPrivilege, ApplyStatus
 from database.methods import update_apply_status
 from database.models import User
 from filters import FromBotToAdminFilter, PrivilegeFilter
-from keyboards.callback_factories import SupportFactory, PKApplyFactory
-from keyboards.inline import verified_request_ikb, verification_request_ikb
+from keyboards.callback_factories import PKApplyFactory, SupportFactory
+from keyboards.inline import verification_request_ikb, verified_request_ikb
 from utils import escape_md_v2
 from .admin_menu import admin_menu_router
 
@@ -19,7 +18,8 @@ admin_router.include_routers(admin_menu_router)
 
 
 @admin_router.message(FromBotToAdminFilter(),
-                      F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__))
+	F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__)
+)
 async def handle_send_support(msg: types.Message, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="send_support")
 	original = msg.reply_to_message
@@ -57,9 +57,12 @@ async def apply_verify(clb: CallbackQuery, callback_data: PKApplyFactory, l10n: 
 		creator = apply.creator  # get in session
 
 	await clb.answer()
-	await clb.message.edit_text(l10n.format_value(msg_id, args={
-		'status': status,
-		'fullname': escape_md_v2(creator.full_name),
-		'username': escape_md_v2(creator.telegram_username),
-		'verified_by': escape_md_v2(verified_by)
-	}), reply_markup=kb_func(l10n, apply.id))
+	await clb.message.edit_text(
+		l10n.format_value(msg_id, args={
+			'status': status,
+			'fullname': escape_md_v2(creator.full_name),
+			'username': escape_md_v2(creator.telegram_username),
+			'verified_by': escape_md_v2(verified_by)
+		}),
+		reply_markup=kb_func(l10n, apply.id)
+	)

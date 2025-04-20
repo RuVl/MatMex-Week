@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from aiogram.fsm.storage.base import BaseStorage
-from aiogram.fsm.storage.redis import RedisStorage, DefaultKeyBuilder
+from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
 from redis.asyncio import Redis
 
 from env import RedisKeys

@@ -1,4 +1,4 @@
-from typing import Callable, Any, Awaitable
+from typing import Any, Awaitable, Callable
 
 from aiogram import BaseMiddleware, types
 from aiogram.dispatcher.event.bases import CancelHandler

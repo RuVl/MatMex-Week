@@ -1,11 +1,11 @@
 from aiogram.filters import BaseFilter
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from fluent.runtime import FluentLocalization
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
 from database import async_session
-from database.methods import get_user_by_telegram_id, get_privilege_by_user
+from database.methods import get_privilege_by_user, get_user_by_telegram_id
 from env import TelegramKeys
 
 
@@ -34,17 +34,16 @@ class FromBotToAdminFilter(BaseFilter):
 
 class AdminPromocodeCreatingFilter(BaseFilter):
 	async def __call__(self, msg: Message) -> bool:
-		return (msg.text.isdecimal() and
-		        int(msg.text) > 0
-		        )
+		return msg.text.isdecimal() and int(msg.text) > 0
 
 
 class PrivilegeFilter(BaseFilter):
-	def __init__(self, privelege: int):
-		self.privelege = privelege
+	def __init__(self, privilege: int):
+		self.privilege = privilege
 
 	async def __call__(self, event: Message | CallbackQuery) -> bool:
 		async with async_session() as session:
 			user = await get_user_by_telegram_id(session, event.from_user.id)
 			privilege = await get_privilege_by_user(session, user.id)
-		return bool(privilege and (privilege.privilege & self.privelege))
+
+		return privilege and (privilege.privilege & self.privelege)

@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 
 from env import TelegramKeys
 from includes import get_fluent_localization
-from middlewares import L10nMw, DropEmptyCallbackMw, UserCacheMw, LoggingMw, ChatActionsMw
+from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10nMw, LoggingMw, UserCacheMw
 
 
 def register_middlewares(dp: Dispatcher):

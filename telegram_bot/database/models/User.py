@@ -1,9 +1,9 @@
 import uuid
 
-from sqlalchemy import Uuid, String, ForeignKey, Float, Integer
+from sqlalchemy import Float, ForeignKey, Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models import Base, Privilege, PkApply, Purchase, PromocodeActivation, EventAttendance, EventPrivilegeGrant
+from database.models import Base, EventAttendance, EventPrivilegeGrant, PkApply, Privilege, PromocodeActivation, Purchase
 
 
 class User(Base):
@@ -36,4 +36,5 @@ class User(Base):
 
 	# Back ref event_privileges.responsible_id -> users.id
 	event_privileges: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='responsible',
-	                                                                     foreign_keys='EventPrivilegeGrant.responsible_id')
+		foreign_keys='EventPrivilegeGrant.responsible_id'
+	)

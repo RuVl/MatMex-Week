@@ -5,7 +5,7 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.enums import ApplyStatus
-from database.models import Base, User, Privilege
+from database.models import Base, Privilege, User
 
 
 class PkApply(Base):

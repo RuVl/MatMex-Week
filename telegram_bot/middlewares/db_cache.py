@@ -1,11 +1,11 @@
 import base64
 import pickle
 from datetime import timedelta
-from typing import Callable, Dict, Any, Awaitable
+from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
-from aiogram.dispatcher.middlewares.user_context import EVENT_FROM_USER_KEY, EVENT_CHAT_KEY
-from aiogram.types import TelegramObject, User, Chat
+from aiogram.dispatcher.middlewares.user_context import EVENT_CHAT_KEY, EVENT_FROM_USER_KEY
+from aiogram.types import Chat, TelegramObject, User
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 

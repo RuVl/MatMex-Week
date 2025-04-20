@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy import func, ForeignKey, DateTime, Integer
+from sqlalchemy import DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models import Base, User, Promocode, Event
-from database.models import PkApply
+from database.models import Base, Event, PkApply, Promocode, User
 
 
 class Privilege(Base):

@@ -1,7 +1,7 @@
-from sqlalchemy import ForeignKey, Integer, Float
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy import Float, ForeignKey, Integer
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models import Base, User, MerchItem
+from database.models import Base, MerchItem, User
 
 
 class Purchase(Base):

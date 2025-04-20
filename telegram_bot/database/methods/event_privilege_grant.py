@@ -1,11 +1,11 @@
-from datetime import timezone, datetime
+from datetime import datetime, timezone
 
-from sqlalchemy import select, or_, and_
+from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from database.enums import EventPrivilege
-from database.models import EventPrivilegeGrant, Event
+from database.models import Event, EventPrivilegeGrant
 
 
 async def add_event_privilege_grant(

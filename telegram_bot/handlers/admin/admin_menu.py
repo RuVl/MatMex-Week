@@ -13,7 +13,11 @@ from .grant_privileges import grant_privileges_router
 
 admin_menu_router = Router()
 admin_menu_router.include_routers(
-	code_scanner_router, edit_shop_main_router, grant_privileges_router)
+	code_scanner_router,
+	edit_shop_main_router,
+	grant_privileges_router
+)
+
 admin_menu_router.message.filter(PrivilegeFilter(AdminPrivilege.ALL))
 admin_menu_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.ALL))
 

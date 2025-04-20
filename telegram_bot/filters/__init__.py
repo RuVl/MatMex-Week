@@ -1,2 +1,2 @@
-from .main import LocalizedTextFilter, FromBotToAdminFilter, PrivilegeFilter, AdminPromocodeCreatingFilter
+from .main import AdminPromocodeCreatingFilter, FromBotToAdminFilter, LocalizedTextFilter, PrivilegeFilter
 from .register import FullNameFilter

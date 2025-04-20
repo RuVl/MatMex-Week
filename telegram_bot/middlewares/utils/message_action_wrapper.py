@@ -5,7 +5,7 @@ import time
 from typing import Any
 
 from aiogram.enums import ChatAction
-from aiogram.types import Message, FSInputFile
+from aiogram.types import FSInputFile, Message
 from structlog.typing import FilteringBoundLogger
 
 

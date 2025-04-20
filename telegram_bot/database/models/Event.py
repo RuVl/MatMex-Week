@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Integer, String, ForeignKey, func
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy import DateTime, ForeignKey, Integer, String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models import Base, Privilege, EventAttendance, EventPrivilegeGrant
+from database.models import Base, EventAttendance, EventPrivilegeGrant, Privilege
 
 
 class Event(Base):

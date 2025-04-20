@@ -1,4 +1,4 @@
-from sqlalchemy import select, exists
+from sqlalchemy import exists, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -9,16 +9,17 @@ from database.models import PromocodeActivation
 async def create_activation(session: AsyncSession, promocode_id: int, recipient_id: int) -> PromocodeActivation | None:
 	"""Создаёт запись об активации промокода."""
 	# Проверяем, существует ли уже активация
-	query = select(exists().where(
-		(PromocodeActivation.promocode_id == promocode_id) &
-		(PromocodeActivation.recipient_id == recipient_id)
-	))
+	query = select(
+		exists().where(
+			(PromocodeActivation.promocode_id == promocode_id) &
+			(PromocodeActivation.recipient_id == recipient_id)
+		)
+	)
 	result = await session.execute(query)
 	if result.scalar_one():
 		return None  # Пользователь уже активировал этот промокод
 
-	activation = PromocodeActivation(
-		promocode_id=promocode_id, recipient_id=recipient_id)
+	activation = PromocodeActivation(promocode_id=promocode_id, recipient_id=recipient_id)
 	session.add(activation)
 	try:
 		await session.commit()

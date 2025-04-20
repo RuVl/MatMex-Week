@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import select, exists
+from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -67,7 +67,8 @@ async def check_promocode_valid(session: AsyncSession, code: str, user_id: int) 
 	query = select(exists().where(
 		(PromocodeActivation.promocode_id == promocode.id) &
 		(PromocodeActivation.recipient_id == user_id)
-	))
+	)
+	)
 	result = await session.execute(query)
 	if result.scalar_one():
 		return False, "Вы уже активировали этот промокод", 0
@@ -99,7 +100,8 @@ async def activate_promocode(session: AsyncSession, code: str, user_id: int) -> 
 
 	# Создаём активацию
 	activation = PromocodeActivation(
-		promocode_id=promocode.id, recipient_id=user_id)
+		promocode_id=promocode.id, recipient_id=user_id
+	)
 	session.add(activation)
 
 	# Начисляем баллы

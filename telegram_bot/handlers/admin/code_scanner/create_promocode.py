@@ -6,10 +6,9 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.enums import AdminPrivilege
 from database.methods import create_promocode, get_promocode_by_code, get_user_by_telegram_id
-from filters import LocalizedTextFilter, AdminPromocodeCreatingFilter, PrivilegeFilter
+from filters import AdminPromocodeCreatingFilter, LocalizedTextFilter, PrivilegeFilter
 from keyboards.common import admin_kb, cancel_kb, yes_no_kb
-from state_machines import AdminActions
-from state_machines import AdminPromocodeActions
+from state_machines import AdminActions, AdminPromocodeActions
 
 code_scanner_router = Router()
 code_scanner_router.message.filter(

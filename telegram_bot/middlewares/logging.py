@@ -1,6 +1,6 @@
 import time
 import types
-from typing import Callable, Dict, Any, Awaitable
+from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.middlewares.user_context import EVENT_FROM_USER_KEY
@@ -50,8 +50,7 @@ class LoggingMw(BaseMiddleware):
 			data: Dict[str, Any],
 	) -> Any:
 		telegram_user = data.get(EVENT_FROM_USER_KEY)
-		user_context = self.get_user_context(
-			telegram_user) if telegram_user else {}
+		user_context = self.get_user_context(telegram_user) if telegram_user else {}
 
 		log = self.logger.bind(**user_context)
 		data[self.middleware_key] = log
@@ -59,8 +58,7 @@ class LoggingMw(BaseMiddleware):
 		# Пытаемся получить настоящее имя хэндлера
 		handler_obj = data.get("handler")
 		handler_name = (
-			getattr(handler_obj.callback, "__name__",
-			        str(handler_obj.callback))
+			getattr(handler_obj.callback, "__name__", str(handler_obj.callback))
 			if handler_obj and hasattr(handler_obj, "callback") else
 			getattr(handler, "__name__", str(handler))
 		)

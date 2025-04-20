@@ -1,9 +1,9 @@
-from typing import Callable, Any
+from typing import Any, Callable
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
-from aiogram.dispatcher.middlewares.user_context import EVENT_FROM_USER_KEY, EVENT_CHAT_KEY
-from aiogram.types import Message, CallbackQuery, TelegramObject
+from aiogram.dispatcher.middlewares.user_context import EVENT_CHAT_KEY, EVENT_FROM_USER_KEY
+from aiogram.types import CallbackQuery, Message, TelegramObject
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
@@ -36,8 +36,7 @@ class ChatActionsMw(BaseMiddleware):
 			data: dict[str, Any],
 	) -> Any:
 		if not isinstance(event, (Message, CallbackQuery)):
-			raise RuntimeError(
-				f"{ChatActionsMw.__name__} got an unexpected event type!")
+			raise RuntimeError(f"{ChatActionsMw.__name__} got an unexpected event type!")
 
 		if not self._enabled:
 			return await handler(event, data)

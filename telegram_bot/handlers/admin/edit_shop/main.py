@@ -1,5 +1,4 @@
-from aiogram import F
-from aiogram import Router, types
+from aiogram import F, Router, types
 from aiogram.filters import or_f
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
@@ -7,7 +6,7 @@ from structlog.typing import FilteringBoundLogger
 
 from database.enums import AdminPrivilege
 from filters.main import LocalizedTextFilter, PrivilegeFilter
-from keyboards.common import edit_shop_kb, admin_kb
+from keyboards.common import admin_kb, edit_shop_kb
 from state_machines.admin import AdminActions
 from state_machines.edit_shop import EditShopActions
 from .create import edit_shop_create_router
@@ -15,14 +14,15 @@ from .delete import edit_shop_delete_router
 
 edit_shop_main_router = Router()
 edit_shop_main_router.include_routers(
-	edit_shop_create_router, edit_shop_delete_router)
+	edit_shop_create_router,
+	edit_shop_delete_router
+)
+
 edit_shop_main_router.message.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
-edit_shop_main_router.callback_query.filter(
-	PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
+edit_shop_main_router.callback_query.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
 
 
-@edit_shop_main_router.message(AdminActions.ADMIN_PANEL,
-                               LocalizedTextFilter("btn-edit-shop"))
+@edit_shop_main_router.message(AdminActions.ADMIN_PANEL, LocalizedTextFilter("btn-edit-shop"))
 async def handle_edit_shop(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_edit_shop")
 	await msg.answer(l10n.format_value("edit-shop-menu"), reply_markup=edit_shop_kb(l10n))
@@ -41,6 +41,7 @@ async def handle_cancel_edit_category(msg: types.Message, state: FSMContext, l10
 	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 
+# TODO ПЕРЕДЕЛАТЬ ЭТУ ПАРАШУ
 @edit_shop_main_router.callback_query(
 	or_f(
 		EditShopActions.CREATE_ITEM,
@@ -59,7 +60,6 @@ async def handle_cancel_edit_item(callback: types.CallbackQuery, state: FSMConte
 	await callback.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
 	await callback.message.answer(l10n.format_value("cancel_edit_shop"), reply_markup=edit_shop_kb(l10n))
 	await state.set_state(EditShopActions.EDIT_SHOP)
-	await log.adebug("log-state-changed", state=EditShopActions.EDIT_SHOP.state)
 
 
 @edit_shop_main_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-back"))
@@ -67,4 +67,3 @@ async def handle_back(msg: types.Message, state: FSMContext, l10n: FluentLocaliz
 	await log.adebug("log-admin-action", action="handle_create_category")
 	await msg.answer(l10n.format_value("back-to-menu"), reply_markup=admin_kb(l10n))
 	await state.set_state(AdminActions.ADMIN_PANEL)
-	await log.adebug("log-state-changed", state=AdminActions.ADMIN_PANEL.state)
