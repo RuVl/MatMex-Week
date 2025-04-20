@@ -11,12 +11,15 @@ from .code_scanner import code_scanner_router
 from .edit_shop import edit_shop_router
 from .edit_events import edit_events_router
 from .grant_privileges import grant_privileges_router
+from .grant_event_privileges import grant_event_privileges_router
 
 admin_menu_router = Router()
 admin_menu_router.include_routers(
 	code_scanner_router,
 	edit_shop_router,
-	grant_privileges_router
+	grant_privileges_router,
+	grant_event_privileges_router,
+	edit_events_router
 )
 
 admin_menu_router.message.filter(PrivilegeFilter(AdminPrivilege.ALL))

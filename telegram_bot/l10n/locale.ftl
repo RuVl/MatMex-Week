@@ -67,7 +67,7 @@ schedule-text-html = 🎉 65-я Неделя Матмеха
 # Admin messages
 ask-promo-for-creating = Введите промокод для создания
 hello-admin = Показываю меню организатора\. Вы самые лучшие\.\.\.
-
+edit-events-menu = Редактирование мероприятия
 ask-for-event = За какое мероприятие хотите начислить
 back-to-menu = Возвращаю обратно в меню
 Профкомовца
