@@ -5,7 +5,7 @@ from datetime import datetime
 
 from database.enums import AdminPrivilege
 from database.models import User, EventPrivilegeGrant
-from database.methods import get_user_event_grants, get_all_events
+from database.methods import get_user_event_grants, get_active_events, get_all_events
 from database import async_session
 from keyboards.callback_factories import PKApplyFactory, PrivilegeButtonFactory, UserFactory, EventPrivilegeButtonFactory, EventToGrantFactory
 
@@ -119,11 +119,9 @@ async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPr
 	active_events = []
 	now = datetime.now()
 	async with async_session() as session:
-		all_events = await get_all_events(session)
+		all_events = await get_active_events(session)
 
 	for event in all_events:
-		if not(event.starts_at.replace(tzinfo=None) <= now.replace(tzinfo=None) <= event.ends_at.replace(tzinfo=None)):
-			continue
 		for grant in event_grants:
 			if grant.event_id == event.id:
 				active_events.append((event, grant))

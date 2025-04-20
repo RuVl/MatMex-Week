@@ -29,7 +29,7 @@ edit_events_router.callback_query.filter(
                                  LocalizedTextFilter("btn-edit-events"))
 async def handle_edit_events(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_edit_events")
-	await msg.answer(l10n.format_value("edit-shop-menu"), reply_markup=edit_events_kb(l10n))
+	await msg.answer(l10n.format_value("edit-events-menu"), reply_markup=edit_events_kb(l10n))
 	await state.set_state(EditEventsActions.EDIT_EVENTS)
 	await log.adebug("log-state-changed", state="cleared")
 
