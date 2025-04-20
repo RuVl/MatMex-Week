@@ -105,10 +105,10 @@ async def privileges_kb_h(callback: types.CallbackQuery, callback_data: Privileg
 
 	if not callback_data.granted:
 		async with async_session() as session:
-			await add_privilege(session, callback_data.subject_id, callback_data.privilege)
+			subject_privileges = await add_privilege(session, callback_data.subject_id, callback_data.privilege)
 	else:
 		async with async_session() as session:
-			await remove_privilege(session, callback_data.subject_id, callback_data.privilege)
+			subject_privileges = await remove_privilege(session, callback_data.subject_id, callback_data.privilege)
 
 	await callback.answer(str(subject_privileges.privilege))
 	await callback.message.edit_reply_markup(
