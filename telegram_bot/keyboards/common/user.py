@@ -16,12 +16,8 @@ def account_menu_kb(l10n) -> ReplyKeyboardMarkup:
 
 def manual_check_kb(l10n) -> ReplyKeyboardMarkup:
 	builder = ReplyKeyboardBuilder()
-	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-send-for-check"))
-	)
-	builder.row(
-		KeyboardButton(text=l10n.format_value("btn-just-kidding"))
-	)
+	builder.row(KeyboardButton(text=l10n.format_value("btn-send-for-check")))\
+            .row(KeyboardButton(text=l10n.format_value("btn-just-kidding")))
 
 	return builder.as_markup(resize_keyboard=True)
 

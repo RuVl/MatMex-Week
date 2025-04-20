@@ -53,37 +53,35 @@ async def handle_user_full_username(msg: types.Message, state: FSMContext, l10n:
 
 
 @grant_event_privileges_router.callback_query(GrantEventPrivilegesActions.CHOOSE_USER, UserFactory.filter())
-async def handle_user_choise(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
+async def handle_user_choise(callback: types.CallbackQuery, callback_data: UserFactory, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_user_full_username")
-	data = UserFactory.unpack(callback.data)
 	async with async_session() as session:
 		subject = await get_user_by_telegram_id(session, data.telegram_id)
 	user_event_privileges = await user_event_privileges_ikb(l10n, subject.id)
 	await callback.message.answer(
-		f"{l10n.format_value("user-privileges")} {data.full_name}",
+		l10n.format_value("user-privileges", args={"fullname": callback_data.full_name}),
 		reply_markup=user_event_privileges)
 	await callback.message.delete()
 	await state.set_state(GrantEventPrivilegesActions.PRIVILEGES_KB)
 
 
 @grant_event_privileges_router.callback_query(GrantEventPrivilegesActions.PRIVILEGES_KB, EventPrivilegeButtonFactory.filter())
-async def handle_privileges_kb(callback: types.CallbackQuery, l10n: FluentLocalization, log: FilteringBoundLogger):
+async def handle_privileges_kb(callback: types.CallbackQuery, callback_data: EventPrivilegeButtonFactory, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-admin-action", action="handle_privileges_kb")
-	data = EventPrivilegeButtonFactory.unpack(callback.data)
 	async with async_session() as session:
 		admin = await get_user_by_telegram_id(session, callback.from_user.id)
-	if data.grant_id is None:
+	if callback_data.grant_id is None:
 		async with async_session() as session:
 			await add_event_privilege_grant(
-						session=session,
-						user_id=data.subject_id,
-						privilege_id=admin.privileges_id,
-						event_id=data.event_id,
-						privileges=EventPrivilege.CAN_GIVE_POINTS)
+							session=session,
+							user_id=callback_data.subject_id,
+							privilege_id=admin.privileges_id,
+							event_id=callback_data.event_id,
+							privileges=EventPrivilege.CAN_GIVE_POINTS)
 	else:
 		async with async_session() as session:
-			await delete_event_privilege_grant(session, data.grant_id)
-	user_event_privileges = await user_event_privileges_ikb(l10n, data.subject_id)
+			await delete_event_privilege_grant(session, callback_data.grant_id)
+	user_event_privileges = await user_event_privileges_ikb(l10n, callback_data.subject_id)
 	await callback.message.edit_reply_markup(
 		reply_markup=user_event_privileges)
 	await log.adebug("log-admin-action", action="handle_privileges_kb")
