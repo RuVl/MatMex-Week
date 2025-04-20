@@ -129,6 +129,7 @@ async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPr
 
 	builder = InlineKeyboardBuilder()
 	for event_pair in active_events:
+		#TODO: можно получать event по id из event_grants но так больше запросов к бд, хз че лучше
 		builder.row(
 			InlineKeyboardButton(
 				text=event_pair[0].name,

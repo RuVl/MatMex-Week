@@ -18,12 +18,11 @@ async def handle_delete_event_btn(msg: types.Message, l10n: FluentLocalization):
 
 
 @delete_router.callback_query(DeleteEventFactory.filter())
-async def handle_back_to_categories(callback: types.CallbackQuery, l10n: FluentLocalization):
-	data = DeleteEventFactory.unpack(callback.data)
+async def handle_back_to_categories(callback: types.CallbackQuery, callback_data: DeleteEventFactory, l10n: FluentLocalization):
 	async with async_session() as session:
-		if data.can_delete:
-			await delete_event(session, data.event_id)
-	events = await events_ikb(l10n, data.can_delete)
+		if callback_data.can_delete:
+			await delete_event(session, callback_data.event_id)
+	events = await events_ikb(l10n, callback_data.can_delete)
 	await callback.bot.edit_message_text(
 		text=l10n.format_value("delete-events"),
 		reply_markup=events,

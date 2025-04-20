@@ -83,7 +83,7 @@ you-have-not-rights = У тебя нет прав
 # Grant privilege messages
 ask-for-full-name = Введите ФИО человека, которого ходите наделить правами
 wrong-full-name = Человека с таким именем нет в базе данных, попробуйте еще раз
-user-privileges = Права пользователя: 
+user-privileges = Права пользователя {$fullname}: 
 choose-name-from-list = Выберите пользователя из списка
 cant-change-privileges-of-yourself = Вы не можете менять свои же права
 cant-change-privileges = Вы не можете менять права этого человека

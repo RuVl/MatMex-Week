@@ -76,7 +76,7 @@ async def user_choice_h(callback: types.CallbackQuery, callback_data: UserFactor
 		return
 
 	await callback.message.answer(
-		f"{l10n.format_value("user-privileges")} {callback_data.full_name}",
+		l10n.format_value("user-privileges", args={"fullname": callback_data.full_name}),
 		reply_markup=user_rights_ikb(l10n, admin_privileges.privilege, subject_privileges.privilege, admin.id, subject.id))
 	await callback.message.delete()
 	await state.set_state(GrantPrivilegesActions.PRIVILEGES_KB)
@@ -106,5 +106,6 @@ async def privileges_kb_h(callback: types.CallbackQuery, callback_data: Privileg
 
 	await callback.answer(str(subject_privileges.privilege))
 	await callback.message.edit_reply_markup(
-		reply_markup=user_rights_ikb(l10n, admin_privileges.privilege, subject_privileges.privilege, callback_data.admin_id, callback_data.subject_id)
+		reply_markup=user_rights_ikb(l10n, admin_privileges.privilege,
+		                             subject_privileges.privilege, callback_data.admin_id, callback_data.subject_id)
 	)

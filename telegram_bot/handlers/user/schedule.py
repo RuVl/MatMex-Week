@@ -27,9 +27,8 @@ async def handle_schedule_button(msg: types.Message, l10n: FluentLocalization):
 
 
 @schedule_router.callback_query(BackToEventsFactory.filter())
-async def handle_back_to_categories(callback: types.CallbackQuery, l10n: FluentLocalization):
-	data = BackToEventsFactory.unpack(callback.data)
-	events = await events_ikb(l10n, data.can_delete)
+async def handle_back_to_categories(callback: types.CallbackQuery, callback_data: BackToEventsFactory, l10n: FluentLocalization):
+	events = await events_ikb(l10n, callback_data.can_delete)
 	await callback.bot.edit_message_text(
 		text=l10n.format_value("schedule-keyboard"),
 		reply_markup=events,
@@ -42,10 +41,9 @@ DAYS_RU = ['Понедельник', 'Вторник', 'Среда',
 
 
 @schedule_router.callback_query(EventFactory.filter())
-async def handle_in_event(callback: types.CallbackQuery, l10n: FluentLocalization):
-	data = EventFactory.unpack(callback.data)
+async def handle_in_event(callback: types.CallbackQuery, callback_data: EventFactory, l10n: FluentLocalization):
 	async with async_session() as session:
-		event = await get_event_by_id(session, data.event_id)
+		event = await get_event_by_id(session, callback_data.event_id)
 	await callback.bot.edit_message_text(
 		text=l10n.format_value("event-value",  args={
 			'eventname': escape_md_v2(event.name),
@@ -55,4 +53,4 @@ async def handle_in_event(callback: types.CallbackQuery, l10n: FluentLocalizatio
 		}),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id,
-		reply_markup=event_actons_ikb(l10n, event_id=event.id, can_delete=data.can_delete))
+		reply_markup=event_actons_ikb(l10n, event_id=event.id, can_delete=callback_data.can_delete))
