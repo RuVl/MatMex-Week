@@ -174,7 +174,7 @@ btn-just-kidding = Нет, я пошутил
 apply-check = Заявка на проверку статуса **Профкомовца**
     {"*"}*Статус**: { $status }
     {"*"}*Запросил**: { $fullname } \(@{ $username }\)
-apply-checked =  { apply-check }
+apply-checked = { apply-check }
     {"*"}*Проверил**: { $verified_by }
 
 # Admin buttons

@@ -2,10 +2,10 @@ from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 
-from config import SUPPORT_CHAT_ID
+from env import TelegramKeys
 from filters import LocalizedTextFilter
-from keyboards.common import menu_kb, cancel_kb
 from keyboards.callback_factories import SupportFactory
+from keyboards.common import cancel_kb, menu_kb
 from state_machines.help import HelpActions
 
 from database import async_session
@@ -22,8 +22,8 @@ async def handle_support_button(msg: types.Message, state: FSMContext, l10n: Flu
 
 @support_router.message(HelpActions.MESSAGE_OR_CANCEL, LocalizedTextFilter("btn-cancel"))
 async def handle_support_cancel(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	menu = await menu_kb(l10n, msg.from_user.id)
-	await msg.answer(l10n.format_value("cancel-message"), reply_markup=menu)
+	kb = await menu_kb(l10n, msg.from_user.id)
+	await msg.answer(l10n.format_value("cancel-message"), reply_markup=kb)
 	await state.clear()
 
 

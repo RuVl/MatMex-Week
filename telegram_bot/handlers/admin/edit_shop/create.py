@@ -1,21 +1,21 @@
-
 import os
-from aiogram import F
-from aiogram import Router, types
+
+from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
-from keyboards.common import edit_shop_kb, cancel_kb
-from keyboards.inline import get_edit_shop_category_ikb, cancel_ikb, get_item_size_ikb, yes_no_cancel_ikb
-from keyboards.callback_factories import EditShopCategoryFactory
-from state_machines.edit_shop import EditShopActions
-from filters.main import LocalizedTextFilter
 from config import MEDIA_DIR
-from database.methods import create_category, get_category_by_id, create_item
 from database import async_session
+from database.methods import create_category, create_item, get_category_by_id
+from filters.main import LocalizedTextFilter
+from keyboards.callback_factories import EditShopCategoryFactory
+from keyboards.common import cancel_kb, edit_shop_kb
+from keyboards.inline import cancel_ikb, get_edit_shop_category_ikb, get_item_size_ikb, yes_no_cancel_ikb
+from state_machines.edit_shop import EditShopActions
 
 create_router = Router()
+
 
 # TODO: подписывать этап редактирования
 
@@ -71,7 +71,8 @@ async def handle_create_item(callback: types.CallbackQuery, callback_data: EditS
 			l10n.format_value("ask-for-item-name"),
 			reply_markup=cancel_ikb(l10n),
 			chat_id=callback.message.chat.id,
-			message_id=callback.message.message_id)
+			message_id=callback.message.message_id
+		)
 		await state.update_data(category_id=category.id, shop_message_id=callback.message.message_id)
 		await state.set_state(EditShopActions.CHOOSE_ITEM_NAME)
 		await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_NAME.state)
@@ -86,7 +87,8 @@ async def handle_ask_for_item_name(msg: types.Message, state: FSMContext, l10n: 
 		l10n.format_value("ask-for-item-size"),
 		reply_markup=get_item_size_ikb(l10n),
 		chat_id=msg.chat.id,
-		message_id=state_data.get("shop_message_id"))
+		message_id=state_data.get("shop_message_id")
+	)
 	await state.update_data(item_name=msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_SIZE)
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_SIZE.state)
@@ -100,7 +102,8 @@ async def handle_ask_for_item_size(callback: types.CallbackQuery, state: FSMCont
 		l10n.format_value("ask-for-item-full-price"),
 		reply_markup=cancel_ikb(l10n),
 		chat_id=callback.message.chat.id,
-		message_id=state_data.get("shop_message_id"))
+		message_id=state_data.get("shop_message_id")
+	)
 	await state.update_data(item_size=callback.data)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_FULL_PRICE)
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_FULL_PRICE.state)
@@ -119,7 +122,8 @@ async def handle_ask_for_item_full_price(msg: types.message, state: FSMContext, 
 		l10n.format_value("ask-for-item-discount-price"),
 		reply_markup=cancel_ikb(l10n),
 		chat_id=msg.chat.id,
-		message_id=state_data.get("shop_message_id"))
+		message_id=state_data.get("shop_message_id")
+	)
 	await state.update_data(item_full_price=msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE)
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE.state)
@@ -138,7 +142,8 @@ async def handle_ask_for_item_discount_pice(msg: types.Message, state: FSMContex
 		l10n.format_value("ask-for-item-available-count"),
 		reply_markup=cancel_ikb(l10n),
 		chat_id=msg.chat.id,
-		message_id=state_data.get("shop_message_id"))
+		message_id=state_data.get("shop_message_id")
+	)
 	await state.update_data(item_discount_price=msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT)
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_AVAILABLE_COUNT.state)
@@ -157,7 +162,8 @@ async def handle_ask_for_item_available_count(msg: types.Message, state: FSMCont
 		l10n.format_value("ask-for-item-in-stock"),
 		reply_markup=yes_no_cancel_ikb(l10n),
 		chat_id=msg.chat.id,
-		message_id=state_data.get("shop_message_id"))
+		message_id=state_data.get("shop_message_id")
+	)
 	await state.update_data(item_available_count=msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_IN_STOCK)
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_IN_STOCK.state)
@@ -175,7 +181,8 @@ async def handle_ask_for_item_in_stock(callback: types.CallbackQuery, state: FSM
 		l10n.format_value("ask-for-item-image"),
 		reply_markup=cancel_ikb(l10n),
 		chat_id=callback.message.chat.id,
-		message_id=state_data.get("shop_message_id"))
+		message_id=state_data.get("shop_message_id")
+	)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_IMAGE)
 	await log.adebug("log-state-changed", state=EditShopActions.CHOOSE_ITEM_IMAGE.state)
 
@@ -203,7 +210,8 @@ async def handle_ask_for_item_image(msg: types.Message, state: FSMContext, l10n:
 			discount_price=float(state_data.get("item_discount_price")),
 			available_count=int(state_data.get("item_available_count")),
 			in_stock=bool(state_data.get("item_in_stock")),
-			category_id=int(state_data.get("category_id")))
+			category_id=int(state_data.get("category_id"))
+		)
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=state_data.get("shop_message_id"))
 	await msg.answer(l10n.format_value("item-created"), reply_markup=edit_shop_kb(l10n))

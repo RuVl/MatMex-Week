@@ -1,4 +1,4 @@
-from typing import Callable, Any, Awaitable
+from typing import Any, Awaitable, Callable
 
 from aiogram import BaseMiddleware, types
 from aiogram.dispatcher.event.bases import CancelHandler
@@ -8,10 +8,10 @@ class DropEmptyCallbackMw(BaseMiddleware):
 	""" Auto answer and drop events with callback data is space """
 
 	async def __call__(self,
-					   handler: Callable[[types.CallbackQuery, dict[str, Any]], Awaitable[Any]],
-					   event: types.CallbackQuery,
-					   data: dict[str, Any],
-					   ) -> Any:
+	                   handler: Callable[[types.CallbackQuery, dict[str, Any]], Awaitable[Any]],
+	                   event: types.CallbackQuery,
+	                   data: dict[str, Any],
+	                   ) -> Any:
 		if event.data == ' ':
 			await event.answer()
 			return CancelHandler()

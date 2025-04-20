@@ -2,9 +2,9 @@ import io
 import uuid
 
 import segno
-from aiogram import Router, types, flags
+from aiogram import Router, flags, types
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart, CommandObject
+from aiogram.filters import CommandObject, CommandStart
 from aiogram.types import FSInputFile
 from aiogram.utils.deep_linking import create_start_link
 from fluent.runtime import FluentLocalization
@@ -12,9 +12,8 @@ from fluent.runtime import FluentLocalization
 from config import MEDIA_DIR, QR_CODE_SCALE
 from database import async_session
 from database.enums import EventPrivilege
-from database.methods import get_user_by_telegram_id, get_active_user_event_grants
-from database.methods import give_point_for_event_by_user_id, get_user_by_code
-from database.models import User, EventPrivilegeGrant
+from database.methods import get_active_user_event_grants, get_user_by_code, get_user_by_telegram_id, give_point_for_event_by_user_id
+from database.models import EventPrivilegeGrant, User
 from filters import LocalizedTextFilter
 from handlers.user.account import account_router
 from handlers.user.help import support_router

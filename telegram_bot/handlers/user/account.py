@@ -6,7 +6,7 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.methods import get_user_by_telegram_id, update_user_fullname
 from filters import FullNameFilter, LocalizedTextFilter
-from keyboards.common import menu_kb, account_menu_kb, cancel_kb
+from keyboards.common import account_menu_kb, cancel_kb, menu_kb
 from state_machines.account import AccountActions
 
 account_router = Router()
