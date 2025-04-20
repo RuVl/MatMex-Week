@@ -117,7 +117,6 @@ async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -
 
 async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPrivilegeGrant], subject_id : int, admin_tg_id : int) -> InlineKeyboardMarkup | None:
 	active_events = []
-	now = datetime.now()
 	async with async_session() as session:
 		all_events = await get_active_events(session)
 
