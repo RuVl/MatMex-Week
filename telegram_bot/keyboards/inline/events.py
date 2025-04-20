@@ -12,11 +12,11 @@ async def events_ikb(l10n, can_delete: bool) -> InlineKeyboardMarkup:
 		events = await get_all_events(session)
 	for event in events:
 		builder.row(
-			InlineKeyboardButton(text=event.name, callback_data=EventFactory(
-				event_id=event.id,
-				can_delete=can_delete,
-							).pack()),
-		)
+				InlineKeyboardButton(text=event.name, callback_data=EventFactory(
+					event_id=event.id,
+					can_delete=can_delete,
+				).pack()),
+			)
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-event"))
 
 
