@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./telegram_bot/database/migrations/versions:/usr/src/app/database/migrations/versions
+      - ./telegram_bot/logs:/usr/src/app/logs
       - media_volume:/usr/src/app/resources
     env_file:
       - telegram_bot/.env

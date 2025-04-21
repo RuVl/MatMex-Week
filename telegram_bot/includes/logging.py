@@ -1,79 +1,111 @@
 import logging
-from json import dumps
+import sys
+from pathlib import Path
 
 import structlog
-from structlog import WriteLoggerFactory
 
 from env import LoggerKeys
 
 
-def get_structlog_config() -> dict:
+class StructlogOnlyFilter(logging.Filter):
 	"""
-	Get config for a structlog
-	:return: dict with structlog config
+	Пропускает только записи логов, созданные через structlog.
 	"""
 
+	def filter(self, record: logging.LogRecord) -> bool:
+		# Проверяем, является ли основной 'msg' записи словарем.
+		# Это специфично для того, как structlog.stdlib передает данные.
+		is_structlog_msg = isinstance(record.msg, dict)
+		return is_structlog_msg
+
+
+# noinspection SpellCheckingInspection
+def setup_logging():
+	"""
+	Настраивает structlog для вывода в консоль (цветной) и файл (без цвета).
+	"""
 	min_level = logging.DEBUG if LoggerKeys.SHOW_DEBUG_LOGS else logging.INFO
 
-	return {
-		"processors": get_processors(LoggerKeys),
-		"cache_logger_on_first_use": True,
-		"wrapper_class": structlog.make_filtering_bound_logger(min_level),
-		"logger_factory": WriteLoggerFactory()
-	}
+	# --- Шаг 1: Определяем ОБЩИЕ процессоры (без финального рендеринга) ---
+	shared_processors = get_shared_processors()
+
+	# --- Шаг 2: Конфигурируем structlog для интеграции с logging ---
+	structlog.configure(
+		processors=[
+			*shared_processors,
+			# Этот процессор ВАЖЕН для интеграции: он подготавливает event_dict для форматтеров logging. Он должен быть ПОСЛЕДНИМ в этой цепочке.
+			structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+		],
+		logger_factory=structlog.stdlib.LoggerFactory(),
+		wrapper_class=structlog.stdlib.BoundLogger,
+		cache_logger_on_first_use=True,
+	)
+
+	# --- Шаг 3: Создаем форматтеры logging с разными финальными процессорами structlog ---
+	console_formatter = structlog.stdlib.ProcessorFormatter(
+		processor=structlog.dev.ConsoleRenderer(
+			colors=LoggerKeys.USE_COLORS_IN_CONSOLE,
+			pad_level=True
+		),
+		# foreign_pre_chain=shared_processors,
+	)
+
+	file_formatter = structlog.stdlib.ProcessorFormatter(
+		processor=structlog.processors.KeyValueRenderer(
+			key_order=['timestamp', 'level', 'logger', 'event'],
+			sort_keys=True
+		),
+		# foreign_pre_chain=shared_processors,
+	)
+
+	# --- Шаг 4: Создаем и настраиваем обработчики (Handlers) ---
+	structlog_filter = StructlogOnlyFilter()
+
+	console_handler = logging.StreamHandler(sys.stdout)
+	console_handler.setFormatter(console_formatter)
+	console_handler.addFilter(structlog_filter)
+
+	logger_file = Path(LoggerKeys.LOG_FILE_PATH)
+	logger_file.parent.mkdir(parents=True, exist_ok=True)
+
+	file_handler = logging.FileHandler(logger_file, mode='a', encoding='utf-8')
+	file_handler.setFormatter(file_formatter)
+	file_handler.addFilter(structlog_filter)
+
+	# --- Шаг 5: Настройка корневого логгера ---
+	root_logger = logging.getLogger()
+	root_logger.handlers.clear()
+	root_logger.addHandler(console_handler)
+	root_logger.addHandler(file_handler)
+	root_logger.setLevel(min_level)
 
 
-def get_processors(log_config: LoggerKeys) -> list:
+# noinspection SpellCheckingInspection
+def get_shared_processors() -> list:
 	"""
-	Returns processors list for structlog
-	:param log_config: LogConfig object with log parameters
-	:return: processors list for structlog
+	Возвращает ОБЩИЙ список процессоров для structlog (БЕЗ финального рендеринга).
+	Эти процессоры выполняются до передачи форматтерам logging.
+	:return: Список общих процессоров
 	"""
-
-	# noinspection PyUnusedLocal
-	def custom_json_serializer(data, *args, **kwargs):
-		"""
-		JSON-objects custom serializer
-		"""
-		result = dict()
-
-		if log_config.SHOW_DATETIME:
-			result["timestamp"] = data.pop("timestamp")
-
-		# Other two keys goes in this order
-		for key in ("level", "event"):
-			if key in data:
-				result[key] = data.pop(key)
-
-		# Remaining keys will be printed "as is" (usually in alphabet order)
-		result.update(**data)
-		return dumps(result, default=str)
-
 	processors = [
-		structlog.contextvars.merge_contextvars
+		structlog.contextvars.merge_contextvars,
+		structlog.stdlib.add_logger_name,
+		structlog.stdlib.add_log_level,
+		structlog.stdlib.ExtraAdder(),
 	]
 
-	# In some cases, there is no need to print a timestamp,
-	# because it is already added by an upstream service, such as systemd
-	if log_config.SHOW_DATETIME:
+	if LoggerKeys.SHOW_DATETIME:
 		processors.append(structlog.processors.TimeStamper(
-			fmt=log_config.DATETIME_FORMAT,
-			utc=log_config.TIME_IN_UTC
+			fmt=LoggerKeys.DATETIME_FORMAT if LoggerKeys.DATETIME_FORMAT != "iso" else None,  # None использует ISO 8601 по умолчанию
+			utc=LoggerKeys.TIME_IN_UTC,
+			key="timestamp"  # Явно указываем ключ, полезно для рендереров
 		))
 
-	# Always add a log level
+	# Нет add_log_level, т.к. structlog.stdlib.add_log_level добавляется автоматически при интеграции с logging (в structlog.configure)
+
 	processors.extend([
-		structlog.processors.add_log_level,
 		structlog.processors.StackInfoRenderer(),
 		structlog.processors.format_exc_info,
 	])
-
-	match log_config.RENDERER:
-		case 'json':
-			processors.append(structlog.processors.JSONRenderer(
-				serializer=custom_json_serializer))
-		case 'console':
-			processors.append(structlog.dev.ConsoleRenderer(
-				colors=log_config.USE_COLORS_IN_CONSOLE, pad_level=True))
 
 	return processors

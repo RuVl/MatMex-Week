@@ -56,7 +56,7 @@ async def enter_fullname_h(msg: types.Message, state: FSMContext, l10n: FluentLo
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 
-@register_router.message(RegistrationsActions.CHECK_MEMBER, flags={'no_cache': True})
+@register_router.message(RegistrationsActions.CHECK_MEMBER, flags={'drop_cache': True})
 async def in_pc_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	answer = msg.text.strip()
 
