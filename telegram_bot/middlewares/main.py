@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 
 from env import TelegramKeys
 from includes import get_fluent_localization
-from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10nMw, LoggingMw, UserCacheMw
+from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10nMw, LoggingMw, SpamProtectionMw, UserCacheMw
 
 
 def register_middlewares(dp: Dispatcher):
@@ -14,6 +14,12 @@ def register_middlewares(dp: Dispatcher):
 	l10n_mw = L10nMw(locale)
 	dp.message.outer_middleware(l10n_mw)
 	dp.callback_query.outer_middleware(l10n_mw)
+
+	# Spam protection
+	spam_protection_mw = SpamProtectionMw()
+	dp.message.outer_middleware(spam_protection_mw)
+	dp.callback_query.outer_middleware(spam_protection_mw)
+	dp.shutdown.register(spam_protection_mw.close)
 
 	# Logging handlers (should be last)
 	logging_mw = LoggingMw()
