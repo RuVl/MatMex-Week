@@ -9,6 +9,7 @@ from .spam_protection import SpamProtectionMw
 from .main import register_middlewares
 
 __all__ = [
+	"register_middlewares",
     "ChatActionsMw",
     "DropEmptyCallbackMw",
     "L10nMw", 

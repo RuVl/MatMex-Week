@@ -32,14 +32,14 @@ class UserCacheMw(BaseMiddleware):
 	             redis_prefix: str = 'cached_user',
 	             ttl: timedelta = timedelta(minutes=5),
 	             middleware_key: str = 'cached_user',
-	             no_cache_flag: str = 'no_cache',
+	             drop_cache_flag: str = 'drop_cache',
 	             disable_cache_flag: str = 'disable_cache',
 	             ):
 		self.redis = get_redis(decode_responses=True)
 		self.prefix = redis_prefix
 		self.ttl_seconds = int(ttl.total_seconds())
 		self.middleware_key = middleware_key
-		self.no_cache_flag = no_cache_flag
+		self.drop_cache_flag = drop_cache_flag
 		self.disable_cache_flag = disable_cache_flag
 
 		self.logger: FilteringBoundLogger = get_logger()
@@ -47,19 +47,23 @@ class UserCacheMw(BaseMiddleware):
 	def _make_redis_key(self, telegram_id: int) -> str:
 		return f"{self.prefix}:{telegram_id}"
 
-	async def get_db_user(self, telegram_id: int, use_cache: bool = True) -> models.User | None:
+	async def get_db_user(self, telegram_id: int, drop_cache: bool = True, logger: FilteringBoundLogger = None) -> models.User | None:
 		"""Get user from cache or database and update cache if needed"""
+		redis_key = self._make_redis_key(telegram_id)
+		
 		try:
-			if use_cache:
-				redis_key = self._make_redis_key(telegram_id)
-
+			if not drop_cache:
 				# Try to get from cache first
 				cached_data = await self.redis.get(redis_key)
 				if cached_data is not None:
 					return loads_model(cached_data)
 
 				# Not in cache, get from the database
-				await self.logger.adebug("User not found in cache - loading from database", telegram_id=telegram_id)
+				if logger is not None:
+					await logger.adebug("User not found in cache", telegram_id=telegram_id)
+			else:
+				if logger is not None:
+					await logger.adebug("Cache dropped", telegram_id=telegram_id)
 
 			async with async_session() as session:
 				user = await get_user_by_telegram_id(session, telegram_id)
@@ -69,12 +73,8 @@ class UserCacheMw(BaseMiddleware):
 				return user
 
 		except Exception as e:
-			await self.logger.aerror(
-				"Error retrieving user",
-				telegram_id=telegram_id,
-				error=str(e),
-				middleware=self.__class__.__name__
-			)
+			if logger is not None:
+				await logger.aerror("Error retrieving user", telegram_id=telegram_id, error=str(e))
 			return None
 
 	async def __call__(
@@ -91,17 +91,14 @@ class UserCacheMw(BaseMiddleware):
 		tg_user: User = data.get(EVENT_FROM_USER_KEY)
 		chat: Chat = data.get(EVENT_CHAT_KEY)
 
+		logger: FilteringBoundLogger = data.get('log', self.logger)
+
 		if tg_user is None or chat is None:
-			await self.logger.awarning(
-				"Missing user or chat data",
-				middleware=self.__class__.__name__,
-				has_user=tg_user is not None,
-				has_chat=chat is not None
-			)
+			await logger.awarning("Missing user or chat data", has_user=tg_user is not None, has_chat=chat is not None)
 			return await handler(event, data)
 
-		use_cache = not flags.get(self.no_cache_flag, False)
-		user = await self.get_db_user(tg_user.id, use_cache)
+		drop_cache = flags.get(self.drop_cache_flag, False)
+		user = await self.get_db_user(tg_user.id, drop_cache, logger)
 		data[self.middleware_key] = user
 
 		return await handler(event, data)

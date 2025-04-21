@@ -9,13 +9,13 @@ from structlog.typing import FilteringBoundLogger
 
 from env import TelegramKeys
 from handlers import register_handlers
-from includes import get_storage, get_structlog_config
+from includes import get_storage, setup_logging
 from middlewares import register_middlewares
 
 
 async def main():
 	# Init logging
-	structlog.configure(**get_structlog_config())
+	setup_logging()
 
 	# Init bot
 	bot = Bot(
