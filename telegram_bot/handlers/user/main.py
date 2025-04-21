@@ -61,14 +61,12 @@ async def give_event_points_h(msg: types.Message, command: CommandObject, cached
 
 		# получить привилегии на ивент пользователя
 		event_grants = await get_active_user_event_grants(session, cached_user.id)
-		event_grants: list[EventPrivilegeGrant] = filter(
-			lambda eg: eg.privileges & EventPrivilege.CAN_GIVE_POINTS, event_grants)
-
+		event_grants: list[EventPrivilegeGrant] = [eg for eg in event_grants if eg.privileges & EventPrivilege.CAN_GIVE_POINTS]
 		if not event_grants:
 			await msg.answer(l10n.format_value("cant-give-points-now"))
 			return
 
-		active_events = await active_events_ikb(event_grants, user.id, msg.from_user.id)
+		active_events = await active_events_ikb(event_grants, user.id, user.telegram_id)
 		if not active_events:
 			await msg.answer(l10n.format_value("cant-give-points-now"))
 			return
@@ -81,7 +79,9 @@ async def give_event_points_kb_h(callback: types.CallbackQuery, callback_data: E
 	async with async_session() as session:
 		success = await give_point_for_event_by_user_id(session, callback_data.subject_id, callback_data.event_id)
 		if success:
-			await callback.answer(l10n.format_value("points-awarded"))
-			await callback.bot.send_message(callback_data.admin_tg_id, l10n.format_value("points-awarded"))
+			await callback.message.answer(l10n.format_value("points-awarded"))
+			await callback.bot.send_message(callback_data.subject_tg_id, l10n.format_value("points-awarded"))
+			await callback.message.delete()
 		else:
-			await callback.answer(l10n.format_value("already-received"))
+			await callback.message.answer(l10n.format_value("already-received"))
+			await callback.message.delete()
