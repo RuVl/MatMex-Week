@@ -75,7 +75,7 @@ def user_rights_ikb(l10n: FluentLocalization, admin_rights: int, user_rigts: int
 def names_ikb(users: list[User]):
 	builder = InlineKeyboardBuilder()
 	for user in users:
-		data = UserFactory(telegram_id=user.telegram_id, telegram_username=user.telegram_username).pack()
+		data = UserFactory(telegram_id=user.telegram_id).pack()
 		builder.row(InlineKeyboardButton(
 			text=f"{user.full_name} : {user.telegram_username}",
 			callback_data=data,
