@@ -83,7 +83,7 @@ you-have-not-rights = У тебя нет прав
 # Grant privilege messages
 ask-for-full-name = Введите ФИО человека, которого ходите наделить правами
 wrong-full-name = Человека с таким именем нет в базе данных, попробуйте еще раз
-user-privileges = Права пользователя {$fullname}: 
+user-privileges = Права пользователя { $fullname }: 
 choose-name-from-list = Выберите пользователя из списка
 cant-change-privileges-of-yourself = Вы не можете менять свои же права
 cant-change-privileges = Вы не можете менять права этого человека
@@ -123,10 +123,10 @@ ask-for-event-start-time = Введите, когда начинается ме�
 ask-for-event-end-time = Введите, когда заканчивается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
 event-created = Мероприятие создано\!
 event-value = Мероприятие
-    { $eventname }
-    Начинается: { $startsat }
-    Заканчивается: { $endsat }
-    За посещение начисляется { $eventgives }i
+    { $event_name }
+    Начинается: { $start_sat }
+    Заканчивается: { $ends_at }
+    За посещение начисляется { $event_gives }i
 
 # Account messages
 welcome-account = Добро пожаловать в личный кабинет\!

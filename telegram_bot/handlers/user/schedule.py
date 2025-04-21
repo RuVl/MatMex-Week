@@ -8,7 +8,7 @@ from database import async_session
 from database.methods import get_event_by_id
 from filters import LocalizedTextFilter
 from keyboards.callback_factories import BackToEventsFactory, EventFactory
-from keyboards.inline import event_actons_ikb, events_ikb
+from keyboards.inline import event_actions_ikb, events_ikb
 from utils import escape_md_v2, format_event_datetime
 
 schedule_router = Router()
@@ -43,14 +43,14 @@ async def in_event_h(callback: types.CallbackQuery, callback_data: EventFactory,
 
 	await callback.bot.edit_message_text(
 		text=l10n.format_value("event-value", args={
-			'eventname': escape_md_v2(event.name),
-			'startsat': escape_md_v2(starts_at_formatted),
-			'endsat': escape_md_v2(ends_at_formatted),
-			'eventgives': event.points if hasattr(event, 'points') else 50  # Use event points if available
+			'event_name': escape_md_v2(event.name),
+			'starts_at': escape_md_v2(starts_at_formatted),
+			'ends_at': escape_md_v2(ends_at_formatted),
+			'event_gives': event.points if hasattr(event, 'points') else 50  # Use event points if available
 		}),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id,
-		reply_markup=event_actons_ikb(
+		reply_markup=event_actions_ikb(
 			l10n,
 			event_id=event.id,
 			can_delete=callback_data.can_delete

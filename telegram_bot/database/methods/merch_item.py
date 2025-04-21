@@ -10,7 +10,7 @@ async def create_item(
 		session: AsyncSession,
 		name: str,
 		image_path: str,
-		size: int,  # TODO ЭТО ENUM! или str на крайняк
+		size: str,
 		full_price: float,
 		discount_price: float,
 		available_count: int,

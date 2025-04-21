@@ -61,7 +61,7 @@ class EventFactory(CallbackData, prefix='event_button'):
 	can_delete: bool
 
 
-class DeleteEventFactory(CallbackData, prefix='delete_event_buttton'):
+class DeleteEventFactory(CallbackData, prefix='delete_event_button'):
 	event_id: int
 	can_delete: bool
 

@@ -119,7 +119,7 @@ async def ask_for_item_full_price_h(msg: types.message, state: FSMContext, l10n:
 
 
 @create_router.message(EditShopActions.CHOOSE_ITEM_DISCOUNT_PRICE)
-async def ask_for_item_discount_pice_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+async def ask_for_item_discount_price_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 	if not msg.text.isdigit():
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)

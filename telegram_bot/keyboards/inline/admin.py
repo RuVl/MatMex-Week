@@ -46,7 +46,7 @@ privilege_names = dict([
 ])
 
 
-def user_rights_ikb(l10n: FluentLocalization, admin_rights: int, user_rigts: int, admin_id: int, subject_id: int) -> InlineKeyboardMarkup:
+def user_rights_ikb(l10n: FluentLocalization, admin_rights: int, user_rights: int, admin_id: int, subject_id: int) -> InlineKeyboardMarkup:
 	builder = InlineKeyboardBuilder()
 	for privilege in AdminPrivilege:
 		if privilege.value & admin_rights:
@@ -55,16 +55,16 @@ def user_rights_ikb(l10n: FluentLocalization, admin_rights: int, user_rigts: int
 					text=l10n.format_value(privilege_names[privilege.value]),
 					callback_data=PrivilegeButtonFactory(
 						privilege=privilege.value,
-						granted=bool(privilege.value & user_rigts),
+						granted=bool(privilege.value & user_rights),
 						admin_id=admin_id,
 						subject_id=subject_id).pack()
 				),
 				InlineKeyboardButton(
 					text=l10n.format_value(
-						"btn-emoji-yes" if privilege.value & user_rigts else "btn-emoji-no"),
+						"btn-emoji-yes" if privilege.value & user_rights else "btn-emoji-no"),
 					callback_data=PrivilegeButtonFactory(
 						privilege=privilege.value,
-						granted=bool(privilege.value & user_rigts),
+						granted=bool(privilege.value & user_rights),
 						admin_id=admin_id,
 						subject_id=subject_id).pack()
 				),

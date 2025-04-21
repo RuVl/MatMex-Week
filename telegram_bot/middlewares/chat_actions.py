@@ -46,7 +46,7 @@ class ChatActionsMw(BaseMiddleware):
 		if not self._enabled:
 			return await handler(event, data)
 
-		# Check if event type is supported
+		# Check if the event type is supported
 		if not isinstance(event, (Message, CallbackQuery)):
 			logger: FilteringBoundLogger = data.get('log', self.logger)
 			await logger.awarning(

@@ -29,6 +29,7 @@ async def profile_open_h(msg: types.Message, state: FSMContext, l10n: FluentLoca
 
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-edit-name"))
 async def edit_name_request_h(msg: types.Message, state: FSMContext):
+	await msg.answer('TODO')
 	await state.set_state(AccountActions.NAME_WAITING)
 
 

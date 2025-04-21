@@ -20,7 +20,7 @@ async def events_ikb(l10n, can_delete: bool) -> InlineKeyboardMarkup:
 	return builder.as_markup(resize_keyboard=True, input_field_placeholder=l10n.format_value("placeholder-event"))
 
 
-def event_actons_ikb(l10n, can_delete: bool, event_id: int) -> InlineKeyboardMarkup:
+def event_actions_ikb(l10n, can_delete: bool, event_id: int) -> InlineKeyboardMarkup:
 	builder = InlineKeyboardBuilder()
 	if can_delete:
 		builder.row(InlineKeyboardButton(

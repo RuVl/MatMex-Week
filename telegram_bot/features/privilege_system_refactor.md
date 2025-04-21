@@ -183,7 +183,7 @@ async def grant_role(
 
 1. **Phase 1: Database Migration**
     - Create new tables for roles and permissions
-    - Add migration script to transfer existing privileges
+    - Add a migration script to transfer existing privileges
 
 2. **Phase 2: Core Logic Implementation**
     - Implement permission check functions

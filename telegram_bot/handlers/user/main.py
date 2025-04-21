@@ -77,7 +77,7 @@ async def give_event_points_h(msg: types.Message, command: CommandObject, cached
 
 @user_router.callback_query(EventToGrantFactory.filter())
 async def give_event_points_kb_h(callback: types.CallbackQuery, callback_data: EventToGrantFactory, l10n: FluentLocalization):
-	# todo все равно чекать привелегию и время
+	# todo все равно чекать привилегию и время
 	async with async_session() as session:
 		success = await give_point_for_event_by_user_id(session, callback_data.subject_id, callback_data.event_id)
 		if success:
