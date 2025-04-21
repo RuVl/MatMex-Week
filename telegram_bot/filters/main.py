@@ -28,7 +28,7 @@ class FromBotToAdminFilter(BaseFilter):
 		return (
 				message.reply_to_message and
 				message.chat.id == TelegramKeys.ADMIN_CHAT_ID and
-				message.from_user.id == message.bot.id
+				message.reply_to_message.from_user.id == message.bot.id
 		)
 
 

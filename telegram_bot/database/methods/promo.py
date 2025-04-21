@@ -43,25 +43,25 @@ async def get_promocode_by_code(session: AsyncSession, code: str) -> Promocode |
 async def check_promocode_valid(session: AsyncSession, code: str, user_id: int) -> tuple[bool, str, int]:
 	"""
 	Проверяет, действителен ли промокод и может ли пользователь его активировать.
-	Возвращает кортеж (is_valid, message, cost):
+	Возвращает кортеж (is_valid, error_code, cost):
 	- is_valid: True если промокод действителен
-	- message: сообщение о результате проверки
+	- error_code: код ошибки, если не действителен (None если действителен)
 	- cost: стоимость промокода (если действителен, иначе 0)
 	"""
 	promocode = await get_promocode_by_code(session, code)
 
 	if not promocode:
-		return False, "Промокод не найден", 0
+		return False, "not_found", 0
 
 	if not promocode.is_active:
-		return False, "Промокод деактивирован", 0
+		return False, "deactivated", 0
 
 	if promocode.expires_at and promocode.expires_at < datetime.now(timezone.utc):
-		return False, "Срок действия промокода истек", 0
+		return False, "expired", 0
 
 	# Проверяем количество активаций
 	if promocode.max_uses is not None and len(promocode.activations) >= promocode.max_uses:
-		return False, "Достигнуто максимальное количество использований промокода", 0
+		return False, "max_uses_reached", 0
 
 	# Проверяем, активировал ли пользователь уже этот промокод
 	query = select(exists().where(
@@ -71,32 +71,32 @@ async def check_promocode_valid(session: AsyncSession, code: str, user_id: int) 
 	)
 	result = await session.execute(query)
 	if result.scalar_one():
-		return False, "Вы уже активировали этот промокод", 0
+		return False, "already_activated", 0
 
-	return True, "Промокод действителен", promocode.cost
+	return True, None, promocode.cost
 
 
 async def activate_promocode(session: AsyncSession, code: str, user_id: int) -> tuple[bool, str, int]:
 	"""
 	Активирует промокод для пользователя, если это возможно.
-	Возвращает кортеж (success, message, cost):
+	Возвращает кортеж (success, error_code, cost):
 	- success: True если активация успешна
-	- message: сообщение о результате активации
+	- error_code: код ошибки, если не успешно (None если успешно)
 	- cost: начисленные баллы (если успешно, иначе 0)
 	"""
-	is_valid, message, cost = await check_promocode_valid(session, code, user_id)
+	is_valid, error_code, cost = await check_promocode_valid(session, code, user_id)
 
 	if not is_valid:
-		return False, message, 0
+		return False, error_code, 0
 
 	promocode = await get_promocode_by_code(session, code)
 	if not promocode:
-		return False, "Произошла ошибка при получении промокода", 0
+		return False, "not_found", 0
 
 	# Получаем пользователя и обновляем баланс
 	user = await session.get(User, user_id)
 	if not user:
-		return False, "Пользователь не найден", 0
+		return False, "user_not_found", 0
 
 	# Создаём активацию
 	activation = PromocodeActivation(
@@ -108,7 +108,7 @@ async def activate_promocode(session: AsyncSession, code: str, user_id: int) -> 
 	user.balance += promocode.cost
 
 	await session.commit()
-	return True, f"Промокод активирован\. Начислено {promocode.cost} баллов", promocode.cost
+	return True, None, promocode.cost
 
 
 async def deactivate_promocode(session: AsyncSession, promocode_id: int) -> bool:

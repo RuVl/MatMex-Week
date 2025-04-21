@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload, aliased
+from sqlalchemy.orm import aliased, selectinload
 
 from database.models import Privilege, User
 
@@ -102,27 +102,27 @@ async def get_privileges_by_provider(session: AsyncSession, provider_id: int) ->
 
 
 async def is_provider_to(session: AsyncSession, provider_id: int, subject_id: int) -> bool:
-    if provider_id == subject_id:
-        return True
+	if provider_id == subject_id:
+		return True
 
-    privileges = Privilege.__table__
+	privileges = Privilege.__table__
 
-    base = select(
-        privileges.c.id,
-        privileges.c.provider_id
-    ).where(privileges.c.id == subject_id)
+	base = select(
+		privileges.c.id,
+		privileges.c.provider_id
+	).where(privileges.c.id == subject_id)
 
-    recursive = base.cte(name="privilege_tree", recursive=True)
-    recursive_alias = aliased(recursive)
+	recursive = base.cte(name="privilege_tree", recursive=True)
+	recursive_alias = aliased(recursive)
 
-    recursive = recursive.union_all(
-        select(
-            privileges.c.id,
-            privileges.c.provider_id
-        ).where(privileges.c.id == recursive_alias.c.provider_id)
-    )
+	recursive = recursive.union_all(
+		select(
+			privileges.c.id,
+			privileges.c.provider_id
+		).where(privileges.c.id == recursive_alias.c.provider_id)
+	)
 
-    query = select(recursive.c.id).where(recursive.c.id == provider_id)
-    result = await session.execute(query)
+	query = select(recursive.c.id).where(recursive.c.id == provider_id)
+	result = await session.execute(query)
 
-    return result.scalar() is not None
+	return result.scalar() is not None

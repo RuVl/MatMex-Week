@@ -1,13 +1,13 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from fluent.runtime import FluentLocalization
-from datetime import datetime
 
-from database.enums import AdminPrivilege
-from database.models import User, EventPrivilegeGrant
-from database.methods import get_user_event_grants, get_active_events, get_all_events
 from database import async_session
-from keyboards.callback_factories import PKApplyFactory, PrivilegeButtonFactory, UserFactory, EventPrivilegeButtonFactory, EventToGrantFactory
+from database.enums import AdminPrivilege
+from database.methods import get_active_events, get_all_events, get_user_event_grants
+from database.models import EventPrivilegeGrant, User
+from keyboards.callback_factories import EventPrivilegeButtonFactory, EventToGrantFactory, PKApplyFactory, PrivilegeButtonFactory, UserFactory
+
 
 def verification_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeyboardMarkup:
 	builder = InlineKeyboardBuilder()
@@ -85,6 +85,7 @@ def names_ikb(users: list[User]):
 		))
 	return builder.as_markup()
 
+
 async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -> InlineKeyboardMarkup:
 	builder = InlineKeyboardBuilder()
 	async with async_session() as session:
@@ -97,25 +98,26 @@ async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -
 				grant_id = event_grant.id
 				break
 		builder.row(
-		InlineKeyboardButton(
-			text=event.name,
-			callback_data=EventPrivilegeButtonFactory(
-				event_id=event.id,
-				grant_id=grant_id,
-				subject_id=subject_id).pack()
-		),
-		InlineKeyboardButton(
-			text=l10n.format_value("btn-emoji-yes" if grant_id is not None else "btn-emoji-no"),
-			callback_data=EventPrivilegeButtonFactory(
-				event_id=event.id,
-				grant_id=grant_id,
-				subject_id=subject_id).pack()
-		),
-	)
-  
+			InlineKeyboardButton(
+				text=event.name,
+				callback_data=EventPrivilegeButtonFactory(
+					event_id=event.id,
+					grant_id=grant_id,
+					subject_id=subject_id).pack()
+			),
+			InlineKeyboardButton(
+				text=l10n.format_value("btn-emoji-yes" if grant_id is not None else "btn-emoji-no"),
+				callback_data=EventPrivilegeButtonFactory(
+					event_id=event.id,
+					grant_id=grant_id,
+					subject_id=subject_id).pack()
+			),
+		)
+
 	return builder.as_markup()
 
-async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPrivilegeGrant], subject_id : int, admin_tg_id : int) -> InlineKeyboardMarkup | None:
+
+async def active_events_ikb(event_grants: list[EventPrivilegeGrant], subject_id: int, admin_tg_id: int) -> InlineKeyboardMarkup | None:
 	active_events = []
 	async with async_session() as session:
 		all_events = await get_active_events(session)
@@ -129,15 +131,15 @@ async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPr
 
 	builder = InlineKeyboardBuilder()
 	for event_pair in active_events:
-		#TODO: можно получать event по id из event_grants но так больше запросов к бд, хз че лучше
+		# TODO: можно получать event по id из event_grants но так больше запросов к бд, хз че лучше
 		builder.row(
 			InlineKeyboardButton(
 				text=event_pair[0].name,
 				callback_data=EventToGrantFactory(
 					event_id=event_pair[0].id,
 					grant_id=event_pair[1].id,
-					subject_id = subject_id,
-     				admin_tg_id = admin_tg_id
+					subject_id=subject_id,
+					admin_tg_id=admin_tg_id
 				).pack()
 			),
 		)

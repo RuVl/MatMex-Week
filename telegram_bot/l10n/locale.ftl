@@ -132,6 +132,12 @@ event-value = Мероприятие
 welcome-account = Добро пожаловать в личный кабинет\!
     Пользователь: { $fullname }
     Баланс: { $balance }i
+    Статус: { $in_pc ->
+[true] в профкоме
+*[false] не в профкоме
+    }
+
+
 input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
 name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
@@ -150,11 +156,11 @@ btn-emoji-no = ❌
 #shop messages
 shop-hello = Магазин
 item-value = Товар
-    Название: { $itemname }
-    Размер: { $itemsize }
-    Цена: { $fullprice }
-    Цена по скидке: { $discountprice }
-    На складе: { $availablecount }
+    Название: { $item_name }
+    Размер: { $item_size }
+    Цена: { $full_price }
+    Цена по скидке: { $discount_price }
+    На складе: { $available_count }
 
 # Menu buttons
 btn-support = Поддержка
@@ -196,14 +202,6 @@ btn-review-apply = Пересмотреть
 btn-create-promo = Создать промокод
 btn-delete-category = Удалить категорию
 btn-give-event-privileges = Выдать право начислять баллы
-
-# Account buttons
-btn-edit-name = Редактировать ФИО
-btn-already-in-pc = Я вообще-то в пк
-
-# Registration buttons
-btn-send-for-check = Отправить на ручную проверку
-btn-just-kidding = Нет, я пошутил
 
 # Placeholders
 placeholder-menu = Выберите элемент меню

@@ -8,7 +8,7 @@ from structlog.typing import FilteringBoundLogger
 
 from database import async_session
 from database.enums import AdminPrivilege
-from database.methods import create_apply, create_privilege, create_user, get_user_by_telegram_id
+from database.methods import create_apply, create_privilege, create_user, delete_apply, get_user_by_telegram_id
 from database.models import User
 from env import TelegramKeys
 from filters import FullNameFilter
@@ -34,8 +34,8 @@ async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalizatio
 		await state.clear()
 
 
-@register_router.message(RegistrationsActions.NAME_WAITING, flags={'chat_action': True})
-async def correct_fullname_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
+@register_router.message(RegistrationsActions.NAME_WAITING, flags={'chat_action': True, 'disable_cache': True})
+async def enter_fullname_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	if not await FullNameFilter().__call__(msg):
 		await msg.answer(l10n.format_value("wrong-name"))
 		return
@@ -45,21 +45,19 @@ async def correct_fullname_h(msg: types.Message, state: FSMContext, l10n: Fluent
 
 	async with async_session() as session:
 		user = await create_user(session, msg.from_user.id, msg.from_user.username, fullname)
+
+		# If it's admin
 		if str(msg.from_user.id) in TelegramKeys.ADMINS:
 			await create_privilege(session=session, user_id=user.id, privilege_mask=AdminPrivilege.ALL, provider_id=None)
 
-	await msg.answer(l10n.format_value("thanks-name-html", args={
-		'fullname': escape_md_v2(fullname)
-	}
-	), parse_mode=ParseMode.HTML
-	)
+	await msg.answer(l10n.format_value("thanks-name-html", args={'fullname': escape_md_v2(fullname)}), parse_mode=ParseMode.HTML)
 
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb(l10n))
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 
-@register_router.message(RegistrationsActions.CHECK_MEMBER, flags={'chat_action': True})
-async def handle_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+@register_router.message(RegistrationsActions.CHECK_MEMBER, flags={'chat_action': True, 'no_cache': True})
+async def in_pc_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	answer = msg.text.strip()
 
 	if answer == l10n.format_value('btn-yes'):
@@ -74,7 +72,7 @@ async def handle_in_pc(msg: types.Message, state: FSMContext, l10n: FluentLocali
 
 
 @register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK, flags={'chat_action': True})
-async def handle_manual_check_confirm(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
+async def manual_check_confirm_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	answer = msg.text.strip()
 
 	if answer == l10n.format_value('btn-send-for-check'):
@@ -82,19 +80,21 @@ async def handle_manual_check_confirm(msg: types.Message, state: FSMContext, l10
 			user = await get_user_by_telegram_id(session, msg.from_user.id)  # do not user cache
 			apply = await create_apply(session, user.id)
 
-		await log.ainfo("created-apply-for-check", apply_id=apply.id, user_id=user.id, fullname=user.full_name)
-		await msg.bot.send_message(TelegramKeys.ADMIN_CHAT_ID, l10n.format_value("apply-check", args={
-			'status': apply.status,
-			'fullname': escape_md_v2(user.full_name),
-			'username': escape_md_v2(user.telegram_username),
-			'verified_by': None
-		}
-		), reply_markup=verification_request_ikb(l10n, apply_id=apply.id)
-		)
+			try:
+				await log.ainfo("created-apply-for-check", apply_id=apply.id, user_id=user.id, fullname=user.full_name)
+				await msg.bot.send_message(TelegramKeys.ADMIN_CHAT_ID, l10n.format_value("apply-check", args={
+					'status': apply.status,
+					'fullname': escape_md_v2(user.full_name),
+					'username': escape_md_v2(user.telegram_username),
+					'verified_by': None
+				}), reply_markup=verification_request_ikb(l10n, apply_id=apply.id))
 
-		kb = await menu_kb(l10n, msg.from_user.id)
-		await msg.answer(l10n.format_value("wait-until-checked"), reply_markup=kb)
-		await state.clear()  # end
+				kb = await menu_kb(l10n, msg.from_user.id)
+				await msg.answer(l10n.format_value("wait-until-checked"), reply_markup=kb)
+				await state.clear()  # end
+			except Exception as e:
+				await delete_apply(session, apply.id)
+				raise e
 
 	elif answer == l10n.format_value('btn-just-kidding'):
 		kb = await menu_kb(l10n, msg.from_user.id)

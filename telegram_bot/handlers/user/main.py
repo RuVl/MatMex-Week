@@ -2,14 +2,12 @@ import io
 import uuid
 
 import segno
-from aiogram import Router, flags, types
-from aiogram.enums import ParseMode
+from aiogram import Router, types
 from aiogram.filters import CommandObject, CommandStart
-from aiogram.types import FSInputFile
 from aiogram.utils.deep_linking import create_start_link
 from fluent.runtime import FluentLocalization
 
-from config import MEDIA_DIR, QR_CODE_SCALE
+from config import QR_CODE_SCALE
 from database import async_session
 from database.enums import EventPrivilege
 from database.methods import get_active_user_event_grants, get_user_by_code, get_user_by_telegram_id, give_point_for_event_by_user_id
@@ -19,10 +17,10 @@ from handlers.user.account import account_router
 from handlers.user.help import support_router
 from handlers.user.promocode import promocode_router
 from handlers.user.register import register_router
-from handlers.user.shop import shop_router
 from handlers.user.schedule import schedule_router
-from keyboards.inline import active_events_ikb
+from handlers.user.shop import shop_router
 from keyboards.callback_factories import EventToGrantFactory
+from keyboards.inline import active_events_ikb
 
 user_router = Router()
 user_router.include_routers(
@@ -70,7 +68,7 @@ async def give_event_points_h(msg: types.Message, command: CommandObject, cached
 			await msg.answer(l10n.format_value("cant-give-points-now"))
 			return
 
-		active_events = await active_events_ikb(l10n, event_grants, user.id, msg.from_user.id)
+		active_events = await active_events_ikb(event_grants, user.id, msg.from_user.id)
 		if not active_events:
 			await msg.answer(l10n.format_value("cant-give-points-now"))
 			return
