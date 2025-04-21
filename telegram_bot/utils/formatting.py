@@ -2,6 +2,7 @@
 Utility functions for formatting data for display.
 """
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from .constants import DAYS_RU, MONTHS_RU_GENITIVE
 
@@ -46,9 +47,11 @@ def format_short_time(dt: datetime) -> str:
 
 def format_event_datetime(dt: datetime) -> str:
 	"""Format event datetime in standard format with weekday"""
-	return f"{DAYS_RU[dt.weekday()]} {dt.day:02}.{dt.month:02} {dt.hour:02}:{dt.minute:02}"
+	dt_tz = dt.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
+	return f"{DAYS_RU[dt_tz.weekday()]} {dt_tz.day:02}.{dt_tz.month:02} {dt_tz.hour:02}:{dt_tz.minute:02}"
 
 
 def format_event_datetime_with_year(dt: datetime) -> str:
 	"""Format event datetime with year included"""
-	return f"{DAYS_RU[dt.weekday()]} {dt.day:02}.{dt.month:02}.{dt.year} {dt.hour:02}:{dt.minute:02}"
+	dt_tz = dt.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
+	return f"{DAYS_RU[dt_tz.weekday()]} {dt_tz.day:02}.{dt_tz.month:02}.{dt_tz.year} {dt_tz.hour:02}:{dt_tz.minute:02}"
