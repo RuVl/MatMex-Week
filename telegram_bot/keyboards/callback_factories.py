@@ -54,3 +54,30 @@ class ShopBackToCategoriesFactory(CallbackData, prefix='back_to_categories'):
 
 class EditShopCategoryFactory(CallbackData, prefix='edit_shop_choose_category'):
 	category_id: int
+
+
+class EventFactory(CallbackData, prefix='event_button'):
+	event_id: int
+	can_delete: bool
+
+
+class DeleteEventFactory(CallbackData, prefix='delete_event_button'):
+	event_id: int
+	can_delete: bool
+
+
+class BackToEventsFactory(CallbackData, prefix='back_to_events_button'):
+	can_delete: bool
+
+
+class EventPrivilegeButtonFactory(CallbackData, prefix='event_privilege_button'):
+	event_id: int
+	grant_id: int | None
+	subject_id: int
+
+
+class EventToGrantFactory(CallbackData, prefix='event_to_grant_button'):
+	event_id: int
+	grant_id: int
+	subject_id: int
+	admin_tg_id: int
