@@ -22,7 +22,6 @@ class PrivilegeButtonFactory(CallbackData, prefix='privilege_button'):
 
 
 class UserFactory(CallbackData, prefix='user_data'):
-	full_name: str
 	telegram_id: int
 	telegram_username: str
 

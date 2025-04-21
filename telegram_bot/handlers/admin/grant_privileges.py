@@ -76,7 +76,7 @@ async def user_choice_h(callback: types.CallbackQuery, callback_data: UserFactor
 		return
 
 	await callback.message.answer(
-		l10n.format_value("user-privileges", args={"fullname": callback_data.full_name}),
+		l10n.format_value("user-privileges", args={"fullname": subject.full_name}),
 		reply_markup=user_rights_ikb(l10n, admin_privileges.privilege, subject_privileges.privilege, admin.id, subject.id))
 	await callback.message.delete()
 	await state.set_state(GrantPrivilegesActions.PRIVILEGES_KB)
