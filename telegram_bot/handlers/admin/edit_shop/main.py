@@ -8,13 +8,13 @@ from filters.main import LocalizedTextFilter, PrivilegeFilter
 from keyboards.common import admin_kb, edit_shop_kb
 from state_machines.admin import AdminActions
 from state_machines.edit_shop import EditShopActions
-from .create import edit_shop_create_router
-from .delete import edit_shop_delete_router
+from .create import create_router
+from .delete import delete_router
 
 edit_shop_router = Router()
 edit_shop_router.include_routers(
-	edit_shop_create_router,
-	edit_shop_delete_router
+	create_router,
+	delete_router
 )
 
 edit_shop_router.message.filter(PrivilegeFilter(AdminPrivilege.EDIT_SHOP))
