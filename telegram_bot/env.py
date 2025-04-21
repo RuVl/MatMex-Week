@@ -41,5 +41,10 @@ class LoggerKeys:
 	DATETIME_FORMAT: Final[str] = environ.get('LOGGER_DATETIME_FORMAT', default='%Y-%m-%d %H:%M:%S')
 	TIME_IN_UTC: Final[bool] = bool(environ.get('LOGGER_TIME_IN_UTC', default=False))
 
-	RENDERER: Final[str] = environ.get('LOGGER_RENDERER', default='console')
 	USE_COLORS_IN_CONSOLE: Final[bool] = bool(environ.get('LOGGER_USE_COLORS_IN_CONSOLE', default=False))
+
+	# File logging configuration
+	LOG_TO_FILE: Final[bool] = bool(environ.get('LOGGER_LOG_TO_FILE', default=True))
+	LOG_FILE_PATH: Final[str] = environ.get('LOGGER_LOG_FILE_PATH', default='logs/bot.log')
+	LOG_FILE_MAX_SIZE: Final[int] = int(environ.get('LOGGER_LOG_FILE_MAX_SIZE', default=100 * 1024 * 1024))  # 100 MB
+	LOG_FILE_BACKUP_COUNT: Final[int] = int(environ.get('LOGGER_LOG_FILE_BACKUP_COUNT', default=5))  # Keep 5 backup files

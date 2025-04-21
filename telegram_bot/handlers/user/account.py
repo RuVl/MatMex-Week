@@ -15,7 +15,7 @@ from utils import escape_md_v2
 account_router = Router()
 
 
-@account_router.message(LocalizedTextFilter("btn-profile"), flags={'no_cache': True})
+@account_router.message(LocalizedTextFilter("btn-profile"), flags={'drop_cache': True})
 async def profile_open_h(msg: types.Message, state: FSMContext, cached_user: User, l10n: FluentLocalization):
 	in_pc = cached_user.apply is not None and cached_user.apply.status == ApplyStatus.APPROVED
 	await msg.answer(l10n.format_value("welcome-account", args={

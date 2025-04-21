@@ -1,3 +1,3 @@
 from .fluent import get_fluent_localization
-from .logging import get_structlog_config
+from .logging import setup_logging
 from .storage import get_redis, get_storage

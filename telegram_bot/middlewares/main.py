@@ -2,10 +2,14 @@ from aiogram import Dispatcher
 
 from env import TelegramKeys
 from includes import get_fluent_localization
-from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10nMw, LoggingMw, SpamProtectionMw, UserCacheMw
+from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10nMw, LoggingMw, UserCacheMw
+from middlewares.single_message import SingleMessageMw
 
 
 def register_middlewares(dp: Dispatcher):
+	# Single message (in-memory locking)
+	dp.message.outer_middleware(SingleMessageMw())
+
 	# Drop callback data with only space symbol
 	dp.callback_query.outer_middleware(DropEmptyCallbackMw())
 
@@ -16,10 +20,10 @@ def register_middlewares(dp: Dispatcher):
 	dp.callback_query.outer_middleware(l10n_mw)
 
 	# Spam protection
-	spam_protection_mw = SpamProtectionMw()
-	dp.message.outer_middleware(spam_protection_mw)
-	dp.callback_query.outer_middleware(spam_protection_mw)
-	dp.shutdown.register(spam_protection_mw.close)
+	# spam_protection_mw = SpamProtectionMw()
+	# dp.message.outer_middleware(spam_protection_mw)
+	# dp.callback_query.outer_middleware(spam_protection_mw)
+	# dp.shutdown.register(spam_protection_mw.close)
 
 	# Logging handlers (should be last)
 	logging_mw = LoggingMw()
