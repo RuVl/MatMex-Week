@@ -52,10 +52,12 @@ async def user_full_username_h(msg: types.Message, state: FSMContext, l10n: Flue
 async def user_choice_h(callback: types.CallbackQuery, callback_data: UserFactory, state: FSMContext, l10n: FluentLocalization):
 	async with async_session() as session:
 		subject = await get_user_by_telegram_id(session, callback_data.telegram_id)
+
 	user_event_privileges = await user_event_privileges_ikb(l10n, subject.id)
 	await callback.message.answer(
-		l10n.format_value("user-privileges", args={"fullname": callback_data.full_name}),
+		l10n.format_value("user-privileges", args={"fullname": subject.full_name}),
 		reply_markup=user_event_privileges)
+
 	await callback.message.delete()
 	await state.set_state(GrantEventPrivilegesActions.PRIVILEGES_KB)
 

@@ -55,12 +55,7 @@ async def user_full_username_h(msg: types.Message, state: FSMContext, l10n: Flue
 
 
 @grant_privileges_router.callback_query(GrantPrivilegesActions.CHOOSE_USER, UserFactory.filter())
-async def user_choice_h(
-		callback: types.CallbackQuery,
-		callback_data: UserFactory,
-		state: FSMContext,
-		l10n: FluentLocalization
-):
+async def user_choice_h(callback: types.CallbackQuery, callback_data: UserFactory, state: FSMContext, l10n: FluentLocalization):
 	admin_id = callback.from_user.id
 	subject_telegram_id = callback_data.telegram_id
 
@@ -92,7 +87,7 @@ async def user_choice_h(
 		return
 
 	await callback.message.answer(
-		l10n.format_value("user-privileges", args={"fullname": callback_data.full_name}),
+		l10n.format_value("user-privileges", args={"fullname": subject.full_name}),
 		reply_markup=user_rights_ikb(l10n, admin_privileges.privilege, subject_privileges.privilege, admin.id, subject.id)
 	)
 	await callback.answer()

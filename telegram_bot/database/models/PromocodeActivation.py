@@ -12,6 +12,7 @@ class PromocodeActivation(Base):
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
 	activated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="когда активировали")
+	points: Mapped[int] = mapped_column(Integer, nullable=False, comment='сколько начислено')
 
 	# Какой промокод активировали
 	promocode_id: Mapped[int] = mapped_column(Integer, ForeignKey('promocodes.id'), nullable=False, comment="какой промокод активировали")

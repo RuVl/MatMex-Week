@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -16,8 +16,8 @@ class MerchItem(Base):
 	name: Mapped[str] = mapped_column(String(255), nullable=False, comment="название товара")
 	size: Mapped[MerchSize] = mapped_column(postgresql.ENUM(MerchSize), nullable=False, comment="размер товара")
 
-	full_price: Mapped[float] = mapped_column(Float, nullable=False, comment="цена без скидки")
-	discount_price: Mapped[float] = mapped_column(Float, nullable=False, comment="стоимость со скидкой")
+	full_price: Mapped[int] = mapped_column(Integer, nullable=False, comment="цена без скидки")
+	discount_price: Mapped[int] = mapped_column(Integer, nullable=False, comment="стоимость со скидкой")
 
 	available_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="сколько доступно")
 	in_stock: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False, comment="активна ли продажа")

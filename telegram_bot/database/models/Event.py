@@ -12,6 +12,7 @@ class Event(Base):
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
 	name: Mapped[str] = mapped_column(String(255), nullable=False, comment="название мероприятия")
+	visit_points: Mapped[int] = mapped_column(Integer, nullable=False, default=50, comment="Количество баллов за посещение")
 
 	# Может быть всегда начат или никогда не заканчиваться
 	starts_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, comment="время начала мероприятия")

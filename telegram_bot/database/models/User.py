@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Float, ForeignKey, Integer, String, Uuid
+from sqlalchemy import ForeignKey, Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models import Base, EventAttendance, EventPrivilegeGrant, PkApply, Privilege, PromocodeActivation, Purchase
@@ -15,7 +15,7 @@ class User(Base):
 	telegram_username: Mapped[str] = mapped_column(String(255), nullable=True, comment="Telegram username пользователя")
 
 	full_name: Mapped[str] = mapped_column(String(255), nullable=False, comment="ФИО")
-	balance: Mapped[float] = mapped_column(Float, nullable=False, default=0, comment="баланс (мнимые единицы)")
+	balance: Mapped[int] = mapped_column(Integer, nullable=False, default=0, comment="баланс (мнимые единицы)")
 
 	code: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), unique=True, nullable=False, default=uuid.uuid4, comment="код человека (для qr)")
 
