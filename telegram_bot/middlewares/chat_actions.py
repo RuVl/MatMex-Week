@@ -1,4 +1,5 @@
 from typing import Any, Callable
+import copy
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
@@ -79,6 +80,8 @@ class ChatActionsMw(BaseMiddleware):
 			# Create wrapped event
 			wrapped_event = event
 			if isinstance(wrapped_event, CallbackQuery):
+				# Create a mutable copy of the callback query to avoid modifying frozen objects
+				wrapped_event = copy.copy(wrapped_event)
 				wrapped_event.message = MessageActionWrapper(wrapped_event.message, **cfg)
 			else:
 				wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
