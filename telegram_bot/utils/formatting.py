@@ -19,18 +19,19 @@ def format_datetime(dt: datetime, include_weekday: bool = True, include_time: bo
 	Returns:
 		Formatted datetime string
 	"""
+	dt_tz = dt.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
 	date_parts = []
 
 	# Add weekday if needed
 	if include_weekday:
-		date_parts.append(f"{DAYS_RU[dt.weekday()]}")
+		date_parts.append(f"{DAYS_RU[dt_tz.weekday()]}")
 
 	# Add date with month in genitive case
-	date_parts.append(f"{dt.day} {MONTHS_RU_GENITIVE[dt.month - 1]}")
+	date_parts.append(f"{dt_tz.day} {MONTHS_RU_GENITIVE[dt_tz.month - 1]}")
 
 	# Add time if needed
 	if include_time:
-		date_parts.append(f"{dt.hour:02}:{dt.minute:02}")
+		date_parts.append(f"{dt_tz.hour:02}:{dt_tz.minute:02}")
 
 	return " ".join(date_parts)
 
@@ -42,7 +43,8 @@ def format_short_date(dt: datetime) -> str:
 
 def format_short_time(dt: datetime) -> str:
 	"""Format time in short format HH:MM"""
-	return f"{dt.hour:02}:{dt.minute:02}"
+	dt_tz = dt.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
+	return f"{dt_tz.hour:02}:{dt_tz.minute:02}"
 
 
 def format_event_datetime(dt: datetime) -> str:
