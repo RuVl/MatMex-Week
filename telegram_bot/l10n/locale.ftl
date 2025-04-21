@@ -56,7 +56,8 @@ apply-on-check = Ваша заявка ожидает рассмотрения
 
 
 # ===== PROMOCODES =====
-promocode_enter = Введите промокод
+no-promocodes = Нет промокодов
+promocode-enter = Введите промокод
 promocode-error-not-found = Твой промокод недействителен
 promocode-error-deactivated = { promocode-error-not-found }
 promocode-error-expired = { promocode-error-not-found }
@@ -135,7 +136,7 @@ item-value = Товар
 
 # Shop management
 edit-shop-menu = Редактирование магазина
-cancel_edit_shop = Редактирование отменено
+cancel-edit-shop = Редактирование отменено
 ask-for-category-create = Введите название категории и прикрепите изображение категории
 category-created = Категория создана
 item-creation = Создание товара

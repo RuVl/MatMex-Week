@@ -15,7 +15,7 @@ promocode_router = Router()
 
 @promocode_router.message(LocalizedTextFilter("btn-enter-promocode"))
 async def promocode_button_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("promocode_enter"), reply_markup=user_codes_kb(l10n))
+	await msg.answer(l10n.format_value("promocode-enter"), reply_markup=user_codes_kb(l10n))
 	await state.set_state(PromocodeActions.ENTER_PROMOCODE)
 
 

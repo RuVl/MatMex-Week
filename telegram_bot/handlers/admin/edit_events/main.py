@@ -40,7 +40,7 @@ async def edit_events_h(msg: types.Message, state: FSMContext, l10n: FluentLocal
 )
 async def cancel_edit_event_h(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization):
 	await callback.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-	await callback.message.answer(l10n.format_value("cancel_edit_shop"), reply_markup=edit_events_kb(l10n))
+	await callback.message.answer(l10n.format_value("cancel-edit-shop"), reply_markup=edit_events_kb(l10n))
 	await state.set_state(EditEventsActions.EDIT_EVENTS)
 
 
