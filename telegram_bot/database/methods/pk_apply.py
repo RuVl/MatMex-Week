@@ -17,6 +17,22 @@ async def create_apply(session: AsyncSession, creator_id: int) -> PkApply:
 	return request
 
 
+async def delete_apply(session: AsyncSession, apply_id: int) -> bool:
+	"""Deletes apply if exists."""
+	result = await session.execute(
+		select(PkApply)
+		.where(PkApply.id == apply_id)
+	)
+	apply = result.scalar_one_or_none()
+
+	if not apply:
+		return False
+
+	await session.delete(apply)
+	await session.commit()
+	return True
+
+
 async def update_apply_status(session: AsyncSession, apply_id: int, status: ApplyStatus, reviewed_by_id: int) -> PkApply:
 	"""Обновляет статус заявки."""
 	request = await session.get(PkApply, apply_id, options=[

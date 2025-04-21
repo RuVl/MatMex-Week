@@ -11,23 +11,34 @@ from .utils import MessageActionWrapper
 
 
 class ChatActionsMw(BaseMiddleware):
+	"""
+	Middleware to automatically show typing/upload actions during handler execution.
+	Uses handler flags to determine what actions to show.
+	"""
+
 	def __init__(
 			self,
 			flag_name: str = 'chat_action',
 			*,
-			default_typing_speed: float = 70.0,
+			default_typing_speed: float = 150.0,
 			default_max_delay: float = 0.75,
 			default_max_upload_delay: float = 1.0,
 			default_adaptive: bool = True,
-			enabled: bool = True
+			enabled: bool = True,
+			active_by_default: bool = True,
 	):
 		self.flag_name = flag_name
 		self._enabled = enabled
+		self._active_by_default = active_by_default
 
-		self._default_typing_speed = default_typing_speed
-		self._default_max_delay = default_max_delay
-		self._default_max_upload_delay = default_max_upload_delay
-		self._default_adaptive = default_adaptive
+		self.default_config = {
+			"max_delay": float(default_max_delay),
+			"typing_speed": float(default_typing_speed),
+			"adaptive": bool(default_adaptive),
+			"max_upload_delay": float(default_max_upload_delay),
+		}
+
+		self.logger = get_logger()
 
 	async def __call__(
 			self,
@@ -35,49 +46,79 @@ class ChatActionsMw(BaseMiddleware):
 			event: TelegramObject,
 			data: dict[str, Any],
 	) -> Any:
-		if not isinstance(event, (Message, CallbackQuery)):
-			raise RuntimeError(f"{ChatActionsMw.__name__} got an unexpected event type!")
-
+		# Skip if middleware is disabled
 		if not self._enabled:
 			return await handler(event, data)
 
-		flag = get_flag(data, self.flag_name)
-		if flag is None:
+		logger: FilteringBoundLogger = data.get('log', self.logger)
+
+		# Check if the event type is supported
+		if not isinstance(event, (Message, CallbackQuery)):
+			await logger.awarning(
+				"Unexpected event type",
+				middleware=self.__class__.__name__,
+				event_type=type(event).__name__
+			)
 			return await handler(event, data)
 
-		cfg = self._parse_flag(flag)
+		# Check if the flag is set for this handler
+		flag = get_flag(data, self.flag_name, default=self._active_by_default)
+		if not flag:
+			return await handler(event, data)
+
+		# Parse the flag configuration
+		cfg = await self._parse_flag(flag, logger)
 		if cfg is None:
-			logger: FilteringBoundLogger = data.get('log', get_logger())
-			await logger.awarning(f"Wrong flag value for {self.__class__.__name__}", flag_name=self.flag_name)
 			return await handler(event, data)
 
 		# Set logger from DI
 		cfg.setdefault('log', data.get('log'))
 
-		# Wrap message
-		wrapped = event
-		if isinstance(wrapped, CallbackQuery):
-			wrapped.message = MessageActionWrapper(wrapped.message, **cfg)
-		else:
-			wrapped = MessageActionWrapper(wrapped, **cfg)
+		# Wrap message or callback query message with action wrapper
+		try:
+			# Create wrapped event
+			wrapped_event = event
+			if isinstance(wrapped_event, CallbackQuery):
+				wrapped_event.message = MessageActionWrapper(wrapped_event.message, **cfg)
+			else:
+				wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
 
-		# for DI
-		data["event"] = wrapped
-		data[EVENT_FROM_USER_KEY] = wrapped.from_user
-		data[EVENT_CHAT_KEY] = wrapped.chat
+			# Update dependencies in data
+			data["event"] = wrapped_event
+			data[EVENT_FROM_USER_KEY] = wrapped_event.from_user
+			data[EVENT_CHAT_KEY] = wrapped_event.chat
 
-		return await handler(wrapped, data)
+			return await handler(wrapped_event, data)
 
-	def _parse_flag(self, flag_value: Any) -> dict[str, Any] | None:
-		if flag_value is True:
-			flag_value = {}
+		except Exception as e:
+			await self.logger.aerror(
+				"Error in chat action middleware",
+				error=str(e),
+				middleware=self.__class__.__name__
+			)
+			# Fall back to normal handler execution without a wrapper
+			return await handler(event, data)
 
-		if not isinstance(flag_value, dict):
+	async def _parse_flag(self, flag_value: Any, logger: FilteringBoundLogger) -> dict[str, Any] | None:
+		"""
+		Parse the flag value into configuration dictionary.
+		Returns None if the flag value is invalid.
+		"""
+
+		# Validate flag value type
+		if not isinstance(flag_value, (dict, bool)):
+			await logger.awarning("Invalid chat action flag", flag_name=self.flag_name, flag_value=str(flag_value))
 			return None
 
-		return {
-			"max_delay": float(flag_value.get("max_delay", self._default_max_delay)),
-			"typing_speed": float(flag_value.get("typing_speed", self._default_typing_speed)),
-			"adaptive": bool(flag_value.get("adaptive", self._default_adaptive)),
-			"max_upload_delay": float(flag_value.get("max_upload_delay", self._default_max_upload_delay)),
-		}
+		# Convert True to empty dict for default values
+		if flag_value is True:
+			return self.default_config.copy()
+
+		if flag_value is False:
+			return None
+
+		# Return configuration with defaults for missing values		
+		for key, value in flag_value.items():
+			flag_value.setdefault(key, value)
+
+		return flag_value

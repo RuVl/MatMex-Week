@@ -27,6 +27,7 @@
 
 
 <!-- PROJECT LOGO -->
+<!--suppress ALL, GrazieInspection -->
 <br />
 <div align="center">
   <a href="https://github.com/RuVl/MatMex-Week">
