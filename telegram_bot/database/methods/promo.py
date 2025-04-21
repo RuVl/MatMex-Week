@@ -4,6 +4,7 @@ from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from database.methods import create_activation
 from database.models import Promocode, PromocodeActivation, User
 
 
@@ -93,16 +94,24 @@ async def activate_promocode(session: AsyncSession, code: str, user_id: int) -> 
 	if not promocode:
 		return False, "not_found", 0
 
+	if not promocode.is_active:
+		return False, "deactivated", 0
+
+	if promocode.expires_at is not None and promocode.expires_at < datetime.now(timezone.utc):
+		return False, "expired", 0
+
+	if promocode.max_uses is not None and len(promocode.activations) >= promocode.max_uses:
+		return False, "max_uses_reached", 0
+
 	# Получаем пользователя и обновляем баланс
 	user = await session.get(User, user_id)
 	if not user:
 		return False, "user_not_found", 0
 
 	# Создаём активацию
-	activation = PromocodeActivation(
-		promocode_id=promocode.id, recipient_id=user_id
-	)
-	session.add(activation)
+	activation = await create_activation(session, promocode.cost, promocode.id, user.id)
+	if activation is None:  # повторная активация
+		return False, "already_activated", 0
 
 	# Начисляем баллы
 	user.balance += promocode.cost
