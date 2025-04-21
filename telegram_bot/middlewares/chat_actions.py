@@ -20,19 +20,23 @@ class ChatActionsMw(BaseMiddleware):
 			self,
 			flag_name: str = 'chat_action',
 			*,
-			default_typing_speed: float = 70.0,
+			default_typing_speed: float = 150.0,
 			default_max_delay: float = 0.75,
 			default_max_upload_delay: float = 1.0,
 			default_adaptive: bool = True,
-			enabled: bool = True
+			enabled: bool = True,
+			active_by_default: bool = True,
 	):
 		self.flag_name = flag_name
 		self._enabled = enabled
+		self._active_by_default = active_by_default
 
-		self._default_typing_speed = default_typing_speed
-		self._default_max_delay = default_max_delay
-		self._default_max_upload_delay = default_max_upload_delay
-		self._default_adaptive = default_adaptive
+		self.default_config = {
+			"max_delay": float(default_max_delay),
+			"typing_speed": float(default_typing_speed),
+			"adaptive": bool(default_adaptive),
+			"max_upload_delay": float(default_max_upload_delay),
+		}
 
 		self.logger = get_logger()
 
@@ -46,9 +50,10 @@ class ChatActionsMw(BaseMiddleware):
 		if not self._enabled:
 			return await handler(event, data)
 
+		logger: FilteringBoundLogger = data.get('log', self.logger)
+
 		# Check if the event type is supported
 		if not isinstance(event, (Message, CallbackQuery)):
-			logger: FilteringBoundLogger = data.get('log', self.logger)
 			await logger.awarning(
 				"Unexpected event type",
 				middleware=self.__class__.__name__,
@@ -57,19 +62,13 @@ class ChatActionsMw(BaseMiddleware):
 			return await handler(event, data)
 
 		# Check if the flag is set for this handler
-		flag = get_flag(data, self.flag_name)
-		if flag is None:
+		flag = get_flag(data, self.flag_name, default=self._active_by_default)
+		if not flag:
 			return await handler(event, data)
 
 		# Parse the flag configuration
-		cfg = self._parse_flag(flag)
+		cfg = await self._parse_flag(flag, logger)
 		if cfg is None:
-			logger: FilteringBoundLogger = data.get('log', self.logger)
-			await logger.awarning(
-				"Invalid chat action flag",
-				flag_name=self.flag_name,
-				flag_value=str(flag)
-			)
 			return await handler(event, data)
 
 		# Set logger from DI
@@ -97,26 +96,29 @@ class ChatActionsMw(BaseMiddleware):
 				error=str(e),
 				middleware=self.__class__.__name__
 			)
-			# Fall back to normal handler execution without wrapper
+			# Fall back to normal handler execution without a wrapper
 			return await handler(event, data)
 
-	def _parse_flag(self, flag_value: Any) -> dict[str, Any] | None:
+	async def _parse_flag(self, flag_value: Any, logger: FilteringBoundLogger) -> dict[str, Any] | None:
 		"""
 		Parse the flag value into configuration dictionary.
 		Returns None if the flag value is invalid.
 		"""
-		# Convert True to empty dict for default values
-		if flag_value is True:
-			flag_value = {}
 
 		# Validate flag value type
-		if not isinstance(flag_value, dict):
+		if not isinstance(flag_value, (dict, bool)):
+			await logger.awarning("Invalid chat action flag", flag_name=self.flag_name, flag_value=str(flag_value))
 			return None
 
-		# Return configuration with defaults for missing values
-		return {
-			"max_delay": float(flag_value.get("max_delay", self._default_max_delay)),
-			"typing_speed": float(flag_value.get("typing_speed", self._default_typing_speed)),
-			"adaptive": bool(flag_value.get("adaptive", self._default_adaptive)),
-			"max_upload_delay": float(flag_value.get("max_upload_delay", self._default_max_upload_delay)),
-		}
+		# Convert True to empty dict for default values
+		if flag_value is True:
+			return self.default_config.copy()
+
+		if flag_value is False:
+			return None
+
+		# Return configuration with defaults for missing values		
+		for key, value in flag_value.items():
+			flag_value.setdefault(key, value)
+
+		return flag_value

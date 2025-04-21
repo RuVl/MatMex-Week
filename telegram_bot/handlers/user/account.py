@@ -28,21 +28,20 @@ async def profile_open_h(msg: types.Message, state: FSMContext, l10n: FluentLoca
 
 
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-edit-name"))
-async def edit_name_request_h(msg: types.Message, state: FSMContext):
-	await msg.answer('TODO')
+async def edit_name_request_h(msg: types.Message, l10n: FluentLocalization, state: FSMContext):
+	await msg.answer(l10n.format_value("input-new-name"), reply_markup=account_menu_kb(l10n))
 	await state.set_state(AccountActions.NAME_WAITING)
 
 
 @account_router.message(AccountActions.NAME_WAITING, LocalizedTextFilter("btn-cancel"))
 async def edit_name_cancel_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("cancel-change-name"), reply_markup=account_menu_kb(l10n))
+	await msg.answer(l10n.format_value("cancel-change-name"), reply_markup=cancel_kb(l10n))
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 
 
 @account_router.message(AccountActions.NAME_WAITING, FullNameFilter())
 async def edit_name_submit_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	await log.adebug("log-name-changed", new_name=msg.text.strip())
-
 	new_name = msg.text.strip()
 
 	async with async_session() as session:
@@ -53,9 +52,7 @@ async def edit_name_submit_h(msg: types.Message, state: FSMContext, l10n: Fluent
 		else:
 			await log.aerror("user-not-found", telegram_id=msg.from_user.id)
 
-	await msg.answer(l10n.format_value("name-changed", args={
-		'fullname': new_name
-	}), reply_markup=account_menu_kb(l10n))
+	await msg.answer(l10n.format_value("name-changed", args={'fullname': new_name}), reply_markup=account_menu_kb(l10n))
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 
 

@@ -27,9 +27,7 @@ async def menu_kb(l10n, user_telegram_id: int) -> ReplyKeyboardMarkup:
 		user = await get_user_by_telegram_id(session, user_telegram_id)
 		user_privilege = await get_privilege_by_user(session, user.id)
 
-	is_admin = True
-	if not user_privilege or user_privilege.privilege == 0:
-		is_admin = False
+	is_admin = user_privilege and user_privilege.privilege != 0
 
 	builder = ReplyKeyboardBuilder()
 	builder.row(

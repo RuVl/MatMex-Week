@@ -20,7 +20,7 @@ from utils import escape_md_v2
 register_router = Router()
 
 
-@register_router.message(CommandStart(deep_link=False), flags={'chat_action': True})
+@register_router.message(CommandStart(deep_link=False))
 async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, cached_user: User):
 	if cached_user is None:
 		await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())
@@ -34,7 +34,7 @@ async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalizatio
 		await state.clear()
 
 
-@register_router.message(RegistrationsActions.NAME_WAITING, flags={'chat_action': True, 'disable_cache': True})
+@register_router.message(RegistrationsActions.NAME_WAITING, flags={'disable_cache': True})
 async def enter_fullname_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	if not await FullNameFilter().__call__(msg):
 		await msg.answer(l10n.format_value("wrong-name"))
@@ -56,7 +56,7 @@ async def enter_fullname_h(msg: types.Message, state: FSMContext, l10n: FluentLo
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
 
 
-@register_router.message(RegistrationsActions.CHECK_MEMBER, flags={'chat_action': True, 'no_cache': True})
+@register_router.message(RegistrationsActions.CHECK_MEMBER, flags={'no_cache': True})
 async def in_pc_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	answer = msg.text.strip()
 
@@ -71,7 +71,7 @@ async def in_pc_h(msg: types.Message, state: FSMContext, l10n: FluentLocalizatio
 		await msg.answer(l10n.format_value("ask-valid-answer"), reply_markup=yes_no_kb(l10n))
 
 
-@register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK, flags={'chat_action': True})
+@register_router.message(RegistrationsActions.MANUAL_MEMBER_CHECK)
 async def manual_check_confirm_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	answer = msg.text.strip()
 

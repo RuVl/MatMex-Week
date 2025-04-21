@@ -1,16 +1,8 @@
-#register messages
+# ===== REGISTRATION =====
 hi = Привет, ну как там твоя учеба?
 hi-user = Привет, { $fullname }, ну как там твоя учеба?
 ask-name = Напиши свое ФИО, чтобы ты мог получить заслуженный мерч в конце нашей недели\!
 tell-about-pc = Кстати, цены в магазине зависят от того, состоишь ли ты в профкоме, а мерч мы выдаем по студбилету, так что указывай корректные ФИО
-
-helping = Задай свой вопрос в поддержку
-send-helping = Ваш вопрос отправлен в службу поддержки\. Ожидайте ответа\.
-
-
-cancel = Отмена
-cancel-message = Запрос отменён
-promocode_enter = Введите промокод
 thanks-name-html = Приятно познакомиться { $fullname }!
 ask-pc = Ты состоишь в профкоме\?
 wrong-name = Неправильный формат ФИО, попробуй еще раз
@@ -21,26 +13,62 @@ ask-valid-answer = Я тебя не понимаю\.\.\.😥
 Выбери один из вариантов
 already-in-pc = Рады видеть тебя среди членов профкома\)
 
-# Account/Profile messages
+# Registration buttons
+btn-send-for-check = Отправить на ручную проверку
+btn-just-kidding = Нет, я пошутил
+
+# Admin text
+apply-check = Заявка на проверку статуса **Профкомовца**
+    {"*"}*Статус**: { $status }
+    {"*"}*Запросил**: { $fullname } \(@{ $username }\)
+apply-checked = { apply-check }
+    {"*"}*Проверил**: { $verified_by }
+# ===== REGISTRATION =====
+
+
+# ===== ACCOUNT & PROFILE =====
+welcome-account = Добро пожаловать в личный кабинет\!
+    Пользователь: { $fullname }
+    Баланс: { $balance }i
+    Статус: { $in_pc ->
+[true] в профкоме
+*[false] не в профкоме
+    }
 input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
-name-changed = ФИО успешо изменено\! Приятно познакомиться
+name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
+already-in-pc = Мы знаем\) Это отмечено в твоем профиле
 deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
 
-# Support messages
-helping = Задай свой вопрос в поддержку
-support-question = Новый вопрос от { $fullname }\:
-    { $question }
-    ||{ $metadata }||
-support-sent = Ответ отправлен
+# Account buttons
+btn-edit-name = Редактировать ФИО
+btn-already-in-pc = Я вообще-то в пк
 
-# Promocode messages
+# Profile messages
+points-awarded = Баллы начислены
+cant-give-points-now = В данный момент нет мероприятий за которые вы можете выдать баллы
+already-received = Вы уже получали данные за это мероприятие
+# ===== ACCOUNT & PROFILE =====
+
+
+# ===== PROMOCODES =====
 promocode_enter = Введите промокод
 sad-promo-message = Твой промокод недействителен \({ $message }\)
 good-promo-message = Поздравляю! Промокод добавлен \({ $cost } баллов\)
     Ваш баланс: { $balance } баллов
+# ===== PROMOCODES =====
 
-# Schedule 
+
+# ===== SUPPORT =====
+helping = Задай свой вопрос в поддержку
+send-helping = Ваш вопрос отправлен в службу поддержки\. Ожидайте ответа\.
+support-question = Новый вопрос от { $fullname }\:
+    { $question }
+    ||{ $metadata }||
+support-sent = Ответ отправлен
+cancel-message = Запрос отменён
+
+# ===== SCHEDULE & EVENTS =====
 schedule-keyboard = Информация о меоприятиях
 schedule-text-html = 🎉 65-я Неделя Матмеха
     Солнечные лучи заливают улицы, весна уверенно вступает в свои права! ☀️
@@ -64,37 +92,35 @@ schedule-text-html = 🎉 65-я Неделя Матмеха
 
     Следите за анонсами в нашей группе и Телеграм-канале Профкома.
 
-# Admin messages
-ask-promo-for-creating = Введите промокод для создания
-hello-admin = Показываю меню организатора\. Вы самые лучшие\.\.\.
-edit-events-menu = Редактирование мероприятия
+event-value = Мероприятие
+    { $event_name }
+    Начинается: { $starts_at }
+    Заканчивается: { $ends_at }
+    За посещение начисляется { $event_gives }i
+
+# Event management 
+event-creation = Создание мероприятия
+delete-events = Удаление мероприятия
+delete-this-event = Удалить это мероприятие
+ask-for-event-name = Введите название мероприятия
+wrong-datetime = Неправильный формат времени
+ask-for-event-start-time = Введите, когда начинается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
+ask-for-event-end-time = Введите, когда заканчивается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
+event-created = Мероприятие создано\!
 ask-for-event = За какое мероприятие хотите начислить
-back-to-menu = Возвращаю обратно в меню
-Профкомовца
-ask-for-attend-promocode = Вы точно хотите создать этот промокод\?
-ask-for-cost-promocode = Введите стоимость промокода
-ask-for-max-uses = Введите максимальное количество использований
-wrong-cost = Введи допустимое число для цены
-promo_added = Промокод добавлен\. Возвращаю тебя в меню админов
-promo_exist = Такой промокод существует
-wrong-usages = Некорректное число максимальных использований
-you-have-not-rights = У тебя нет прав
+# ===== SCHEDULE & EVENTS =====
 
-# Grant privilege messages
-ask-for-full-name = Введите ФИО человека, которого ходите наделить правами
-wrong-full-name = Человека с таким именем нет в базе данных, попробуйте еще раз
-user-privileges = Права пользователя { $fullname }: 
-choose-name-from-list = Выберите пользователя из списка
-cant-change-privileges-of-yourself = Вы не можете менять свои же права
-cant-change-privileges = Вы не можете менять права этого человека
-privilege-grant-privileges = Выдача прав
-privilege-edit-promocodes = Создание промокодов
-privilege-edit-shop = Редактирование магазина
-privilege-edit-events = Редактирование меро
-privilege-edit-pk-apply = Рассмотрение заявок в пк
-privilege-edit-moderators = Выдача прав ласточкам
 
-# Shop messages
+# ===== SHOP =====
+shop-hello = Магазин в разработке
+item-value = Товар
+    Название: { $item_name }
+    Размер: { $item_size }
+    Цена: { $full_price }
+    Цена по скидке: { $discount_price }
+    На складе: { $available_count }
+
+# Shop management
 edit-shop-menu = Редактирование магазина
 cancel_edit_shop = Редактирование отменено
 ask-for-category-create = Введите название категории и прикрепите изображение категории
@@ -112,76 +138,13 @@ ask-for-item-in-stock = Укажите, активна ли продажа
 ask-for-item-image = Прикрепите изображение товара
 item-created = Товар успешно создан
 not-a-number = Пожалуйста введите число
-
-# Scedule messages:
-event-creation = Создание мероприятия
-delete-events = Удаление мероприятия
-delete-this-event = Удалить это мероприятие
-ask-for-event-name = Введите название мероприятия
-wrong-datetime = Неправильный формат времени
-ask-for-event-start-time = Введите, когда начинается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
-ask-for-event-end-time = Введите, когда заканчивается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
-event-created = Мероприятие создано\!
-event-value = Мероприятие
-    { $event_name }
-    Начинается: { $start_sat }
-    Заканчивается: { $ends_at }
-    За посещение начисляется { $event_gives }i
-
-# Account messages
-welcome-account = Добро пожаловать в личный кабинет\!
-    Пользователь: { $fullname }
-    Баланс: { $balance }i
-    Статус: { $in_pc ->
-[true] в профкоме
-*[false] не в профкоме
-    }
+# ===== SHOP =====
 
 
-input-new-name = Введите новое ФИО
-cancel-change-name = Редактирование ФИО отменено
-name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
-already-in-pc = Мы знаем\) Это отмечено в твоем профиле
-
-# Common buttons
-btn-cancel = Отмена
-btn-yes = Да
-btn-no = Нет
-btn-back = Назад
-cancel = Отмена
-btn-user-codes = Использованные коды
-btn-emoji-yes = ✅
-btn-emoji-no = ❌
-
-#shop messages
-shop-hello = Магазин
-item-value = Товар
-    Название: { $item_name }
-    Размер: { $item_size }
-    Цена: { $full_price }
-    Цена по скидке: { $discount_price }
-    На складе: { $available_count }
-
-# Menu buttons
-btn-support = Поддержка
-btn-schedule = Расписание
-btn-my-code = Мой код
-btn-enter-promocode = Ввести Промокод
-btn-profile = Профиль
-btn-shop = Магазин
-
-# Account buttons
-btn-edit-name = Редактировать ФИО
-btn-already-in-pc = Я вообще-то в пк
-
-# Registration buttons
-btn-send-for-check = Отправить на ручную проверку
-btn-just-kidding = Нет, я пошутил
-apply-check = Заявка на проверку статуса **Профкомовца**
-    {"*"}*Статус**: { $status }
-    {"*"}*Запросил**: { $fullname } \(@{ $username }\)
-apply-checked = { apply-check }
-    {"*"}*Проверил**: { $verified_by }
+# ===== ADMIN =====
+hello-admin = Показываю меню организатора\. Вы самые лучшие\.\.\.
+back-to-menu = Возвращаю обратно в меню Профкомовца
+edit-events-menu = Редактирование мероприятия
 
 # Admin buttons
 btn-admin-panel = Админ панель
@@ -194,14 +157,65 @@ btn-add-item = Добавить товар
 btn-add-event = Добавить мероприятие
 btn-delete-event = Удалить мероприятие
 btn-delete-item-or-category = Удалить товар или категорию
-btn-delete-category = Удалить эту категорию
+btn-delete-category = Удалить категорию
 btn-delete-item = Удалить этот товар
 btn-approve-apply = Принять
 btn-decline-apply = Оклонить
 btn-review-apply = Пересмотреть
 btn-create-promo = Создать промокод
-btn-delete-category = Удалить категорию
 btn-give-event-privileges = Выдать право начислять баллы
+# ===== ADMIN =====
+
+
+# ===== PRIVILEGES =====
+ask-for-full-name = Введите ФИО человека, которого ходите наделить правами
+wrong-full-name = Человека с таким именем нет в базе данных, попробуйте еще раз
+user-privileges = Права пользователя { $fullname }: 
+choose-name-from-list = Выберите пользователя из списка
+cant-change-privileges-of-yourself = Вы не можете менять свои же права
+cant-change-privileges = Вы не можете менять права этого человека
+
+# Privilege types
+privilege-grant-privileges = Выдача прав
+privilege-edit-promocodes = Создание промокодов
+privilege-edit-shop = Редактирование магазина
+privilege-edit-events = Редактирование меро
+privilege-edit-pk-apply = Рассмотрение заявок в пк
+privilege-edit-moderators = Выдача прав ласточкам
+# ===== PRIVILEGES =====
+
+
+# ===== PROMOCODE MANAGEMENT =====
+ask-promo-for-creating = Введите промокод для создания
+ask-for-attend-promocode = Вы точно хотите создать этот промокод\?
+ask-for-cost-promocode = Введите стоимость промокода
+ask-for-max-uses = Введите максимальное количество использований
+wrong-cost = Введи допустимое число для цены
+promo_added = Промокод добавлен\. Возвращаю тебя в меню админов
+promo_exist = Такой промокод существует
+wrong-usages = Некорректное число максимальных использований
+you-have-not-rights = У тебя нет прав
+# ===== PROMOCODE MANAGEMENT =====
+
+
+# ===== COMMON UI =====
+# Common buttons
+btn-cancel = Отмена
+btn-yes = Да
+btn-no = Нет
+btn-back = Назад
+cancel = Отмена
+btn-user-codes = Использованные коды
+btn-emoji-yes = ✅
+btn-emoji-no = ❌
+
+# Menu buttons
+btn-support = Поддержка
+btn-schedule = Расписание
+btn-my-code = Мой код
+btn-enter-promocode = Ввести Промокод
+btn-profile = Профиль
+btn-shop = Магазин
 
 # Placeholders
 placeholder-menu = Выберите элемент меню
@@ -210,8 +224,10 @@ placeholder-item = Выберите товар
 placeholder-item-size = Выберите размер товара
 placeholder-get-back-to-item = Назад к товарам
 placeholder-event = Выберите мероприятие
+# ===== COMMON UI =====
 
-# Log messages
+
+# ===== LOGGING =====
 log-handler-called = Вызван обработчик
 log-handler-completed = Обработчик завершил работу
 log-user-message-received = Получено сообщение от пользователя
@@ -224,9 +240,4 @@ log-user-data-fetched = Получены данные пользователя
 log-admin-action = Выполнено действие администратора
 log-profile-action = Действие в профиле
 log-name-changed = Изменено имя пользователя
-
-# Profile messages
-points-awarded = Баллы начислены
-cant-give-points-now = В данный момент нет мероприятий за которые вы можете выдать баллы
-deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
-already-received = Вы уже получали данные за это мероприятие
+# ===== LOGGING =====

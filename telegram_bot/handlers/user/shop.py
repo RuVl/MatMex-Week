@@ -16,7 +16,7 @@ shop_router = Router()
 @shop_router.message(LocalizedTextFilter("btn-shop"))
 async def shop_button_h(msg: types.Message, l10n: FluentLocalization):
 	text = l10n.format_value("shop-hello")
-	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
+	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.png")
 	kb = await get_category_ikb(l10n, False)
 	await msg.answer_photo(
 		image_from_pc,
@@ -40,7 +40,7 @@ async def choose_category_h(callback: types.CallbackQuery, callback_data: ShopCa
 
 @shop_router.callback_query(ShopBackToCategoriesFactory.filter())
 async def back_to_categories_h(callback: types.CallbackQuery, callback_data: ShopBackToCategoriesFactory, l10n: FluentLocalization):
-	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
+	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.png")
 	category_ikb = await get_category_ikb(l10n, callback_data.can_delete)
 	await callback.bot.edit_message_media(
 		media=InputMediaPhoto(media=image_from_pc, caption=l10n.format_value("shop-hello")),
