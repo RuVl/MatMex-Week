@@ -112,7 +112,7 @@ async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -
   
 	return builder.as_markup()
 
-async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPrivilegeGrant], subject_id : int, admin_tg_id : int) -> InlineKeyboardMarkup | None:
+async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPrivilegeGrant], subject_id : int, subject_tg_id : int) -> InlineKeyboardMarkup | None:
 	active_events = []
 	async with async_session() as session:
 		all_events = await get_active_events(session)
@@ -134,7 +134,7 @@ async def active_events_ikb(l10n: FluentLocalization, event_grants: list[EventPr
 					event_id=event_pair[0].id,
 					grant_id=event_pair[1].id,
 					subject_id = subject_id,
-     				admin_tg_id = admin_tg_id
+     				subject_tg_id = subject_tg_id
 				).pack()
 			),
 		)

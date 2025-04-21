@@ -79,4 +79,4 @@ class EventToGrantFactory(CallbackData, prefix='event_to_grant_button'):
 	event_id: int
 	grant_id: int
 	subject_id: int
-	admin_tg_id: int
+	subject_tg_id: int

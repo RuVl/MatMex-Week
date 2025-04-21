@@ -2,6 +2,7 @@ from aiogram import Router, types
 from aiogram.enums import ParseMode
 from aiogram.types import FSInputFile, InputMediaPhoto
 from fluent.runtime import FluentLocalization
+from zoneinfo import ZoneInfo
 
 from config import MEDIA_DIR
 from filters import LocalizedTextFilter
@@ -44,11 +45,13 @@ DAYS_RU = ['Понедельник', 'Вторник', 'Среда',
 async def handle_in_event(callback: types.CallbackQuery, callback_data: EventFactory, l10n: FluentLocalization):
 	async with async_session() as session:
 		event = await get_event_by_id(session, callback_data.event_id)
+	starts_at = event.starts_at.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
+	ends_at = event.ends_at.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
 	await callback.bot.edit_message_text(
 		text=l10n.format_value("event-value",  args={
 			'eventname': escape_md_v2(event.name),
-			'startsat': escape_md_v2(f"{DAYS_RU[event.starts_at.weekday()]} {event.starts_at.day:02}.{event.starts_at.month:02} {event.starts_at.hour:02}:{event.starts_at.minute:02}"),
-			'endsat': escape_md_v2(f"{DAYS_RU[event.ends_at.weekday()]} {event.ends_at.day:02}.{event.ends_at.month:02} {event.ends_at.hour:02}:{event.ends_at.minute:02}"),
+			'startsat': escape_md_v2(f"{DAYS_RU[starts_at.weekday()]} {starts_at.day:02}.{starts_at.month:02} {starts_at.hour:02}:{starts_at.minute:02}"),
+			'endsat': escape_md_v2(f"{DAYS_RU[ends_at.weekday()]} {ends_at.day:02}.{ends_at.month:02} {ends_at.hour:02}:{ends_at.minute:02}"),
 			'eventgives': 50
 		}),
 		chat_id=callback.message.chat.id,
