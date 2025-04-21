@@ -4,8 +4,8 @@ from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from database.methods import create_activation
 from database.models import Promocode, PromocodeActivation, User
+from .promo_activations import create_activation
 
 
 async def create_promocode(
