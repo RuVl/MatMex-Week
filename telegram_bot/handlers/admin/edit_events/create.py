@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from aiogram import F, Router, types
+from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 
@@ -18,27 +18,54 @@ create_router = Router()
 async def create_event_btn_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	await msg.answer(l10n.format_value("event-creation"), reply_markup=types.ReplyKeyboardRemove())
 	event_message = await msg.answer(l10n.format_value("ask-for-event-name"), reply_markup=cancel_ikb(l10n))
+
 	await state.update_data(event_message_id=event_message.message_id)
 	await state.set_state(EditEventsActions.CHOOSE_EVENT_NAME)
 
 
-@create_router.message(EditEventsActions.CHOOSE_EVENT_NAME, F.text)
+@create_router.message(EditEventsActions.CHOOSE_EVENT_NAME)
 async def ask_for_event_name_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	state_data = await state.get_data()
+	state_data.update(event_name=msg.text.strip())
+
+	await msg.delete()
+	await msg.bot.edit_message_text(
+		l10n.format_value("ask-for-event-visit-points"),
+		reply_markup=cancel_ikb(l10n),
+		chat_id=msg.chat.id,
+		message_id=state_data.get("event_message_id")
+	)
+
+	await state.set_data(state_data)
+	await state.set_state(EditEventsActions.CHOOSE_EVENT_VISIT_POINTS)
+
+
+@create_router.message(EditEventsActions.CHOOSE_EVENT_VISIT_POINTS)
+async def ask_for_event_name_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	if not msg.text.isdigit() or (visit_points := int(msg.text)) < 0:
+		await msg.reply(l10n.format_value("event-creation"), reply_markup=cancel_ikb(l10n))
+		return
 
 	state_data = await state.get_data()
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	state_data.update(visit_points=visit_points)
+
+	await msg.delete()
 	await msg.bot.edit_message_text(
 		l10n.format_value("ask-for-event-start-time"),
 		reply_markup=cancel_ikb(l10n),
 		chat_id=msg.chat.id,
-		message_id=state_data.get("event_message_id"))
+		message_id=state_data.get("event_message_id")
+	)
+
+	await state.set_data(state_data)
 	await state.set_state(EditEventsActions.CHOOSE_EVENT_START_TIME)
-	await state.update_data(event_name=msg.text)
 
 
 @create_router.message(EditEventsActions.CHOOSE_EVENT_START_TIME)
-async def ask_for_event_start_time_h(msg: types.message, state: FSMContext, l10n: FluentLocalization):
+async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
+	state_data.update(event_start_time=msg.text.strip())
+
 	try:
 		datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
 	except ValueError:
@@ -51,13 +78,18 @@ async def ask_for_event_start_time_h(msg: types.message, state: FSMContext, l10n
 		l10n.format_value("ask-for-event-end-time"),
 		reply_markup=cancel_ikb(l10n),
 		chat_id=msg.chat.id,
-		message_id=state_data.get("event_message_id"))
-	await state.update_data(event_start_time=msg.text.strip())
+		message_id=state_data.get("event_message_id")
+	)
+
+	await state.set_data(state_data)
 	await state.set_state(EditEventsActions.CHOOSE_EVENT_END_TIME)
 
 
 @create_router.message(EditEventsActions.CHOOSE_EVENT_END_TIME)
-async def ask_for_event_end_time_h(msg: types.message, state: FSMContext, l10n: FluentLocalization):
+async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	state_data = await state.get_data()
+	state_data.update(event_end_time=msg.text.strip())
+
 	try:
 		datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
 	except ValueError:
@@ -65,22 +97,20 @@ async def ask_for_event_end_time_h(msg: types.message, state: FSMContext, l10n: 
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
 
-	await state.update_data(event_end_time=msg.text.strip())
-	state_data = await state.get_data()
+	await state.set_data(state_data)
 
 	async with async_session() as session:
 		creator = await get_user_by_telegram_id(session, msg.from_user.id)
 		await create_event(
 			session=session,
 			name=state_data.get("event_name"),
+			visit_points=int(state_data.get("visit_points")),
 			creator_id=creator.id,
-			starts_at=datetime.strptime(state_data.get(
-				"event_start_time"), "%d.%m.%Y %H:%M"),
-			ends_at=datetime.strptime(state_data.get(
-				"event_end_time"), "%d.%m.%Y %H:%M"),
+			starts_at=datetime.strptime(state_data.get("event_start_time"), "%d.%m.%Y %H:%M"),
+			ends_at=datetime.strptime(state_data.get("event_end_time"), "%d.%m.%Y %H:%M"),
 		)
 
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	await msg.delete()
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=state_data.get("event_message_id"))
 	await msg.answer(l10n.format_value("event-created"), reply_markup=edit_events_kb(l10n))
 	await state.clear()

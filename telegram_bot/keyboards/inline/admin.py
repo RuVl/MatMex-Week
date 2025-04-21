@@ -75,10 +75,7 @@ def user_rights_ikb(l10n: FluentLocalization, admin_rights: int, user_rights: in
 def names_ikb(users: list[User]):
 	builder = InlineKeyboardBuilder()
 	for user in users:
-		data = UserFactory(
-			full_name=user.full_name,
-			telegram_id=user.telegram_id,
-			telegram_username=user.telegram_username).pack()
+		data = UserFactory(telegram_id=user.telegram_id).pack()
 		builder.row(InlineKeyboardButton(
 			text=f"{user.full_name} : {user.telegram_username}",
 			callback_data=data,
@@ -117,7 +114,7 @@ async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -
 	return builder.as_markup()
 
 
-async def active_events_ikb(event_grants: list[EventPrivilegeGrant], subject_id: int, admin_tg_id: int) -> InlineKeyboardMarkup | None:
+async def active_events_ikb(event_grants: list[EventPrivilegeGrant], subject_id: int, subject_tg_id: int) -> InlineKeyboardMarkup | None:
 	active_events = []
 	async with async_session() as session:
 		all_events = await get_active_events(session)
@@ -139,7 +136,7 @@ async def active_events_ikb(event_grants: list[EventPrivilegeGrant], subject_id:
 					event_id=event_pair[0].id,
 					grant_id=event_pair[1].id,
 					subject_id=subject_id,
-					admin_tg_id=admin_tg_id
+     				subject_tg_id=subject_tg_id
 				).pack()
 			),
 		)

@@ -21,9 +21,7 @@ class PrivilegeButtonFactory(CallbackData, prefix='privilege_button'):
 
 
 class UserFactory(CallbackData, prefix='user_data'):
-	full_name: str
 	telegram_id: int
-	telegram_username: str
 
 
 class ShopCategoryFactory(CallbackData, prefix='shop_choose_category'):
@@ -80,4 +78,4 @@ class EventToGrantFactory(CallbackData, prefix='event_to_grant_button'):
 	event_id: int
 	grant_id: int
 	subject_id: int
-	admin_tg_id: int
+	subject_tg_id: int

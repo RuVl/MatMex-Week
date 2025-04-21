@@ -79,36 +79,39 @@ ROLES = {
 
 ```sql
 -- Roles table
-CREATE TABLE roles (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE,
-    permissions INTEGER NOT NULL DEFAULT 0,
+CREATE TABLE roles
+(
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(50) NOT NULL UNIQUE,
+    permissions INTEGER     NOT NULL DEFAULT 0,
     description TEXT,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    is_system BOOLEAN NOT NULL DEFAULT FALSE
+    created_at  TIMESTAMP   NOT NULL DEFAULT NOW(),
+    is_system   BOOLEAN     NOT NULL DEFAULT FALSE
 );
 
 -- User-Role assignments
-CREATE TABLE user_roles (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
-    granted_by INTEGER REFERENCES users(id),
+CREATE TABLE user_roles
+(
+    id         SERIAL PRIMARY KEY,
+    user_id    INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    role_id    INTEGER REFERENCES roles (id) ON DELETE CASCADE,
+    granted_by INTEGER REFERENCES users (id),
     granted_at TIMESTAMP NOT NULL DEFAULT NOW(),
     expires_at TIMESTAMP,
-    UNIQUE(user_id, role_id)
+    UNIQUE (user_id, role_id)
 );
 
 -- Audit log for role changes
-CREATE TABLE role_audit_log (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    role_id INTEGER REFERENCES roles(id),
-    action VARCHAR(20) NOT NULL, -- 'GRANT', 'REVOKE', etc.
-    performed_by INTEGER REFERENCES users(id),
-    performed_at TIMESTAMP NOT NULL DEFAULT NOW(),
+CREATE TABLE role_audit_log
+(
+    id                   SERIAL PRIMARY KEY,
+    user_id              INTEGER REFERENCES users (id),
+    role_id              INTEGER REFERENCES roles (id),
+    action               VARCHAR(20) NOT NULL, -- 'GRANT', 'REVOKE', etc.
+    performed_by         INTEGER REFERENCES users (id),
+    performed_at         TIMESTAMP   NOT NULL DEFAULT NOW(),
     previous_permissions INTEGER,
-    new_permissions INTEGER
+    new_permissions      INTEGER
 );
 ```
 
@@ -121,7 +124,7 @@ async def has_permission(user_id: int, permission: Permission) -> bool:
     cached_permissions = await get_cached_permissions(user_id)
     if cached_permissions is not None:
         return bool(cached_permissions & permission)
-    
+
     # If not cached, load from database
     async with async_session() as session:
         query = select(
@@ -134,17 +137,18 @@ async def has_permission(user_id: int, permission: Permission) -> bool:
         )
         result = await session.execute(query)
         user_permissions = result.scalar() or 0
-        
+
         # Cache for future checks
         await cache_permissions(user_id, user_permissions)
-        
+
         return bool(user_permissions & permission)
 
+
 async def grant_role(
-    user_id: int, 
-    role_id: int, 
-    granted_by: int,
-    expires_at: Optional[datetime] = None
+        user_id: int,
+        role_id: int,
+        granted_by: int,
+        expires_at: Optional[datetime] = None
 ) -> bool:
     """Grant a role to a user."""
     async with async_session() as session:
@@ -152,7 +156,7 @@ async def grant_role(
         granter_has_permission = await has_permission(granted_by, Permission.MANAGE_ROLES)
         if not granter_has_permission:
             return False
-            
+
         # Add role
         user_role = UserRole(
             user_id=user_id,
@@ -161,7 +165,7 @@ async def grant_role(
             expires_at=expires_at
         )
         session.add(user_role)
-        
+
         # Add audit log
         audit = RoleAuditLog(
             user_id=user_id,
@@ -170,12 +174,12 @@ async def grant_role(
             performed_by=granted_by
         )
         session.add(audit)
-        
+
         await session.commit()
-        
+
         # Invalidate permissions cache
         await invalidate_permissions_cache(user_id)
-        
+
         return True
 ```
 

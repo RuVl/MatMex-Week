@@ -122,7 +122,7 @@ class MessageActionWrapper:
 
 	async def _perform_action(self, action: str, total_delay: float):
 		if self._log is not None:
-			await self._log.adebug("send-chat-action", action=action, delay=total_delay)
+			await self._log.adebug("send-chat-action", action=action, delay=round(total_delay, 3))
 
 		interval = 5.0  # Telegram action lives for 5 sec
 		start = time.monotonic()

@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     volumes:
+      - ./telegram_bot/database/migrations/versions:/usr/src/app/database/migrations/versions
       - media_volume:/usr/src/app/resources
     env_file:
       - telegram_bot/.env

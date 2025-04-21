@@ -4,7 +4,7 @@ from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from config import ATTENDING_EVENT_POINTS
+from database.methods import get_event_by_id
 from database.models import EventAttendance, User
 
 
@@ -60,7 +60,7 @@ async def get_users_by_full_name(session: AsyncSession, full_name: str) -> list[
 	return result.scalars().all()
 
 
-async def update_user_balance(session: AsyncSession, user_id: int, amount: float) -> User:
+async def update_user_balance(session: AsyncSession, user_id: int, amount: int) -> User:
 	"""Обновляет баланс пользователя, добавляя или вычитая сумму."""
 	user = await session.get(User, user_id)
 	if user:
@@ -86,10 +86,12 @@ async def update_user_fullname(session: AsyncSession, user_id: int, full_name: s
 
 async def give_point_for_event_by_user_id(session: AsyncSession, user_id: int, event_id: int) -> bool:
 	""" Отмечает определённого пользователя присутствующим на определённом мероприятии """
+	event = await get_event_by_id(session, event_id)
+	points = event.visit_points
 
 	query = (
 		select(EventAttendance)
-		.where(EventAttendance.user_id == user_id, EventAttendance.event_id == event_id)
+		.where(EventAttendance.user_id == user_id, EventAttendance.event_id == event.id)
 	)
 	result = await session.execute(query)
 	attendance = result.scalar_one_or_none()
@@ -99,11 +101,11 @@ async def give_point_for_event_by_user_id(session: AsyncSession, user_id: int, e
 
 	try:
 		# Если пользователь еще не записан на мероприятие, то записать и отметить как посетил
-		attendance = EventAttendance(user_id=user_id, event_id=event_id)
+		attendance = EventAttendance(user_id=user_id, event_id=event.id, points=points)
 		session.add(attendance)
 		await session.commit()
 
-		await update_user_balance(session, user_id, ATTENDING_EVENT_POINTS)
+		await update_user_balance(session, user_id, points)
 	except Exception as e:
 		await session.rollback()
 		raise e

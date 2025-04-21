@@ -12,12 +12,14 @@ async def create_event(
 		session: AsyncSession,
 		name: str,
 		creator_id: int,
+		visit_points: int,
 		starts_at: Optional[datetime] = None,
 		ends_at: Optional[datetime] = None
 ) -> Event:
 	"""Создаёт новое мероприятие."""
 	event = Event(
 		name=name,
+		visit_points=visit_points,
 		creator_id=creator_id,
 		starts_at=starts_at,
 		ends_at=ends_at
@@ -32,26 +34,31 @@ async def update_event(
 		session: AsyncSession,
 		event_id: int,
 		name: Optional[str] = None,
+		visit_points: Optional[int] = None,
 		starts_at: Optional[datetime] = None,
 		ends_at: Optional[datetime] = None
 ) -> Event:
 	"""Обновляет информацию о мероприятии."""
-	event = await session.get(Event, event_id, options=[
-		selectinload(Event.creator),
-		selectinload(Event.event_grants),
-		selectinload(Event.event_attendances)
-	])
-	if event:
-		if name is not None:
-			event.name = name
-		if starts_at is not None:
-			event.starts_at = starts_at
-		if ends_at is not None:
-			event.ends_at = ends_at
-		await session.commit()
-		return event
-	else:
+	event = await session.get(Event, event_id)
+
+	if not event:
 		raise ValueError(f"Мероприятие с id {event_id} не найдено")
+
+	if name is not None:
+		event.name = name
+
+	if visit_points is not None:
+		event.visit_points = visit_points
+
+	if starts_at is not None:
+		event.starts_at = starts_at
+
+	if ends_at is not None:
+		event.ends_at = ends_at
+
+	await session.commit()
+
+	return event
 
 
 async def delete_event(session: AsyncSession, event_id: int) -> bool:

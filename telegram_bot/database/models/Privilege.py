@@ -24,10 +24,10 @@ class Privilege(Base):
 	owner: Mapped['User'] = relationship('User', back_populates='privileges', uselist=False)
 
 	# Back ref pk_applies.reviewed_by_id -> privileges.id
-	reviewed_applies: Mapped[list['PkApply']] = relationship('PkApply', back_populates='reviewed_by')
+	reviewed_applies: Mapped[list['PkApply']] = relationship('PkApply', back_populates='reviewed_by', cascade="all, delete-orphan")
 
 	# Back ref promocodes.creator_id -> privileges.id
-	created_promocodes: Mapped[list['Promocode']] = relationship('Promocode', back_populates='creator')
+	created_promocodes: Mapped[list['Promocode']] = relationship('Promocode', back_populates='creator', cascade="all, delete-orphan")
 
 	# Back ref events.created_by_id -> privileges.id
-	created_events: Mapped[list['Event']] = relationship('Event', back_populates='creator')
+	created_events: Mapped[list['Event']] = relationship('Event', back_populates='creator', cascade="all, delete-orphan")

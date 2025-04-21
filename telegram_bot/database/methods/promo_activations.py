@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 from database.models import PromocodeActivation
 
 
-async def create_activation(session: AsyncSession, promocode_id: int, recipient_id: int) -> PromocodeActivation | None:
+async def create_activation(session: AsyncSession, points: int, promocode_id: int, recipient_id: int) -> PromocodeActivation | None:
 	"""Создаёт запись об активации промокода."""
 	# Проверяем, существует ли уже активация
 	query = select(
@@ -19,7 +19,7 @@ async def create_activation(session: AsyncSession, promocode_id: int, recipient_
 	if result.scalar_one():
 		return None  # Пользователь уже активировал этот промокод
 
-	activation = PromocodeActivation(promocode_id=promocode_id, recipient_id=recipient_id)
+	activation = PromocodeActivation(points=points, promocode_id=promocode_id, recipient_id=recipient_id)
 	session.add(activation)
 	try:
 		await session.commit()
