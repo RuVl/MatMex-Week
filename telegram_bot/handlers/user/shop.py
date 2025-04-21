@@ -14,7 +14,7 @@ shop_router = Router()
 
 
 @shop_router.message(LocalizedTextFilter("btn-shop"))
-async def handle_shop_button(msg: types.Message, l10n: FluentLocalization):
+async def shop_button_h(msg: types.Message, l10n: FluentLocalization):
 	text = l10n.format_value("shop-hello")
 	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
 	kb = await get_category_ikb(l10n, False)
@@ -26,7 +26,7 @@ async def handle_shop_button(msg: types.Message, l10n: FluentLocalization):
 
 
 @shop_router.callback_query(ShopCategoryFactory.filter())
-async def handle_choose_category(callback: types.CallbackQuery, callback_data: ShopCategoryFactory, l10n: FluentLocalization):
+async def choose_category_h(callback: types.CallbackQuery, callback_data: ShopCategoryFactory, l10n: FluentLocalization):
 	async with async_session() as session:
 		category = await get_category_by_id(session, callback_data.category_id)
 
@@ -39,7 +39,7 @@ async def handle_choose_category(callback: types.CallbackQuery, callback_data: S
 
 
 @shop_router.callback_query(ShopBackToCategoriesFactory.filter())
-async def handle_back_to_categories(callback: types.CallbackQuery, callback_data: ShopBackToCategoriesFactory, l10n: FluentLocalization):
+async def back_to_categories_h(callback: types.CallbackQuery, callback_data: ShopBackToCategoriesFactory, l10n: FluentLocalization):
 	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.jpg")
 	category_ikb = await get_category_ikb(l10n, callback_data.can_delete)
 	await callback.bot.edit_message_media(
@@ -51,18 +51,18 @@ async def handle_back_to_categories(callback: types.CallbackQuery, callback_data
 
 
 @shop_router.callback_query(ShopItemFactory.filter())
-async def handle_choose_item(callback: types.CallbackQuery, callback_data: ShopItemFactory, l10n: FluentLocalization):
+async def choose_item_h(callback: types.CallbackQuery, callback_data: ShopItemFactory, l10n: FluentLocalization):
 	async with async_session() as session:
 		item = await get_item_by_id(session, callback_data.item_id)
 	await callback.bot.edit_message_media(
 		media=InputMediaPhoto(media=FSInputFile(item.image_path),
-                        caption=l10n.format_value("item-value",  args={
-                            'itemname': escape_md_v2(item.name),
-                            'itemsize': item.size,
-                            'fullprice': item.full_price,
-                            'discountprice': item.discount_price,
-                            'availablecount': item.available_count
-                        })),
+			caption=l10n.format_value("item-value", args={
+				'item_name': escape_md_v2(item.name),
+				'item_size': item.size,
+				'full_price': item.full_price,
+				'discount_price': item.discount_price,
+				'available_count': item.available_count
+			})),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id,
 		reply_markup=get_back_to_item_ikb(l10n, item, callback_data.can_delete)

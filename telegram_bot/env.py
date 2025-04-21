@@ -7,10 +7,10 @@ class TelegramKeys:
 	WITHOUT_TYPING: Final[bool] = bool(environ.get('WITHOUT_TYPING', default=False))
 
 	API_TOKEN: Final[str] = environ.get('TG_API_TOKEN')
-	ADMINS: Final[list[str]] = environ.get('ADMINS').split(',')
+	ADMINS: Final[list[str]] = environ.get('ADMINS', default='').split(',')
 
-	SUPPORT_CHAT_ID: Final[str] = environ.get('SUPPORT_CHAT_ID')
-	ADMIN_CHAT_ID: Final[str] = environ.get('ADMIN_CHAT_ID')
+	SUPPORT_CHAT_ID: Final[int] = int(environ.get('SUPPORT_CHAT_ID', default=0))
+	ADMIN_CHAT_ID: Final[int] = int(environ.get('ADMIN_CHAT_ID', default=0))
 
 
 class PostgresKeys:

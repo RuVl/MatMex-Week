@@ -27,7 +27,7 @@ class FromBotToAdminFilter(BaseFilter):
 	async def __call__(self, message: Message) -> bool:
 		return (
 				message.reply_to_message and
-				message.chat.id == SUPPORT_CHAT_ID and
+				message.chat.id == TelegramKeys.ADMIN_CHAT_ID and
 				message.reply_to_message.from_user.id == message.bot.id
 		)
 

@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Literal
 
 from aiogram.filters.callback_data import CallbackData
@@ -75,6 +74,7 @@ class EventPrivilegeButtonFactory(CallbackData, prefix='event_privilege_button')
 	event_id: int
 	grant_id: int | None
 	subject_id: int
+
 
 class EventToGrantFactory(CallbackData, prefix='event_to_grant_button'):
 	event_id: int
