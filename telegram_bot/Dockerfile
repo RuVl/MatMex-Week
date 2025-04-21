@@ -5,7 +5,7 @@ LABEL authors="MatMex-Week"
 RUN apt-get update && apt-get upgrade -y
 
 # Set enviroment variables
-ENV TZ Europe/Moscow
+ENV TZ Moscow
 ENV PIP_ROOT_USER_ACTION=ignore
 
 # Prepare project directory
