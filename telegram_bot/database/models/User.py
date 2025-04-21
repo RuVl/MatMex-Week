@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import ForeignKey, Integer, String, Uuid, BigInteger
+from sqlalchemy import BigInteger, ForeignKey, Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models import Base, EventAttendance, EventPrivilegeGrant, PkApply, Privilege, PromocodeActivation, Purchase

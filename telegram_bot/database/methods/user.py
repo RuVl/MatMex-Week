@@ -11,9 +11,9 @@ from database.models import EventAttendance, User
 async def create_user(session: AsyncSession, telegram_id: int, telegram_username: str, full_name: str, balance: float = 0.0) -> User:
 	"""Создаёт нового пользователя с указанными параметрами."""
 	user = User(
-		telegram_id=telegram_id, 
-		telegram_username=telegram_username, 
-		full_name=full_name, 
+		telegram_id=telegram_id,
+		telegram_username=telegram_username,
+		full_name=full_name,
 		balance=balance,
 		privileges_id=None  # Explicitly set to None to avoid SQLAlchemy type conversion issues
 	)

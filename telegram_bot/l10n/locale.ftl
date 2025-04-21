@@ -12,7 +12,6 @@ wait-until-checked = Отлично\! Членство в профкоме от�
 ask-to-join = Если хочешь вступить в профком, приходи в кабинет 3528
 ask-valid-answer = Я тебя не понимаю\.\.\.😥
 Выбери один из вариантов
-already-in-pc = Рады видеть тебя среди членов профкома\)
 
 # Registration buttons
 btn-send-for-check = Отправить на ручную проверку
@@ -32,15 +31,15 @@ welcome-account = Добро пожаловать в личный кабинет
     Пользователь: { $fullname }
     Баланс: { $balance }i
     Статус: { $in_pc ->
-*[APPROVED] в профкоме
+[APPROVED] в профкоме
 [REJECTED] заявка не одобрена
-[None] не в профкоме 
 [PENDING] на рассмотрении
+*[None] не в профкоме
     }
 input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
 name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
-already-in-pc = Мы знаем\) Это отмечено в твоем профиле
+already-in-pc = Рады видеть тебя среди членов профкома\)
 deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
 
 # Account buttons

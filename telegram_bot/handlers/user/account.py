@@ -5,23 +5,23 @@ from structlog.typing import FilteringBoundLogger
 
 from database import async_session
 from database.enums import ApplyStatus
-from database.methods import update_user_fullname, get_user_apply, get_user_by_telegram_id
+from database.methods import get_user_apply, update_user_fullname
 from database.models import User
 from filters import FullNameFilter, LocalizedTextFilter
-from keyboards.common import account_menu_kb, cancel_kb, menu_kb, manual_check_kb
+from keyboards.common import account_menu_kb, cancel_kb, manual_check_kb, menu_kb
 from state_machines.account import AccountActions
 from state_machines.registration import RegistrationsActions
 from utils import escape_md_v2
+
 account_router = Router()
 
 
 @account_router.message(LocalizedTextFilter("btn-profile"), flags={'drop_cache': True})
 async def profile_open_h(msg: types.Message, state: FSMContext, cached_user: User, l10n: FluentLocalization):
-	in_pc = cached_user.apply is not None and cached_user.apply.status == ApplyStatus.APPROVED
 	await msg.answer(l10n.format_value("welcome-account", args={
 		'fullname': escape_md_v2(cached_user.full_name),
 		'balance': cached_user.balance,
-		'in_pc': in_pc,
+		'in_pc': cached_user.apply is not None and cached_user.apply.status,
 	}), reply_markup=account_menu_kb(l10n))
 
 	# TODO добавить купленные товары
@@ -68,6 +68,7 @@ async def already_in_pc_h(msg: types.Message, state: FSMContext, cached_user: Us
 		await msg.answer(l10n.format_value("already-in-pc"), reply_markup=account_menu_kb(l10n))
 	elif apply.status == ApplyStatus.PENDING:
 		await msg.answer(l10n.format_value("apply-on-check"), reply_markup=account_menu_kb(l10n))
+
 
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-back-to-menu"))
 async def back_to_menu_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
