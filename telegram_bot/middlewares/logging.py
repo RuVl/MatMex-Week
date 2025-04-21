@@ -83,11 +83,7 @@ class LoggingMw(BaseMiddleware):
 			execution_time = round(end - start, 3)
 
 			# Log successful completion
-			await log.adebug(
-				"handler-completed",
-				handler=handler_name,
-				execution_time=execution_time
-			)
+			await log.adebug("handler-completed", handler=handler_name, execution_time=execution_time)
 			return result
 
 		except Exception as e:

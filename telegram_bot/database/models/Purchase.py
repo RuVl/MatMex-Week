@@ -1,4 +1,4 @@
-from sqlalchemy import Float, ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models import Base, MerchItem, User
@@ -10,7 +10,7 @@ class Purchase(Base):
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
 	quantity: Mapped[int] = mapped_column(Integer, nullable=False, comment="количество экземпляров")
-	total_cost: Mapped[float] = mapped_column(Float, nullable=False, comment="стоимость покупки")
+	total_cost: Mapped[int] = mapped_column(Integer, nullable=False, comment="стоимость покупки")
 
 	# Кто купил мерч
 	customer_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False, comment="кто купил")
