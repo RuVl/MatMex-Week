@@ -17,19 +17,22 @@ schedule_router = Router()
 @schedule_router.message(LocalizedTextFilter("btn-schedule"))
 async def schedule_button_h(msg: types.Message, l10n: FluentLocalization):
 	image_from_pc = FSInputFile(MEDIA_DIR / "schedule.jpg")
-	events = await events_ikb(l10n, False)
 	await msg.answer_photo(photo=image_from_pc, caption=l10n.format_value("schedule-text-html"), parse_mode=ParseMode.HTML)
-	await msg.answer(text=l10n.format_value("schedule-keyboard"), reply_markup=events)
+	
+	kb = await events_ikb(l10n, False)
+	if kb is not None:
+		await msg.answer(text=l10n.format_value("schedule-keyboard"), reply_markup=kb)
 
 
 @schedule_router.callback_query(BackToEventsFactory.filter())
 async def back_to_categories_h(callback: types.CallbackQuery, callback_data: BackToEventsFactory, l10n: FluentLocalization):
-	events = await events_ikb(l10n, callback_data.can_delete)
+	kb = await events_ikb(l10n, callback_data.can_delete)
 	await callback.bot.edit_message_text(
 		text=l10n.format_value("schedule-keyboard"),
-		reply_markup=events,
+		reply_markup=kb,
 		chat_id=callback.message.chat.id,
-		message_id=callback.message.message_id)
+		message_id=callback.message.message_id
+	)
 
 
 @schedule_router.callback_query(EventFactory.filter())
