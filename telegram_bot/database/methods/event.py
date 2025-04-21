@@ -40,25 +40,25 @@ async def update_event(
 ) -> Event:
 	"""Обновляет информацию о мероприятии."""
 	event = await session.get(Event, event_id)
-	
+
 	if not event:
 		raise ValueError(f"Мероприятие с id {event_id} не найдено")
-	
+
 	if name is not None:
 		event.name = name
-	
+
 	if visit_points is not None:
 		event.visit_points = visit_points
-	
+
 	if starts_at is not None:
 		event.starts_at = starts_at
-	
+
 	if ends_at is not None:
 		event.ends_at = ends_at
-	
+
 	await session.commit()
-	
-	return event	
+
+	return event
 
 
 async def delete_event(session: AsyncSession, event_id: int) -> bool:

@@ -18,7 +18,7 @@ schedule_router = Router()
 async def schedule_button_h(msg: types.Message, l10n: FluentLocalization):
 	image_from_pc = FSInputFile(MEDIA_DIR / "schedule.jpg")
 	await msg.answer_photo(photo=image_from_pc, caption=l10n.format_value("schedule-text-html"), parse_mode=ParseMode.HTML)
-	
+
 	kb = await events_ikb(l10n, False)
 	if kb is not None:
 		await msg.answer(text=l10n.format_value("schedule-keyboard"), reply_markup=kb)

@@ -10,10 +10,10 @@ async def events_ikb(l10n, can_delete: bool) -> InlineKeyboardMarkup | None:
 	builder = InlineKeyboardBuilder()
 	async with async_session() as session:
 		events = await get_all_events(session)
-		
+
 	if not events:
 		return None
-		
+
 	for event in events:
 		builder.row(
 			InlineKeyboardButton(text=event.name, callback_data=EventFactory(
