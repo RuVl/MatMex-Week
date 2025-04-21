@@ -24,7 +24,7 @@ class Event(Base):
 	created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False, comment="когда создан")
 
 	# Back ref events.created_by_id -> privileges.id
-	event_grants: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='event')
+	event_grants: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='event', cascade="all, delete-orphan")
 
 	# Отношение к посещаемости мероприятий
-	event_attendances: Mapped[list["EventAttendance"]] = relationship("EventAttendance", back_populates="event")
+	event_attendances: Mapped[list["EventAttendance"]] = relationship("EventAttendance", back_populates="event", cascade="all, delete-orphan")
