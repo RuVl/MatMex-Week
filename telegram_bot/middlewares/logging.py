@@ -27,7 +27,7 @@ class LoggingMw(BaseMiddleware):
 			context.update({
 				"user_id": user.id,
 				"username": user.username,
-				"full_name": f"{user.first_name} {user.last_name or ''}".strip(),
+				"telegram_name": f"{user.first_name} {user.last_name or ''}".strip(),
 			})
 		return context
 
