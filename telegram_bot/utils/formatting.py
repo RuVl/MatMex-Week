@@ -38,7 +38,8 @@ def format_datetime(dt: datetime, include_weekday: bool = True, include_time: bo
 
 def format_short_date(dt: datetime) -> str:
 	"""Format date in short format DD.MM.YYYY"""
-	return f"{dt.day:02}.{dt.month:02}.{dt.year}"
+	dt_tz = dt.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
+	return f"{dt_tz.day:02}.{dt_tz.month:02}.{dt_tz.year}"
 
 
 def format_short_time(dt: datetime) -> str:
