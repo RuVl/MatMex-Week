@@ -50,7 +50,7 @@ class UserCacheMw(BaseMiddleware):
 	async def get_db_user(self, telegram_id: int, drop_cache: bool = True, logger: FilteringBoundLogger = None) -> models.User | None:
 		"""Get user from cache or database and update cache if needed"""
 		redis_key = self._make_redis_key(telegram_id)
-		
+
 		try:
 			if not drop_cache:
 				# Try to get from cache first
@@ -84,7 +84,7 @@ class UserCacheMw(BaseMiddleware):
 			data: dict[str, Any],
 	) -> Any:
 		# Check if the flag is set for this handler
-		flags = extract_flags(handler)
+		flags = extract_flags(data)
 		if flags.get(self.disable_cache_flag, False):
 			return await handler(event, data)
 

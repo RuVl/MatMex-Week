@@ -20,7 +20,7 @@ from utils import escape_md_v2
 register_router = Router()
 
 
-@register_router.message(CommandStart(deep_link=False))
+@register_router.message(CommandStart(deep_link=False), flags={'drop_cache': True})
 async def start_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, cached_user: User):
 	if cached_user is None:
 		await msg.answer(l10n.format_value("hi"), reply_markup=ReplyKeyboardRemove())

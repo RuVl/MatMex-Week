@@ -3,7 +3,7 @@ hi = Привет, ну как там твоя учеба?
 hi-user = Привет, { $fullname }, ну как там твоя учеба?
 ask-name = Напиши свое ФИО, чтобы ты мог получить заслуженный мерч в конце нашей недели\!
 tell-about-pc = Кстати, цены в магазине зависят от того, состоишь ли ты в профкоме, а мерч мы выдаем по студбилету, так что указывай корректные ФИО
-thanks-name-html = Приятно познакомиться, { $fullname }!
+thanks-name-html = Приятно познакомиться, { $fullname }\!
 ask-pc = Ты состоишь в профкоме\?
 wrong-name = Неправильный формат ФИО, попробуй еще раз
 send-for-manual-check = Если ты действительно состоишь в Профкоме, то я могу отправить запрос на ручную проверку
@@ -53,8 +53,13 @@ already-received = Вы уже получали данные за это мер�
 
 # ===== PROMOCODES =====
 promocode_enter = Введите промокод
-sad-promo-message = Твой промокод недействителен \({ $message }\)
-good-promo-message = Поздравляю! Промокод добавлен \({ $cost } баллов\)
+promocode-error-not-found = Твой промокод недействителен
+promocode-error-deactivated = { promocode-error-not-found }
+promocode-error-expired = { promocode-error-not-found }
+promocode-error-max-uses = { promocode-error-not-found }
+promocode-error-already-activated = Вы уже активировали промокод\!
+promocode-error-user-not-found = Пользователь не найден, нажмите /start
+promocode-activated = Поздравляю\! Промокод добавлен \({ $cost } баллов\)
     Ваш баланс: { $balance } баллов
 # ===== PROMOCODES =====
 
@@ -67,6 +72,8 @@ support-question = Новый вопрос от { $fullname }\:
     ||{ $metadata }||
 support-sent = Ответ отправлен
 cancel-message = Запрос отменён
+# ===== SUPPORT =====
+
 
 # ===== SCHEDULE & EVENTS =====
 schedule-keyboard = Информация о меоприятиях
@@ -193,10 +200,13 @@ ask-for-attend-promocode = Вы точно хотите создать этот 
 ask-for-cost-promocode = Введите стоимость промокода
 ask-for-max-uses = Введите максимальное количество использований
 wrong-cost = Введи допустимое число для цены
-promo_added = Промокод добавлен\. Возвращаю тебя в меню админов
-promo_exist = Такой промокод существует
+promo-added = Промокод добавлен\. Возвращаю тебя в меню админов
+promo-exist = Такой промокод существует
 wrong-usages = Некорректное число максимальных использований
 you-have-not-rights = У тебя нет прав
+promocode-too-short = Прокомод слишком короткий \(не менее 5 символов\)
+promocode-too-long = Промокод слишком длинный \(не более 25 символов\)
+promocode-creation-error = Что\-то пошло не так\. Промокод не создан
 # ===== PROMOCODE MANAGEMENT =====
 
 

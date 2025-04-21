@@ -84,16 +84,10 @@ async def promocode_max_usages_h(msg: types.Message, state: FSMContext, l10n: Fl
 				None
 			)
 
-			await log.adebug(
-				"promocode-created",
-				code=promo_code,
-				cost=promo_cost,
-				max_uses=max_usages,
-				creator_id=user.id
-			)
+			await log.adebug("promocode-created", code=promo_code, cost=promo_cost, max_uses=max_usages, creator_id=user.id)
 
 			await msg.answer(
-				l10n.format_value("promo_added", args={
+				l10n.format_value("promo-added", args={
 					"code": escape_md_v2(promo_code),
 					"cost": promo_cost,
 					"max_uses": max_usages
@@ -108,15 +102,15 @@ async def promocode_max_usages_h(msg: types.Message, state: FSMContext, l10n: Fl
 
 
 @code_scanner_router.message(AdminPromocodeActions.ENTER_PROMOCODE)
-async def promocode_input_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
+async def promocode_code_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log: FilteringBoundLogger):
 	promo_code = msg.text.strip()
 
 	# Validate promocode format
-	if not promo_code or len(promo_code) < 3:
+	if not promo_code or len(promo_code) < 5:
 		await msg.answer(l10n.format_value("promocode-too-short"))
 		return
 
-	if len(promo_code) > 20:
+	if len(promo_code) > 25:
 		await msg.answer(l10n.format_value("promocode-too-long"))
 		return
 
