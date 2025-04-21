@@ -15,14 +15,12 @@ from utils import escape_md_v2
 account_router = Router()
 
 
-@account_router.message(LocalizedTextFilter("btn-profile"), flags={'no_cache': True})
-async def profile_open_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	async with async_session() as session:
-		user = await get_user_by_telegram_id(session, msg.from_user.id) #no cache
-	in_pc = user.apply.status.value if user.apply else 'None'
+@account_router.message(LocalizedTextFilter("btn-profile"), flags={'drop_cache': True})
+async def profile_open_h(msg: types.Message, state: FSMContext, cached_user: User, l10n: FluentLocalization):
+	in_pc = cached_user.apply is not None and cached_user.apply.status == ApplyStatus.APPROVED
 	await msg.answer(l10n.format_value("welcome-account", args={
-		'fullname': escape_md_v2(user.full_name),
-		'balance': user.balance,
+		'fullname': escape_md_v2(cached_user.full_name),
+		'balance': cached_user.balance,
 		'in_pc': in_pc,
 	}), reply_markup=account_menu_kb(l10n))
 
