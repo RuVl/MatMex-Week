@@ -14,7 +14,8 @@ async def create_event(
 		creator_id: int,
 		visit_points: int,
 		starts_at: Optional[datetime] = None,
-		ends_at: Optional[datetime] = None
+		ends_at: Optional[datetime] = None,
+		description: Optional[str] = None
 ) -> Event:
 	"""Создаёт новое мероприятие."""
 	event = Event(
@@ -22,7 +23,8 @@ async def create_event(
 		visit_points=visit_points,
 		creator_id=creator_id,
 		starts_at=starts_at,
-		ends_at=ends_at
+		ends_at=ends_at,
+		description=description
 	)
 	session.add(event)
 	await session.commit()
@@ -36,7 +38,8 @@ async def update_event(
 		name: Optional[str] = None,
 		visit_points: Optional[int] = None,
 		starts_at: Optional[datetime] = None,
-		ends_at: Optional[datetime] = None
+		ends_at: Optional[datetime] = None,
+		description: Optional[str] = None
 ) -> Event:
 	"""Обновляет информацию о мероприятии."""
 	event = await session.get(Event, event_id)
@@ -55,6 +58,9 @@ async def update_event(
 
 	if ends_at is not None:
 		event.ends_at = ends_at
+		
+	if description is not None:
+		event.description = description
 
 	await session.commit()
 

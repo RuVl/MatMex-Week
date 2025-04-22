@@ -97,7 +97,31 @@ async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: 
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
 
+	await msg.delete()
+	await msg.bot.edit_message_text(
+		l10n.format_value("ask-for-event-description"),
+		reply_markup=cancel_ikb(l10n),
+		chat_id=msg.chat.id,
+		message_id=state_data.get("event_message_id")
+	)
 	await state.set_data(state_data)
+	await state.set_state(EditEventsActions.CHOOSE_EVENT_DESCRIPTION)
+
+
+@create_router.message(EditEventsActions.CHOOSE_EVENT_DESCRIPTION)
+async def ask_for_event_description_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	description = msg.text.strip()
+	state_data = await state.get_data()
+
+	if len(description) > 1000:
+		await msg.delete()
+		await msg.answer(l10n.format_value("event-description-too-long"))
+		return
+
+	if description == "-":
+		description = None
+	else:
+		state_data.update(description=description)
 
 	async with async_session() as session:
 		creator = await get_user_by_telegram_id(session, msg.from_user.id)
@@ -105,9 +129,10 @@ async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: 
 			session=session,
 			name=state_data.get("event_name"),
 			visit_points=int(state_data.get("visit_points")),
-			creator_id=creator.id,
+			creator_id=creator.privileges_id,
 			starts_at=datetime.strptime(state_data.get("event_start_time"), "%d.%m.%Y %H:%M"),
 			ends_at=datetime.strptime(state_data.get("event_end_time"), "%d.%m.%Y %H:%M"),
+			description=state_data.get("description")
 		)
 
 	await msg.delete()
