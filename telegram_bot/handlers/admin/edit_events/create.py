@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
@@ -10,6 +11,7 @@ from filters.main import LocalizedTextFilter
 from keyboards.common import edit_events_kb
 from keyboards.inline import cancel_ikb
 from state_machines.edit_events import EditEventsActions
+from env import TelegramKeys
 
 create_router = Router()
 
@@ -101,13 +103,15 @@ async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: 
 
 	async with async_session() as session:
 		creator = await get_user_by_telegram_id(session, msg.from_user.id)
+		starts_at=datetime.strptime(state_data.get("event_start_time"), "%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
+		ends_at=datetime.strptime(state_data.get("event_end_time"), "%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
 		await create_event(
 			session=session,
 			name=state_data.get("event_name"),
 			visit_points=int(state_data.get("visit_points")),
 			creator_id=creator.id,
-			starts_at=datetime.strptime(state_data.get("event_start_time"), "%d.%m.%Y %H:%M"),
-			ends_at=datetime.strptime(state_data.get("event_end_time"), "%d.%m.%Y %H:%M"),
+			starts_at=starts_at,
+			ends_at=ends_at,
 		)
 
 	await msg.delete()
