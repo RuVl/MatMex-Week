@@ -89,12 +89,11 @@ async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n
 
 
 @create_router.message(EditEventsActions.CHOOSE_EVENT_END_TIME)
-async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log):
+async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 
 	ends_at = dateparser.parse(msg.text.strip())
 	if ends_at is None:
-		log.debug(str(e))
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
