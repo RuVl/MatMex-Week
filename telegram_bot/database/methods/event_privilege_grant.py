@@ -103,7 +103,7 @@ async def get_active_user_event_grants(session: AsyncSession, user_id: int) -> l
 			EventPrivilegeGrant.responsible_id == user_id,
 			or_(
 				and_(Event.starts_at - timedelta(minutes=30) <= now, Event.ends_at + timedelta(minutes=30) > now),
-				and_(Event.starts_at - timedelta(minutes=30) <= now, Event.ends_at == None)
+				and_(Event.starts_at - timedelta(minutes=30) <= now, Event.ends_at is None)
 			)
 		)
 		.options(
