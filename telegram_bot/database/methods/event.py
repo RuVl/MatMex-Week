@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Optional
 
 from sqlalchemy import select
@@ -127,8 +127,8 @@ async def get_active_events(session: AsyncSession) -> list[Event]:
 	result = await session.execute(
 		select(Event)
 		.where(
-			((Event.starts_at <= now) & (Event.ends_at > now)) |
-			((Event.starts_at <= now) & (Event.ends_at == None))
+			((Event.starts_at - timedelta(minutes=30) <= now) & (Event.ends_at + timedelta(minutes=30) > now)) |
+			((Event.starts_at - timedelta(minutes=30) <= now) & (Event.ends_at is None))
 		)
 		.order_by(Event.starts_at)
 		.options(selectinload(Event.creator))
