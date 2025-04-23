@@ -40,7 +40,7 @@ input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
 name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
 already-in-pc = Рады видеть тебя среди членов профкома\)
-deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
+deeplink-invalid = Неверный QR код
 
 # Account buttons
 btn-edit-name = Редактировать ФИО
@@ -63,8 +63,8 @@ promocode-error-expired = { promocode-error-not-found }
 promocode-error-max-uses = { promocode-error-not-found }
 promocode-error-already-activated = Вы уже активировали промокод\!
 promocode-error-user-not-found = Пользователь не найден, нажмите /start
-promocode-activated = Поздравляю\! Промокод добавлен \({ $cost } баллов\)
-    Ваш баланс: { $balance } баллов
+promocode-activated = Поздравляю\! Промокод добавлен \({ $cost } i\)
+    Ваш баланс: { $balance } i
 # ===== PROMOCODES =====
 
 
@@ -211,6 +211,7 @@ you-have-not-rights = У тебя нет прав
 promocode-too-short = Прокомод слишком короткий \(не менее 5 символов\)
 promocode-too-long = Промокод слишком длинный \(не более 25 символов\)
 promocode-creation-error = Что\-то пошло не так\. Промокод не создан
+show-this-qr = Для активации промокода можно отсканировать данный QR\-код
 # ===== PROMOCODE MANAGEMENT =====
 
 

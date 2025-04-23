@@ -10,7 +10,7 @@ from fluent.runtime import FluentLocalization
 from config import QR_CODE_SCALE
 from database import async_session
 from database.enums import EventPrivilege
-from database.methods import get_active_user_event_grants, get_user_by_code, get_user_by_telegram_id, give_point_for_event_by_user_id
+from database.methods import get_active_user_event_grants, get_user_by_code, get_user_by_telegram_id, give_point_for_event_by_user_id, activate_promocode
 from database.models import EventPrivilegeGrant, User
 from filters import LocalizedTextFilter
 from handlers.user.account import account_router
@@ -53,6 +53,27 @@ async def show_my_qr_h(msg: types.Message):
 @user_router.message(CommandStart(deep_link=True, deep_link_encoded=True))
 async def give_event_points_h(msg: types.Message, command: CommandObject, cached_user: User, l10n: FluentLocalization):
 	async with async_session() as session:
+		# Проверяем явлется ли промокодом
+		success, error_code, cost = await activate_promocode(session, str(command.args), cached_user.id)
+
+		if success:
+			await msg.answer(l10n.format_value("promocode-activated", args={"cost": cost, "balance": cached_user.balance}))
+			return
+		elif error_code != "not_found": #Если не нашли смотрим пользователя
+			# Map error codes to localization keys
+			error_mapping = {
+				"deactivated": "promocode-error-deactivated",
+				"expired": "promocode-error-expired",
+				"max_uses_reached": "promocode-error-max-uses",
+				"already_activated": "promocode-error-already-activated",
+				"user_not_found": "promocode-error-user-not-found"
+			}
+
+			# Get a localized error message or use a default if the error code is unknown
+			error_key = error_mapping.get(error_code, "promocode-error-unknown")
+			await msg.answer(l10n.format_value(error_key))
+			return
+
 		# Получаем пользователя, которому начислить баллы
 		user = await get_user_by_code(session, uuid.UUID(command.args))
 		if user is None:
