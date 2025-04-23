@@ -84,6 +84,7 @@ async def get_all_events(session: AsyncSession) -> list[Event]:
 	"""Возвращает список всех мероприятий."""
 	result = await session.execute(
 		select(Event)
+		.order_by(Event.starts_at)
 		.options(
 			selectinload(Event.creator)
 		)
@@ -101,6 +102,7 @@ async def get_upcoming_events(session: AsyncSession) -> list[Event]:
 			((Event.starts_at <= now) & (Event.ends_at > now)) |
 			((Event.starts_at <= now) & (Event.ends_at == None))
 		)
+		.order_by(Event.starts_at)			
 		.options(selectinload(Event.creator))
 	)
 	return result.scalars().all()
@@ -128,6 +130,7 @@ async def get_active_events(session: AsyncSession) -> list[Event]:
 			((Event.starts_at <= now) & (Event.ends_at > now)) |
 			((Event.starts_at <= now) & (Event.ends_at == None))
 		)
+		.order_by(Event.starts_at)
 		.options(selectinload(Event.creator))
 	)
 	return result.scalars().all()
