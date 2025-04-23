@@ -118,7 +118,7 @@ class MessageActionWrapper:
 
 	@staticmethod
 	def _should_show_typing(args: tuple, kwargs: dict) -> bool:
-		return bool(kwargs.get("text") or kwargs.get("caption")) or isinstance(args[0], str)
+		return bool(kwargs.get("text") or kwargs.get("caption")) or (len(args) > 0 and isinstance(args[0], str))
 
 	async def _perform_action(self, action: str, total_delay: float):
 		if self._log is not None:
