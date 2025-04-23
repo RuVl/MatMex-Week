@@ -67,11 +67,9 @@ async def ask_for_event_name_h(msg: types.Message, state: FSMContext, l10n: Flue
 @create_router.message(EditEventsActions.CHOOSE_EVENT_START_TIME)
 async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
-	state_data.update(event_start_time=msg.text.strip())
-
-	try:
-		dateparser.parse(msg.text.strip())
-	except ValueError:
+	
+	starts_at = msg.text.strip()
+	if dateparser.parse(starts_at) is None:
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
@@ -85,17 +83,17 @@ async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n
 	)
 
 	await state.set_data(state_data)
+	
+	state_data.update(event_start_time=starts_at)
 	await state.set_state(EditEventsActions.CHOOSE_EVENT_END_TIME)
 
 
 @create_router.message(EditEventsActions.CHOOSE_EVENT_END_TIME)
 async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log):
 	state_data = await state.get_data()
-	state_data.update(event_end_time=msg.text.strip())
 
-	try:
-		dateparser.parse(msg.text.strip())
-	except ValueError as e:
+	ends_at = dateparser.parse(msg.text.strip())
+	if ends_at is None:
 		log.debug(str(e))
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
@@ -105,19 +103,18 @@ async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: 
 
 	async with async_session() as session:
 		creator = await get_user_by_telegram_id(session, msg.from_user.id)
-		starts_at=dateparser.parse(state_data.get("event_start_time"))
-		ends_at=dateparser.parse(state_data.get("event_end_time"))
 		await create_event(
 			session=session,
-			name=state_data.get("event_name"),
-			visit_points=int(state_data.get("visit_points")),
+			name=state_data.get("event_name", ''),
+			visit_points=int(state_data.get("visit_points", 0)),
 			creator_id=creator.id,
-			starts_at=starts_at,
+			starts_at=dateparser.parse(state_data.get("event_start_time", '')),
 			ends_at=ends_at,
 		)
 
 	await msg.delete()
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=state_data.get("event_message_id"))
 	await msg.answer(l10n.format_value("event-created"), reply_markup=edit_events_kb(l10n))
+	
 	await state.clear()
 	await state.set_state(EditEventsActions.EDIT_EVENTS)
