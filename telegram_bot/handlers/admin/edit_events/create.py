@@ -1,3 +1,4 @@
+import dateparser
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
@@ -69,7 +70,7 @@ async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n
 	state_data.update(event_start_time=msg.text.strip())
 
 	try:
-		datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
+		dateparser.parse(msg.text.strip())
 	except ValueError:
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
@@ -88,13 +89,14 @@ async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n
 
 
 @create_router.message(EditEventsActions.CHOOSE_EVENT_END_TIME)
-async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization, log):
 	state_data = await state.get_data()
 	state_data.update(event_end_time=msg.text.strip())
 
 	try:
-		datetime.strptime(msg.text.strip(), "%d.%m.%Y %H:%M")
-	except ValueError:
+		dateparser.parse(msg.text.strip())
+	except ValueError as e:
+		log.debug(str(e))
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
@@ -103,8 +105,8 @@ async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: 
 
 	async with async_session() as session:
 		creator = await get_user_by_telegram_id(session, msg.from_user.id)
-		starts_at=datetime.strptime(state_data.get("event_start_time"), "%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
-		ends_at=datetime.strptime(state_data.get("event_end_time"), "%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
+		starts_at=dateparser.parse(state_data.get("event_start_time"))
+		ends_at=dateparser.parse(state_data.get("event_end_time"))
 		await create_event(
 			session=session,
 			name=state_data.get("event_name"),
