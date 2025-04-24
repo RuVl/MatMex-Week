@@ -63,8 +63,8 @@ promocode-error-expired = { promocode-error-not-found }
 promocode-error-max-uses = { promocode-error-not-found }
 promocode-error-already-activated = Вы уже активировали промокод\!
 promocode-error-user-not-found = Пользователь не найден, нажмите /start
-promocode-activated = Поздравляю\! Промокод добавлен \({ $cost } i\)
-    Ваш баланс: { $balance } i
+promocode-activated = Поздравляю\! Промокод добавлен \({ $cost }i\)
+    Ваш баланс: { $balance }i
 # ===== PROMOCODES =====
 
 
@@ -107,6 +107,7 @@ event-value = Мероприятие
     { $event_name }
     Начинается: { $starts_at }
     Заканчивается: { $ends_at }
+    { $desc }
     За посещение начисляется { $event_gives }i
 
 # Event management 
@@ -119,6 +120,8 @@ wrong-points = Неправильный формат начисляемых ба
 wrong-datetime = Неправильный формат времени
 ask-for-event-start-time = Введите, когда начинается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
 ask-for-event-end-time = Введите, когда заканчивается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
+ask-for-event-description = Введите описание мероприятия \(или отправьте "\-" для пропуска\):
+event-description-too-long = Описание слишком длинное, максимум 1000 символов\.
 event-created = Мероприятие создано\!
 ask-for-event = За какое мероприятие хотите начислить
 # ===== SCHEDULE & EVENTS =====

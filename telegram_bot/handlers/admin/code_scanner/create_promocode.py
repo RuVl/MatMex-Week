@@ -88,6 +88,7 @@ async def promocode_max_usages_h(msg: types.Message, state: FSMContext, l10n: Fl
 				max_usages,
 				None
 			)
+
 			# Create the link and qr-code
 			link = await create_start_link(bot=msg.bot, payload=str(promocode.code), encode=True)
 			qrcode = segno.make(link, micro=False)
@@ -98,10 +99,10 @@ async def promocode_max_usages_h(msg: types.Message, state: FSMContext, l10n: Fl
 			buffer.seek(0)
 
 			await msg.answer_photo(
-							photo=types.BufferedInputFile(buffer.read(), "qrcode.png"),
-							caption=l10n.format_value("show-this-qr")
-            )
-   
+				photo=types.BufferedInputFile(buffer.read(), "qrcode.png"),
+				caption=l10n.format_value("show-this-qr")
+      )
+
 			await log.adebug("promocode-created", code=promo_code, cost=promo_cost, max_uses=max_usages, creator_id=user.id)
 
 			await msg.answer(

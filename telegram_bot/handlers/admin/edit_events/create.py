@@ -90,27 +90,59 @@ async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n
 async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 
-	ends_at = dateparser.parse(msg.text.strip())
-	if ends_at is None:
+  ends_at = msg.text.strip()
+	if dateparser.parse(ends_at) is None:
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
 
+	await msg.delete()
+	await msg.bot.edit_message_text(
+		l10n.format_value("ask-for-event-description"),
+		reply_markup=cancel_ikb(l10n),
+		chat_id=msg.chat.id,
+		message_id=state_data.get("event_message_id")
+	)
+  
+  state_data.update(event_end_time=ends_at)
 	await state.set_data(state_data)
+	await state.set_state(EditEventsActions.CHOOSE_EVENT_DESCRIPTION)
+
+
+@create_router.message(EditEventsActions.CHOOSE_EVENT_DESCRIPTION)
+async def ask_for_event_description_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	description = msg.text.strip()
+	state_data = await state.get_data()
+
+	if len(description) > 1000:
+		await msg.delete()
+		await msg.answer(l10n.format_value("event-description-too-long"))
+		return
+
+	if description == "-":
+		description = None
+	else:
+		state_data.update(description=description)
 
 	async with async_session() as session:
 		user = await get_user_by_telegram_id(session, msg.from_user.id)
+
 		starts_at = dateparser.parse(state_data.get("event_start_time", ''))
 		if starts_at is not None:
 			starts_at = starts_at.replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
 
+    ends_at = dateparser.parse(state_data.get("event_end_time", ''))
+		if ends_at is not None:
+			ends_at = ends_at.replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
+
 		await create_event(
 			session=session,
-			name=state_data.get("event_name", ''),
-			visit_points=int(state_data.get("visit_points", 0)),
+			name=state_data.get("event_name"),
+			visit_points=int(state_data.get("visit_points")),
 			creator_id=user.privileges_id,
 			starts_at=starts_at,
-			ends_at=ends_at.replace(tzinfo=ZoneInfo(TelegramKeys.TZ)),
+      ends_at=ends_at,
+			description=state_data.get("description")
 		)
 
 	await msg.delete()

@@ -9,3 +9,4 @@ class EditEventsActions(StatesGroup):
 	CHOOSE_EVENT_VISIT_POINTS = State()
 	CHOOSE_EVENT_START_TIME = State()
 	CHOOSE_EVENT_END_TIME = State()
+	CHOOSE_EVENT_DESCRIPTION = State()
