@@ -39,4 +39,3 @@ def register_middlewares(dp: Dispatcher):
 	# Typing by flag typing=True
 	chat_actions_mw = ChatActionsMw(enabled=not TelegramKeys.WITHOUT_TYPING)
 	dp.message.middleware(chat_actions_mw)
-	dp.callback_query.middleware(chat_actions_mw)

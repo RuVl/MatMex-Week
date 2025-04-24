@@ -12,7 +12,6 @@ wait-until-checked = Отлично\! Членство в профкоме от�
 ask-to-join = Если хочешь вступить в профком, приходи в кабинет 3528
 ask-valid-answer = Я тебя не понимаю\.\.\.😥
 Выбери один из вариантов
-already-in-pc = Рады видеть тебя среди членов профкома\)
 
 # Registration buttons
 btn-send-for-check = Отправить на ручную проверку
@@ -32,16 +31,16 @@ welcome-account = Добро пожаловать в личный кабинет
     Пользователь: { $fullname }
     Баланс: { $balance }i
     Статус: { $in_pc ->
-*[APPROVED] в профкоме
+[APPROVED] в профкоме
 [REJECTED] заявка не одобрена
-[None] не в профкоме 
 [PENDING] на рассмотрении
+*[None] не в профкоме
     }
 input-new-name = Введите новое ФИО
 cancel-change-name = Редактирование ФИО отменено
 name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
-already-in-pc = Мы знаем\) Это отмечено в твоем профиле
-deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
+already-in-pc = Рады видеть тебя среди членов профкома\)
+deeplink-invalid = Неверный QR код
 
 # Account buttons
 btn-edit-name = Редактировать ФИО
@@ -56,15 +55,16 @@ apply-on-check = Ваша заявка ожидает рассмотрения
 
 
 # ===== PROMOCODES =====
-promocode_enter = Введите промокод
+no-promocodes = Нет промокодов
+promocode-enter = Введите промокод
 promocode-error-not-found = Твой промокод недействителен
 promocode-error-deactivated = { promocode-error-not-found }
 promocode-error-expired = { promocode-error-not-found }
 promocode-error-max-uses = { promocode-error-not-found }
 promocode-error-already-activated = Вы уже активировали промокод\!
 promocode-error-user-not-found = Пользователь не найден, нажмите /start
-promocode-activated = Поздравляю\! Промокод добавлен \({ $cost } баллов\)
-    Ваш баланс: { $balance } баллов
+promocode-activated = Поздравляю\! Промокод добавлен \({ $cost }i\)
+    Ваш баланс: { $balance }i
 # ===== PROMOCODES =====
 
 
@@ -138,7 +138,7 @@ item-value = Товар
 
 # Shop management
 edit-shop-menu = Редактирование магазина
-cancel_edit_shop = Редактирование отменено
+cancel-edit-shop = Редактирование отменено
 ask-for-category-create = Введите название категории и прикрепите изображение категории
 category-created = Категория создана
 item-creation = Создание товара
@@ -214,6 +214,7 @@ you-have-not-rights = У тебя нет прав
 promocode-too-short = Прокомод слишком короткий \(не менее 5 символов\)
 promocode-too-long = Промокод слишком длинный \(не более 25 символов\)
 promocode-creation-error = Что\-то пошло не так\. Промокод не создан
+show-this-qr = Для активации промокода можно отсканировать данный QR\-код
 # ===== PROMOCODE MANAGEMENT =====
 
 

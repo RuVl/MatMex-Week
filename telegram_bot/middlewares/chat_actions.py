@@ -1,10 +1,9 @@
 from typing import Any, Callable
-import copy
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
 from aiogram.dispatcher.middlewares.user_context import EVENT_CHAT_KEY, EVENT_FROM_USER_KEY
-from aiogram.types import CallbackQuery, Message, TelegramObject
+from aiogram.types import Message, TelegramObject
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
@@ -54,7 +53,7 @@ class ChatActionsMw(BaseMiddleware):
 		logger: FilteringBoundLogger = data.get('log', self.logger)
 
 		# Check if the event type is supported
-		if not isinstance(event, (Message, CallbackQuery)):
+		if not isinstance(event, Message):
 			await logger.awarning(
 				"Unexpected event type",
 				middleware=self.__class__.__name__,
@@ -79,12 +78,7 @@ class ChatActionsMw(BaseMiddleware):
 		try:
 			# Create wrapped event
 			wrapped_event = event
-			if isinstance(wrapped_event, CallbackQuery):
-				# Create a mutable copy of the callback query to avoid modifying frozen objects
-				wrapped_event = copy.copy(wrapped_event)
-				wrapped_event.message = MessageActionWrapper(wrapped_event.message, **cfg)
-			else:
-				wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
+			wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
 
 			# Update dependencies in data
 			data["event"] = wrapped_event

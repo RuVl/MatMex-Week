@@ -1,5 +1,9 @@
+import io
+import segno
+
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
+from aiogram.utils.deep_linking import create_start_link
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
@@ -10,6 +14,7 @@ from filters import AdminPromocodeCreatingFilter, LocalizedTextFilter, Privilege
 from keyboards.common import admin_kb, cancel_kb, yes_no_kb
 from state_machines import AdminActions, AdminPromocodeActions
 from utils import escape_md_v2
+from config import QR_CODE_SCALE
 
 code_scanner_router = Router()
 code_scanner_router.message.filter(
@@ -75,7 +80,7 @@ async def promocode_max_usages_h(msg: types.Message, state: FSMContext, l10n: Fl
 			return
 
 		try:
-			await create_promocode(
+			promocode = await create_promocode(
 				session,
 				promo_code,
 				promo_cost,
@@ -83,6 +88,20 @@ async def promocode_max_usages_h(msg: types.Message, state: FSMContext, l10n: Fl
 				max_usages,
 				None
 			)
+
+			# Create the link and qr-code
+			link = await create_start_link(bot=msg.bot, payload=str(promocode.code), encode=True)
+			qrcode = segno.make(link, micro=False)
+
+			# Save qr-code to buffer
+			buffer = io.BytesIO()
+			qrcode.save(buffer, kind='png', scale=QR_CODE_SCALE)
+			buffer.seek(0)
+
+			await msg.answer_photo(
+				photo=types.BufferedInputFile(buffer.read(), "qrcode.png"),
+				caption=l10n.format_value("show-this-qr")
+      )
 
 			await log.adebug("promocode-created", code=promo_code, cost=promo_cost, max_uses=max_usages, creator_id=user.id)
 

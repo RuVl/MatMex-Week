@@ -136,7 +136,7 @@ async def active_events_ikb(event_grants: list[EventPrivilegeGrant], subject_id:
 					event_id=event_pair[0].id,
 					grant_id=event_pair[1].id,
 					subject_id=subject_id,
-     				subject_tg_id=subject_tg_id
+					subject_tg_id=subject_tg_id
 				).pack()
 			),
 		)
