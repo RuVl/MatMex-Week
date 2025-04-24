@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -102,8 +102,8 @@ async def get_active_user_event_grants(session: AsyncSession, user_id: int) -> l
 		.where(
 			EventPrivilegeGrant.responsible_id == user_id,
 			or_(
-				and_(Event.starts_at <= now, Event.ends_at > now),
-				and_(Event.starts_at <= now, Event.ends_at == None)
+				and_(Event.starts_at - timedelta(minutes=30) <= now, Event.ends_at + timedelta(minutes=30) > now),
+				and_(Event.starts_at - timedelta(minutes=30) <= now, Event.ends_at is None)
 			)
 		)
 		.options(
