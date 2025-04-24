@@ -216,4 +216,4 @@ async def grant_role(
 1. Create default roles matching current privilege masks
 2. Map existing users to appropriate roles based on current privileges
 3. Update handlers gradually, supporting both systems during transition
-4. Once all handlers are updated, remove old privilege system 
+4. Once all handlers are updated, remove the old privilege system 

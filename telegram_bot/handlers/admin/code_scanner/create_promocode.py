@@ -1,12 +1,13 @@
 import io
-import segno
 
+import segno
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.deep_linking import create_start_link
 from fluent.runtime import FluentLocalization
 from structlog.typing import FilteringBoundLogger
 
+from config import QR_CODE_SCALE
 from database import async_session
 from database.enums import AdminPrivilege
 from database.methods import create_promocode, get_promocode_by_code, get_user_by_telegram_id
@@ -14,7 +15,6 @@ from filters import AdminPromocodeCreatingFilter, LocalizedTextFilter, Privilege
 from keyboards.common import admin_kb, cancel_kb, yes_no_kb
 from state_machines import AdminActions, AdminPromocodeActions
 from utils import escape_md_v2
-from config import QR_CODE_SCALE
 
 code_scanner_router = Router()
 code_scanner_router.message.filter(
@@ -101,7 +101,7 @@ async def promocode_max_usages_h(msg: types.Message, state: FSMContext, l10n: Fl
 			await msg.answer_photo(
 				photo=types.BufferedInputFile(buffer.read(), "qrcode.png"),
 				caption=l10n.format_value("show-this-qr")
-      )
+			)
 
 			await log.adebug("promocode-created", code=promo_code, cost=promo_cost, max_uses=max_usages, creator_id=user.id)
 

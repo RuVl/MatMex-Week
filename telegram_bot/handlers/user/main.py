@@ -10,7 +10,7 @@ from fluent.runtime import FluentLocalization
 from config import QR_CODE_SCALE
 from database import async_session
 from database.enums import EventPrivilege
-from database.methods import get_active_user_event_grants, get_user_by_code, get_user_by_telegram_id, give_point_for_event_by_user_id, activate_promocode
+from database.methods import activate_promocode, get_active_user_event_grants, get_user_by_code, get_user_by_telegram_id, give_point_for_event_by_user_id
 from database.models import EventPrivilegeGrant, User
 from filters import LocalizedTextFilter
 from handlers.user.account import account_router
@@ -59,7 +59,7 @@ async def give_event_points_h(msg: types.Message, command: CommandObject, cached
 		if success:
 			await msg.answer(l10n.format_value("promocode-activated", args={"cost": cost, "balance": cached_user.balance}))
 			return
-		elif error_code != "not_found": #Если не нашли смотрим пользователя
+		elif error_code != "not_found":  # Если не нашли - смотрим пользователя
 			# Map error codes to localization keys
 			error_mapping = {
 				"deactivated": "promocode-error-deactivated",

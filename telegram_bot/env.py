@@ -11,7 +11,7 @@ class TelegramKeys:
 
 	SUPPORT_CHAT_ID: Final[int] = int(environ.get('SUPPORT_CHAT_ID', default=0))
 	ADMIN_CHAT_ID: Final[int] = int(environ.get('ADMIN_CHAT_ID', default=0))
-	
+
 	TZ: Final[str] = environ.get('TZ')
 
 

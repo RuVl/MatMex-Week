@@ -17,7 +17,7 @@ class Event(Base):
 	# Может быть всегда начат или никогда не заканчиваться
 	starts_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, comment="время начала мероприятия")
 	ends_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, comment="время окончания мероприятия")
-	
+
 	description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="Описание мероприятия")
 
 	# Кто создал мероприятие

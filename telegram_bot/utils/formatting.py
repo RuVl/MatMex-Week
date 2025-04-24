@@ -3,8 +3,8 @@ Utility functions for formatting data for display.
 """
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from env import TelegramKeys
 
+from env import TelegramKeys
 from .constants import DAYS_RU, MONTHS_RU_GENITIVE
 
 

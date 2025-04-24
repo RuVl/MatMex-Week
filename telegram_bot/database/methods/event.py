@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from sqlalchemy import select
@@ -58,7 +58,7 @@ async def update_event(
 
 	if ends_at is not None:
 		event.ends_at = ends_at
-		
+
 	if description is not None:
 		event.description = description
 
@@ -108,7 +108,7 @@ async def get_upcoming_events(session: AsyncSession) -> list[Event]:
 			((Event.starts_at <= now) & (Event.ends_at > now)) |
 			((Event.starts_at <= now) & (Event.ends_at == None))
 		)
-		.order_by(Event.starts_at)			
+		.order_by(Event.starts_at)
 		.options(selectinload(Event.creator))
 	)
 	return result.scalars().all()

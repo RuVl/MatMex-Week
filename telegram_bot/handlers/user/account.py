@@ -5,13 +5,14 @@ from structlog.typing import FilteringBoundLogger
 
 from database import async_session
 from database.enums import ApplyStatus
-from database.methods import update_user_fullname, get_user_apply, get_user_by_telegram_id
+from database.methods import get_user_apply, update_user_fullname
 from database.models import User
 from filters import FullNameFilter, LocalizedTextFilter
-from keyboards.common import account_menu_kb, cancel_kb, menu_kb, manual_check_kb
+from keyboards.common import account_menu_kb, cancel_kb, manual_check_kb, menu_kb
 from state_machines.account import AccountActions
 from state_machines.registration import RegistrationsActions
 from utils import escape_md_v2
+
 account_router = Router()
 
 

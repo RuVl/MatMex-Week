@@ -71,21 +71,15 @@ async def remove_privilege(session: AsyncSession, user_id: int, privilege_flag: 
 async def remove_all_privileges(session: AsyncSession, user_id: int):
 	"""Удаляет все привилегии пользователя и каскадно убирает привилегии у тех, кому он их выдал."""
 	user = await session.get(User, user_id, options=[
-		selectinload(User.privileges),
-		selectinload(User.issued_privileges).selectinload(Privilege.owner)
+		selectinload(User.privileges)
 	])
+
 	if not user:
 		raise ValueError(f"Пользователь с id {user_id} не найден")
 	if not user.privileges:
 		return  # Нечего удалять
 
-	# Удаляем привилегии у всех, кому пользователь их выдал
-	for issued_priv in user.issued_privileges:
-		if issued_priv.user:
-			issued_priv.user.privileges_id = None
-		await session.delete(issued_priv)
-
-	# Удаляем привилегии самого пользователя
+	# Удаляем привилегии самого пользователя (остальные удалятся каскадно)
 	await session.delete(user.privileges)
 	user.privileges_id = None
 	await session.commit()
@@ -96,7 +90,7 @@ async def get_privileges_by_provider(session: AsyncSession, provider_id: int) ->
 	result = await session.execute(
 		select(Privilege)
 		.where(Privilege.provider_id == provider_id)
-		.options(selectinload(Privilege.user))
+		.options(selectinload(Privilege.owner))
 	)
 	return result.scalars().all()
 

@@ -90,7 +90,7 @@ async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n
 async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 
-  ends_at = msg.text.strip()
+	ends_at = msg.text.strip()
 	if dateparser.parse(ends_at) is None:
 		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
 		await msg.answer(l10n.format_value("wrong-datetime"))
@@ -103,8 +103,8 @@ async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: 
 		chat_id=msg.chat.id,
 		message_id=state_data.get("event_message_id")
 	)
-  
-  state_data.update(event_end_time=ends_at)
+
+	state_data.update(event_end_time=ends_at)
 	await state.set_data(state_data)
 	await state.set_state(EditEventsActions.CHOOSE_EVENT_DESCRIPTION)
 
@@ -119,9 +119,7 @@ async def ask_for_event_description_h(msg: types.Message, state: FSMContext, l10
 		await msg.answer(l10n.format_value("event-description-too-long"))
 		return
 
-	if description == "-":
-		description = None
-	else:
+	if description != "-":
 		state_data.update(description=description)
 
 	async with async_session() as session:
@@ -131,7 +129,7 @@ async def ask_for_event_description_h(msg: types.Message, state: FSMContext, l10
 		if starts_at is not None:
 			starts_at = starts_at.replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
 
-    ends_at = dateparser.parse(state_data.get("event_end_time", ''))
+		ends_at = dateparser.parse(state_data.get("event_end_time", ''))
 		if ends_at is not None:
 			ends_at = ends_at.replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
 
@@ -141,13 +139,13 @@ async def ask_for_event_description_h(msg: types.Message, state: FSMContext, l10
 			visit_points=int(state_data.get("visit_points")),
 			creator_id=user.privileges_id,
 			starts_at=starts_at,
-      ends_at=ends_at,
+			ends_at=ends_at,
 			description=state_data.get("description")
 		)
 
-	await msg.delete()
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=state_data.get("event_message_id"))
-	await msg.answer(l10n.format_value("event-created"), reply_markup=edit_events_kb(l10n))
+		await msg.delete()
+		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=state_data.get("event_message_id"))
+		await msg.answer(l10n.format_value("event-created"), reply_markup=edit_events_kb(l10n))
 
-	await state.clear()
-	await state.set_state(EditEventsActions.EDIT_EVENTS)
+		await state.clear()
+		await state.set_state(EditEventsActions.EDIT_EVENTS)
