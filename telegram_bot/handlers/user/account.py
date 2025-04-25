@@ -30,13 +30,13 @@ async def profile_open_h(msg: types.Message, state: FSMContext, cached_user: Use
 
 @account_router.message(AccountActions.ACCOUNT_PANEL, LocalizedTextFilter("btn-edit-name"))
 async def edit_name_request_h(msg: types.Message, l10n: FluentLocalization, state: FSMContext):
-	await msg.answer(l10n.format_value("input-new-name"), reply_markup=account_menu_kb(l10n))
+	await msg.answer(l10n.format_value("input-new-name"), reply_markup=cancel_kb(l10n))
 	await state.set_state(AccountActions.NAME_WAITING)
 
 
 @account_router.message(AccountActions.NAME_WAITING, LocalizedTextFilter("btn-cancel"))
 async def edit_name_cancel_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("cancel-change-name"), reply_markup=cancel_kb(l10n))
+	await msg.answer(l10n.format_value("cancel-change-name"), reply_markup=account_menu_kb(l10n))
 	await state.set_state(AccountActions.ACCOUNT_PANEL)
 
 
