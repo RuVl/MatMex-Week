@@ -1,4 +1,3 @@
-from .constants import DAYS_RU, DAYS_RU_SHORT, MONTHS_RU, MONTHS_RU_GENITIVE
 from .escape import escape_md_v2
 from .formatting import (
 	format_datetime,
