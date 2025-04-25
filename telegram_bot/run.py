@@ -26,8 +26,13 @@ async def main():
 		BotCommand(command='start', description='Запустить бота'),
 	])
 
+	# Get storage with proper configuration for dialogs
+	storage = get_storage(with_destiny=True)
+
 	# Init dispatcher
-	dp = Dispatcher(storage=get_storage())
+	dp = Dispatcher(storage=storage)
+
+	# Register handlers and middlewares
 	register_handlers(dp)
 	register_middlewares(dp)
 

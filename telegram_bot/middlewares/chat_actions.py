@@ -74,27 +74,16 @@ class ChatActionsMw(BaseMiddleware):
 		# Set logger from DI
 		cfg.setdefault('log', data.get('log'))
 
-		# Wrap message or callback query message with action wrapper
-		try:
-			# Create wrapped event
-			wrapped_event = event
-			wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
+		# Create wrapped event
+		wrapped_event = event
+		wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
 
-			# Update dependencies in data
-			data["event"] = wrapped_event
-			data[EVENT_FROM_USER_KEY] = wrapped_event.from_user
-			data[EVENT_CHAT_KEY] = wrapped_event.chat
+		# Update dependencies in data
+		data["event"] = wrapped_event
+		data[EVENT_FROM_USER_KEY] = wrapped_event.from_user
+		data[EVENT_CHAT_KEY] = wrapped_event.chat
 
-			return await handler(wrapped_event, data)
-
-		except Exception as e:
-			await self.logger.aerror(
-				"Error in chat action middleware",
-				error=str(e),
-				middleware=self.__class__.__name__
-			)
-			# Fall back to normal handler execution without a wrapper
-			return await handler(event, data)
+		return await handler(wrapped_event, data)
 
 	async def _parse_flag(self, flag_value: Any, logger: FilteringBoundLogger) -> dict[str, Any] | None:
 		"""

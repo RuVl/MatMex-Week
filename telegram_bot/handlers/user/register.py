@@ -50,7 +50,7 @@ async def enter_fullname_h(msg: types.Message, state: FSMContext, l10n: FluentLo
 		if str(msg.from_user.id) in TelegramKeys.ADMINS:
 			await create_privilege(session=session, user_id=user.id, privilege_mask=AdminPrivilege.ALL, provider_id=None)
 
-	await msg.answer(l10n.format_value("thanks-name-html", args={'fullname': escape_md_v2(fullname)}), parse_mode=ParseMode.HTML)
+	await msg.answer(l10n.format_value("thanks-name", args={'fullname': escape_md_v2(fullname)}), parse_mode=ParseMode.HTML)
 
 	await msg.answer(l10n.format_value("ask-pc"), reply_markup=yes_no_kb(l10n))
 	await state.set_state(RegistrationsActions.CHECK_MEMBER)
