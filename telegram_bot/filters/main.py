@@ -7,6 +7,7 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.methods import get_privilege_by_user, get_user_by_telegram_id
 from env import TelegramKeys
+from middlewares import L10N_FORMAT_KEY, LOGGING_KEY
 
 
 class LocalizedTextFilter(BaseFilter):
@@ -14,9 +15,9 @@ class LocalizedTextFilter(BaseFilter):
 		self.l10n_key = l10n_key
 
 	async def __call__(self, message: Message, **kwargs) -> bool:
-		l10n: FluentLocalization = kwargs.get("l10n")
+		l10n: FluentLocalization = kwargs.get(L10N_FORMAT_KEY)
 		if not l10n:
-			log: FilteringBoundLogger = kwargs.get("log") or get_logger()
+			log: FilteringBoundLogger = kwargs.get(LOGGING_KEY) or get_logger()
 			await log.awarning("l10n context does not set")
 			return False
 

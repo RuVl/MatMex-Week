@@ -15,6 +15,7 @@ def get_storage(
 		key_builder_separator: str = ':',
 		key_builder_with_bot_id: bool = False,
 		key_builder_with_destiny: bool = False,
+		with_destiny: bool = False,
 ) -> BaseStorage:
 	return RedisStorage(
 		Redis.from_url(RedisKeys.URL),
@@ -22,7 +23,7 @@ def get_storage(
 			prefix=key_builder_prefix,
 			separator=key_builder_separator,
 			with_bot_id=key_builder_with_bot_id,
-			with_destiny=key_builder_with_destiny
+			with_destiny=key_builder_with_destiny or with_destiny
 		),
 		state_ttl=state_ttl,
 		data_ttl=data_ttl,

@@ -1,6 +1,5 @@
-from zoneinfo import ZoneInfo
-
 import dateparser
+import pendulum
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
@@ -127,11 +126,11 @@ async def ask_for_event_description_h(msg: types.Message, state: FSMContext, l10
 
 		starts_at = dateparser.parse(state_data.get("event_start_time", ''))
 		if starts_at is not None:
-			starts_at = starts_at.replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
+			starts_at = pendulum.instance(starts_at, TelegramKeys.TZ)
 
 		ends_at = dateparser.parse(state_data.get("event_end_time", ''))
 		if ends_at is not None:
-			ends_at = ends_at.replace(tzinfo=ZoneInfo(TelegramKeys.TZ))
+			ends_at = pendulum.instance(ends_at, TelegramKeys.TZ)
 
 		await create_event(
 			session=session,

@@ -3,6 +3,7 @@ LABEL authors="MatMex-Week"
 
 # Update packages
 RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y graphviz
 
 # Set enviroment variables
 ENV TZ="Europe/Moscow"

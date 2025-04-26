@@ -7,6 +7,7 @@ from aiogram.types import Message, TelegramObject
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
+from middlewares import LOGGING_KEY
 from .utils import MessageActionWrapper
 
 
@@ -50,7 +51,7 @@ class ChatActionsMw(BaseMiddleware):
 		if not self._enabled:
 			return await handler(event, data)
 
-		logger: FilteringBoundLogger = data.get('log', self.logger)
+		logger: FilteringBoundLogger = data.get(LOGGING_KEY, self.logger)
 
 		# Check if the event type is supported
 		if not isinstance(event, Message):
@@ -72,29 +73,18 @@ class ChatActionsMw(BaseMiddleware):
 			return await handler(event, data)
 
 		# Set logger from DI
-		cfg.setdefault('log', data.get('log'))
+		cfg.setdefault('log', data.get(LOGGING_KEY))
 
-		# Wrap message or callback query message with action wrapper
-		try:
-			# Create wrapped event
-			wrapped_event = event
-			wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
+		# Create wrapped event
+		wrapped_event = event
+		wrapped_event = MessageActionWrapper(wrapped_event, **cfg)
 
-			# Update dependencies in data
-			data["event"] = wrapped_event
-			data[EVENT_FROM_USER_KEY] = wrapped_event.from_user
-			data[EVENT_CHAT_KEY] = wrapped_event.chat
+		# Update dependencies in data
+		data["event"] = wrapped_event
+		data[EVENT_FROM_USER_KEY] = wrapped_event.from_user
+		data[EVENT_CHAT_KEY] = wrapped_event.chat
 
-			return await handler(wrapped_event, data)
-
-		except Exception as e:
-			await self.logger.aerror(
-				"Error in chat action middleware",
-				error=str(e),
-				middleware=self.__class__.__name__
-			)
-			# Fall back to normal handler execution without a wrapper
-			return await handler(event, data)
+		return await handler(wrapped_event, data)
 
 	async def _parse_flag(self, flag_value: Any, logger: FilteringBoundLogger) -> dict[str, Any] | None:
 		"""

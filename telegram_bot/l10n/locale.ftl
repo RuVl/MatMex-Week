@@ -1,12 +1,12 @@
-# ===== REGISTRATION =====
+# ===== REGISTRATION & PROFILE =====
 hi = Привет, ну как там твоя учеба?
 hi-user = Привет, { $fullname }, ну как там твоя учеба?
 ask-name = Напиши свое ФИО, чтобы ты мог получить заслуженный мерч в конце нашей недели\!
 tell-about-pc = Кстати, цены в магазине зависят от того, состоишь ли ты в профкоме, а мерч мы выдаем по студбилету, так что указывай корректные ФИО
-thanks-name-html = Приятно познакомиться, { $fullname }\!
+thanks-name = Приятно познакомиться, { $fullname }\!
 ask-pc = Ты состоишь в профкоме\?
-ask-pc-profile = Ты точно состоишь в профкоме?
-wrong-name = Неправильный формат ФИО, попробуй еще раз
+ask-pc-profile = 📝 Ты точно состоишь в профкоме\?
+wrong-name = ❌ Неверный формат имени\. Попробуйте ещё раз\.
 send-for-manual-check = Если ты действительно состоишь в Профкоме, то я могу отправить запрос на ручную проверку
 wait-until-checked = Отлично\! Членство в профкоме отправлено на ручную проверку\. Пока не подтвердится, что ты профкомовец, мерч будет без скидки
 ask-to-join = Если хочешь вступить в профком, приходи в кабинет 3528
@@ -20,38 +20,39 @@ btn-just-kidding = Нет, я пошутил
 # Admin text
 apply-check = Заявка на проверку статуса **Профкомовца**
     {"*"}*Статус**: { $status }
-    {"*"}*Запросил**: { $fullname } \(@{ $username }\)
+    {"*"}*Запросил**: { $fullname } { $username ->
+*[Any] \(@{ $username }\)
+[None] {""}
+    }
 apply-checked = { apply-check }
     {"*"}*Проверил**: { $verified_by }
-# ===== REGISTRATION =====
 
-
-# ===== ACCOUNT & PROFILE =====
+# Profile text
+profile-title = 📊 Профиль
 welcome-account = Добро пожаловать в личный кабинет\!
     Пользователь: { $fullname }
     Баланс: { $balance }i
-    Статус: { $in_pc ->
-[APPROVED] в профкоме
-[REJECTED] заявка не одобрена
-[PENDING] на рассмотрении
-*[None] не в профкоме
+    В Профкоме: { $apply_status ->
+[APPROVED] ✅
+*[REJECTED] ❌
+[PENDING] ⏳
     }
-input-new-name = Введите новое ФИО
-cancel-change-name = Редактирование ФИО отменено
-name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
-already-in-pc = Рады видеть тебя среди членов профкома\)
+input-new-name = ✏️ Напишите новое ФИО, например: Иванов Иван Иванович
+name-changed = ✅ Имя изменено на { $fullname }
+apply-approved-clb = Рады видеть тебя среди членов профкома 😇
 deeplink-invalid = Неверный QR код
 
 # Account buttons
-btn-edit-name = Редактировать ФИО
-btn-already-in-pc = Я вообще-то в пк
+btn-edit-name = ✏️ Изменить ФИО
+btn-already-in-pc = Я вообще-то в Профкоме 😎
 
 # Profile messages
 points-awarded = Баллы начислены
 cant-give-points-now = В данный момент нет мероприятий за которые вы можете выдать баллы
 already-received = Вы уже получали данные за это мероприятие
-apply-on-check = Ваша заявка ожидает рассмотрения
-# ===== ACCOUNT & PROFILE =====
+apply-on-check-clb = ⏳ Ваша заявка на проверке. Мы уведомим вас, когда она будет рассмотрена.
+apply-rejected-clb = 🚫 Ваша заявка отклонена. Если это ошибка - обратитесь в поддержку: /support
+# ===== REGISTRATION & PROFILE =====
 
 
 # ===== PROMOCODES =====
@@ -159,12 +160,12 @@ not-a-number = Пожалуйста введите число
 
 # ===== ADMIN =====
 hello-admin = Показываю меню организатора\. Вы самые лучшие\.\.\.
-back-to-menu = Возвращаю обратно в меню
+back-to-menu = ◀️ Возвращаю в меню...
 edit-events-menu = Редактирование мероприятия
 
 # Admin buttons
 btn-admin-panel = Админ панель
-btn-back-to-menu = В меню
+btn-back-to-menu = ◀️ Назад в меню
 btn-edit-shop = Редактировать магазин
 btn-edit-events = Редактировать мероприятия
 btn-give-rights = Выдать права

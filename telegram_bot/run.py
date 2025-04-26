@@ -5,8 +5,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
+from aiogram_dialog.tools import render_transitions
 from structlog.typing import FilteringBoundLogger
 
+from dialogs import register_dialogs
 from env import TelegramKeys
 from handlers import register_handlers
 from includes import get_storage, setup_logging
@@ -24,12 +26,23 @@ async def main():
 	)
 	await bot.set_my_commands([
 		BotCommand(command='start', description='Запустить бота'),
+		BotCommand(command='support', description='Поддержка'),
 	])
 
+	# Get storage with proper configuration for dialogs
+	storage = get_storage(with_destiny=True)
+
 	# Init dispatcher
-	dp = Dispatcher(storage=get_storage())
+	dp = Dispatcher(storage=storage)
+
+	# Register handlers and middlewares
 	register_handlers(dp)
 	register_middlewares(dp)
+	register_dialogs(dp)
+	
+	# Render dialogs preview
+	if TelegramKeys.DEBUG:
+		render_transitions(dp)
 
 	# Start bot
 	logger: FilteringBoundLogger = structlog.get_logger()

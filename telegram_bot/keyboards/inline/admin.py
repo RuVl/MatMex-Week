@@ -14,13 +14,11 @@ def verification_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineK
 	builder.row(
 		InlineKeyboardButton(
 			text=l10n.format_value("btn-approve-apply"),
-			callback_data=PKApplyFactory(
-				apply_id=apply_id, decision='approve').pack()
+			callback_data=PKApplyFactory(apply_id=apply_id, decision='approve').pack()
 		),
 		InlineKeyboardButton(
 			text=l10n.format_value("btn-decline-apply"),
-			callback_data=PKApplyFactory(
-				apply_id=apply_id, decision='reject').pack()
+			callback_data=PKApplyFactory(apply_id=apply_id, decision='reject').pack()
 		),
 	)
 	return builder.as_markup()
@@ -30,8 +28,7 @@ def verified_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeybo
 	return InlineKeyboardMarkup(inline_keyboard=[[
 		InlineKeyboardButton(
 			text=l10n.format_value("btn-review-apply"),
-			callback_data=PKApplyFactory(
-				apply_id=apply_id, decision='review').pack()
+			callback_data=PKApplyFactory(apply_id=apply_id, decision='review').pack()
 		)
 	]])
 
@@ -57,7 +54,8 @@ def user_rights_ikb(l10n: FluentLocalization, admin_rights: int, user_rights: in
 						privilege=privilege.value,
 						granted=bool(privilege.value & user_rights),
 						admin_id=admin_id,
-						subject_id=subject_id).pack()
+						subject_id=subject_id
+					).pack()
 				),
 				InlineKeyboardButton(
 					text=l10n.format_value(
@@ -66,7 +64,8 @@ def user_rights_ikb(l10n: FluentLocalization, admin_rights: int, user_rights: in
 						privilege=privilege.value,
 						granted=bool(privilege.value & user_rights),
 						admin_id=admin_id,
-						subject_id=subject_id).pack()
+						subject_id=subject_id
+					).pack()
 				),
 			)
 	return builder.as_markup()
@@ -100,14 +99,16 @@ async def user_event_privileges_ikb(l10n: FluentLocalization, subject_id: int) -
 				callback_data=EventPrivilegeButtonFactory(
 					event_id=event.id,
 					grant_id=grant_id,
-					subject_id=subject_id).pack()
+					subject_id=subject_id
+				).pack()
 			),
 			InlineKeyboardButton(
 				text=l10n.format_value("btn-emoji-yes" if grant_id is not None else "btn-emoji-no"),
 				callback_data=EventPrivilegeButtonFactory(
 					event_id=event.id,
 					grant_id=grant_id,
-					subject_id=subject_id).pack()
+					subject_id=subject_id
+				).pack()
 			),
 		)
 

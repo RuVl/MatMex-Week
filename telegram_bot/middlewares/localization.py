@@ -6,8 +6,9 @@ from fluent.runtime import FluentLocalization
 
 
 class L10nMw(BaseMiddleware):
-	def __init__(self, locale: FluentLocalization):
+	def __init__(self, locale: FluentLocalization, middleware_key="l10n"):
 		self.locale = locale
+		self.middleware_key = middleware_key
 
 	async def __call__(
 			self,
@@ -15,6 +16,5 @@ class L10nMw(BaseMiddleware):
 			event: TelegramObject,
 			data: Dict[str, Any]
 	) -> Any:
-		data["l10n"] = self.locale
-
+		data[self.middleware_key] = self.locale
 		return await handler(event, data)
