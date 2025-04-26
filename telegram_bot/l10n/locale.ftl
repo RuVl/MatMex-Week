@@ -1,3 +1,10 @@
+# Userful links
+# MarkdownV2 style:
+# https://core.telegram.org/bots/api#markdownv2-style
+# 
+# HTML style:
+# https://core.telegram.org/bots/api#html-style
+
 # ===== REGISTRATION & PROFILE =====
 hi = Привет, ну как там твоя учеба?
 hi-user = Привет, { $fullname }, ну как там твоя учеба?
@@ -19,20 +26,20 @@ btn-just-kidding = Нет, я пошутил
 
 # Admin text
 apply-check = Заявка на проверку статуса **Профкомовца**
-    {"*"}*Статус**: { $status }
-    {"*"}*Запросил**: { $fullname } { $username ->
+    {"*"}Статус*: { $status }
+    {"*"}Запросил*: { $fullname } { $username ->
 *[Any] \(@{ $username }\)
 [None] {""}
     }
 apply-checked = { apply-check }
-    {"*"}*Проверил**: { $verified_by }
+    {"*"}Проверил*: { $verified_by }
 
 # Profile text
 profile-title = 📊 Профиль
 welcome-account = Добро пожаловать в личный кабинет\!
-    Пользователь: { $fullname }
-    Баланс: { $balance }i
-    В Профкоме: { $apply_status ->
+    {"*"}Пользователь*: { $fullname }
+    {"*"}Баланс*: { $balance }i
+    {"*"}В Профкоме*: { $apply_status ->
 [APPROVED] ✅
 *[REJECTED] ❌
 [PENDING] ⏳
@@ -76,6 +83,7 @@ support-question = Новый вопрос от { $fullname }\:
     { $question }
     ||{ $metadata }||
 support-sent = Ответ отправлен
+support-sent-error = Ответ не отправлен \(пользователь удалил обращение\)
 cancel-message = Запрос отменён
 # ===== SUPPORT =====
 
@@ -160,7 +168,7 @@ not-a-number = Пожалуйста введите число
 
 # ===== ADMIN =====
 hello-admin = Показываю меню организатора\. Вы самые лучшие\.\.\.
-back-to-menu = ◀️ Возвращаю в меню...
+back-to-menu = Возвращаю в меню\.\.\.
 edit-events-menu = Редактирование мероприятия
 
 # Admin buttons

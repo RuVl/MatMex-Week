@@ -8,7 +8,6 @@ from aiogram.types import BotCommand
 from aiogram_dialog.tools import render_transitions
 from structlog.typing import FilteringBoundLogger
 
-from dialogs import register_dialogs
 from env import TelegramKeys
 from handlers import register_handlers
 from includes import get_storage, setup_logging
@@ -38,8 +37,7 @@ async def main():
 	# Register handlers and middlewares
 	register_handlers(dp)
 	register_middlewares(dp)
-	register_dialogs(dp)
-	
+
 	# Render dialogs preview
 	if TelegramKeys.DEBUG:
 		render_transitions(dp)

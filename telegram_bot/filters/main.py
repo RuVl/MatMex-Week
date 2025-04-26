@@ -7,6 +7,7 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session
 from database.methods import get_privilege_by_user, get_user_by_telegram_id
 from env import TelegramKeys
+from keyboards.callback_factories import SupportFactory
 from middlewares import L10N_FORMAT_KEY, LOGGING_KEY
 
 
@@ -51,3 +52,21 @@ class PrivilegeFilter(BaseFilter):
 			privilege = await get_privilege_by_user(session, user.id)
 
 		return privilege and (privilege.privilege & self.privilege)
+
+
+class IsSupportReplyFilter(BaseFilter):
+	def __init__(self, line_index: int = -1):
+		self.line_index = line_index
+
+	async def __call__(self, message: Message) -> dict[str, SupportFactory]:
+		original = message.reply_to_message
+		if not original or not original.text:
+			return False
+
+		line = original.text.strip().split("\n")[self.line_index]
+		try:
+			support_data = SupportFactory.unpack(line)
+		except ValueError | TypeError:
+			return False
+
+		return {'support_data': support_data}

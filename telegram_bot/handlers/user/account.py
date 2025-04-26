@@ -2,12 +2,10 @@ from aiogram import Router, types
 from aiogram_dialog import DialogManager, ShowMode
 
 from database.models import User
-from dialogs.user import account_dialog
 from filters import LocalizedTextFilter
 from state_machines.account import AccountActions
 
 account_router = Router()
-account_router.include_router(account_dialog)
 
 
 @account_router.message(LocalizedTextFilter("btn-profile"))
