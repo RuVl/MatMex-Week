@@ -2,12 +2,8 @@ from aiogram import Dispatcher
 
 from env import TelegramKeys
 from includes import get_fluent_localization
-from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10nMw, LoggingMw, UserCacheMw
+from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10N_FORMAT_KEY, L10nMw, LOGGING_KEY, LoggingMw, USER_CACHE_KEY, UserCacheMw
 from middlewares.single_message import SingleMessageMw
-
-L10N_FORMAT_KEY = "l10n"
-LOGGING_KEY = "log"
-USER_CACHE_KEY = "cached_user"
 
 
 def register_middlewares(dp: Dispatcher):
