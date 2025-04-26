@@ -1,1 +1,1 @@
-from .account import account_dialog
+from .main import register_dialogs

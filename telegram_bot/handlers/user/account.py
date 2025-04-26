@@ -1,21 +1,23 @@
 from aiogram import Router, types
-from aiogram_dialog import DialogManager
-from fluent.runtime import FluentLocalization
+from aiogram_dialog import DialogManager, ShowMode
 
 from database.models import User
-from dialogs.account import account_dialog
+from dialogs.user import account_dialog
 from filters import LocalizedTextFilter
 from state_machines.account import AccountActions
 
 account_router = Router()
-
-# Register dialog with the router
 account_router.include_router(account_dialog)
 
 
-# Standard router handler for entry point
-@account_router.message(LocalizedTextFilter("btn-profile"), flags={'drop_cache': True})
-async def profile_open_h(msg: types.Message,
-                         cached_user: User, dialog_manager: DialogManager,
-                         l10n: FluentLocalization):
-	await dialog_manager.start(AccountActions.ACCOUNT_PANEL)
+@account_router.message(LocalizedTextFilter("btn-profile"))
+async def open_profile_h(_: types.Message, cached_user: User, dialog_manager: DialogManager):
+	await dialog_manager.start(
+		AccountActions.ACCOUNT_PANEL,
+		data={
+			'fullname': cached_user.full_name,
+			'balance': cached_user.balance,
+			'apply_status': cached_user.apply and cached_user.apply.status
+		},
+		show_mode=ShowMode.DELETE_AND_SEND
+	)

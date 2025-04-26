@@ -13,6 +13,7 @@ from structlog.typing import FilteringBoundLogger
 from database import async_session, models
 from database.methods import get_user_by_telegram_id
 from includes import get_redis
+from middlewares import LOGGING_KEY
 
 
 def dumps_model(user: models.Base) -> str:
@@ -91,7 +92,7 @@ class UserCacheMw(BaseMiddleware):
 		tg_user: User = data.get(EVENT_FROM_USER_KEY)
 		chat: Chat = data.get(EVENT_CHAT_KEY)
 
-		logger: FilteringBoundLogger = data.get('log', self.logger)
+		logger: FilteringBoundLogger = data.get(LOGGING_KEY, self.logger)
 
 		if tg_user is None or chat is None:
 			await logger.awarning("Missing user or chat data", has_user=tg_user is not None, has_chat=chat is not None)

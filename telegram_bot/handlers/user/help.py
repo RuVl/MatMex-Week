@@ -1,4 +1,5 @@
 from aiogram import Router, types
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from fluent.runtime import FluentLocalization
 
@@ -11,6 +12,12 @@ from keyboards.common import cancel_kb, menu_kb
 from state_machines.help import HelpActions
 
 support_router = Router()
+
+
+@support_router.callback_query(Command('support'))
+async def support_command_h(clb: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization):
+	await clb.message.answer(l10n.format_value("helping"), reply_markup=cancel_kb(l10n))
+	await state.set_state(HelpActions.MESSAGE_OR_CANCEL)
 
 
 @support_router.message(LocalizedTextFilter("btn-support"))

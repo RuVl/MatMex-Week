@@ -7,6 +7,7 @@ from aiogram.types import Message, TelegramObject
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
+from middlewares import LOGGING_KEY
 from .utils import MessageActionWrapper
 
 
@@ -50,7 +51,7 @@ class ChatActionsMw(BaseMiddleware):
 		if not self._enabled:
 			return await handler(event, data)
 
-		logger: FilteringBoundLogger = data.get('log', self.logger)
+		logger: FilteringBoundLogger = data.get(LOGGING_KEY, self.logger)
 
 		# Check if the event type is supported
 		if not isinstance(event, Message):
@@ -72,7 +73,7 @@ class ChatActionsMw(BaseMiddleware):
 			return await handler(event, data)
 
 		# Set logger from DI
-		cfg.setdefault('log', data.get('log'))
+		cfg.setdefault('log', data.get(LOGGING_KEY))
 
 		# Create wrapped event
 		wrapped_event = event

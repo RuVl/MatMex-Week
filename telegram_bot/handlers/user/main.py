@@ -53,7 +53,7 @@ async def show_my_qr_h(msg: types.Message):
 @user_router.message(CommandStart(deep_link=True, deep_link_encoded=True))
 async def give_event_points_h(msg: types.Message, command: CommandObject, cached_user: User, l10n: FluentLocalization):
 	async with async_session() as session:
-		# Проверяем явлется ли промокодом
+		# Проверяем является ли промокодом
 		success, error_code, cost = await activate_promocode(session, str(command.args), cached_user.id)
 
 		if success:

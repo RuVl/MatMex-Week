@@ -12,6 +12,7 @@ from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
 from includes import get_redis
+from middlewares import LOGGING_KEY
 
 
 class SpamProtectionMw(BaseMiddleware):
@@ -134,7 +135,7 @@ class SpamProtectionMw(BaseMiddleware):
 			return await handler(event, data)
 
 		# Get logger from data or use default
-		logger = data.get('log', self.logger)
+		logger = data.get(LOGGING_KEY, self.logger)
 		user_id = user.id
 
 		# Check if user is banned

@@ -85,7 +85,7 @@ async def manual_check_confirm_h(msg: types.Message, state: FSMContext, l10n: Fl
 				await msg.bot.send_message(TelegramKeys.ADMIN_CHAT_ID, l10n.format_value("apply-check", args={
 					'status': apply.status,
 					'fullname': escape_md_v2(user.full_name),
-					'username': escape_md_v2(user.telegram_username),
+					'username': escape_md_v2(user.telegram_username) or 'None',
 					'verified_by': None
 				}), reply_markup=verification_request_ikb(l10n, apply_id=apply.id))
 

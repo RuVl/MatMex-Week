@@ -16,6 +16,7 @@ admin_router = Router()  # TODO Check privileges
 admin_router.include_routers(admin_menu_router)
 
 
+# TODO Refactor filter
 @admin_router.message(
 	FromBotToAdminFilter(),
 	F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__)
@@ -71,8 +72,8 @@ async def apply_verify_h(
 		l10n.format_value(msg_id, args={
 			'status': status.value,
 			'fullname': escape_md_v2(creator.full_name),
-			'username': escape_md_v2(creator.telegram_username or ""),
-			'verified_by': escape_md_v2(verified_by or "")
+			'username': escape_md_v2(creator.telegram_username or 'None'),
+			'verified_by': escape_md_v2(verified_by or '')
 		}),
 		reply_markup=kb_func(l10n, apply.id)
 	)
