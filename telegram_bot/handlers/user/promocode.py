@@ -15,7 +15,7 @@ promocode_router = Router()
 
 @promocode_router.message(LocalizedTextFilter("btn-enter-promocode"))
 async def promocode_button_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("promocode_enter"), reply_markup=user_codes_kb(l10n))
+	await msg.answer(l10n.format_value("promocode-enter"), reply_markup=user_codes_kb(l10n))
 	await state.set_state(PromocodeActions.ENTER_PROMOCODE)
 
 
@@ -48,7 +48,7 @@ async def promocode_input_h(msg: types.Message, cached_user: User, l10n: FluentL
 		success, error_code, cost = await activate_promocode(session, promocode_code, cached_user.id)
 
 		if success:
-			await msg.answer(l10n.format_value("promocode-activated", args={"cost": cost}))
+			await msg.answer(l10n.format_value("promocode-activated", args={"cost": cost, "balance": cached_user.balance}))
 		else:
 			# Map error codes to localization keys
 			error_mapping = {

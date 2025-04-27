@@ -1,13 +1,16 @@
 """
-Utility functions for formatting data for display.
+Utility functions for formatting data display using pendulum.
 """
-from datetime import datetime
-from zoneinfo import ZoneInfo
+import pendulum
+from pendulum import set_locale
 
-from .constants import DAYS_RU, MONTHS_RU_GENITIVE
+from env import TelegramKeys
+
+# Set global locale
+set_locale('ru')
 
 
-def format_datetime(dt: datetime, include_weekday: bool = True, include_time: bool = True) -> str:
+def format_datetime(dt, include_weekday: bool = True, include_time: bool = True) -> str:
 	"""
 	Format datetime in a localized way.
 	
@@ -19,42 +22,39 @@ def format_datetime(dt: datetime, include_weekday: bool = True, include_time: bo
 	Returns:
 		Formatted datetime string
 	"""
-	dt_tz = dt.replace(tzinfo=ZoneInfo("Europe/Moscow"))
-	date_parts = []
+	format_parts = []
 
-	# Add weekday if needed
 	if include_weekday:
-		date_parts.append(f"{DAYS_RU[dt_tz.weekday()]}")
+		format_parts.append('dddd')
 
-	# Add date with month in genitive case
-	date_parts.append(f"{dt_tz.day} {MONTHS_RU_GENITIVE[dt_tz.month - 1]}")
+	format_parts.append('D MMMM')
 
-	# Add time if needed
 	if include_time:
-		date_parts.append(f"{dt_tz.hour:02}:{dt_tz.minute:02}")
+		format_parts.append('HH:mm')
 
-	return " ".join(date_parts)
+	dt = pendulum.instance(dt).in_tz(TelegramKeys.TZ)
+	return dt.format(' '.join(format_parts))
 
 
-def format_short_date(dt: datetime) -> str:
+def format_short_date(dt) -> str:
 	"""Format date in short format DD.MM.YYYY"""
-	dt_tz = dt.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Europe/Moscow"))
-	return f"{dt_tz.day:02}.{dt_tz.month:02}.{dt_tz.year}"
+	dt = pendulum.instance(dt).in_tz(TelegramKeys.TZ)
+	return dt.format('DD.MM.YYYY')
 
 
-def format_short_time(dt: datetime) -> str:
+def format_short_time(dt) -> str:
 	"""Format time in short format HH:MM"""
-	dt_tz = dt.replace(tzinfo=ZoneInfo("Europe/Moscow"))
-	return f"{dt_tz.hour:02}:{dt_tz.minute:02}"
+	dt = pendulum.instance(dt)
+	return dt.in_tz(TelegramKeys.TZ).format('HH:mm')
 
 
-def format_event_datetime(dt: datetime) -> str:
+def format_event_datetime(dt) -> str:
 	"""Format event datetime in standard format with weekday"""
-	dt_tz = dt.replace(tzinfo=ZoneInfo("Europe/Moscow"))
-	return f"{DAYS_RU[dt_tz.weekday()]} {dt_tz.day:02}.{dt_tz.month:02} {dt_tz.hour:02}:{dt_tz.minute:02}"
+	dt = pendulum.instance(dt).in_tz(TelegramKeys.TZ)
+	return f"{dt.format('dddd')} {dt.format('DD.MM')} {dt.format('HH:mm')}"
 
 
-def format_event_datetime_with_year(dt: datetime) -> str:
+def format_event_datetime_with_year(dt) -> str:
 	"""Format event datetime with year included"""
-	dt_tz = dt.replace(tzinfo=ZoneInfo("Europe/Moscow"))
-	return f"{DAYS_RU[dt_tz.weekday()]} {dt_tz.day:02}.{dt_tz.month:02}.{dt_tz.year} {dt_tz.hour:02}:{dt_tz.minute:02}"
+	dt = pendulum.instance(dt).in_tz(TelegramKeys.TZ)
+	return f"{dt.format('dddd')} {dt.format('DD.MM.YYYY')} {dt.format('HH:mm')}"

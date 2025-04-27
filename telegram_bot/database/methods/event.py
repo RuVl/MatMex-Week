@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from sqlalchemy import select
@@ -14,7 +14,8 @@ async def create_event(
 		creator_id: int,
 		visit_points: int,
 		starts_at: Optional[datetime] = None,
-		ends_at: Optional[datetime] = None
+		ends_at: Optional[datetime] = None,
+		description: Optional[str] = None
 ) -> Event:
 	"""Создаёт новое мероприятие."""
 	event = Event(
@@ -22,7 +23,8 @@ async def create_event(
 		visit_points=visit_points,
 		creator_id=creator_id,
 		starts_at=starts_at,
-		ends_at=ends_at
+		ends_at=ends_at,
+		description=description
 	)
 	session.add(event)
 	await session.commit()
@@ -36,7 +38,8 @@ async def update_event(
 		name: Optional[str] = None,
 		visit_points: Optional[int] = None,
 		starts_at: Optional[datetime] = None,
-		ends_at: Optional[datetime] = None
+		ends_at: Optional[datetime] = None,
+		description: Optional[str] = None
 ) -> Event:
 	"""Обновляет информацию о мероприятии."""
 	event = await session.get(Event, event_id)
@@ -55,6 +58,9 @@ async def update_event(
 
 	if ends_at is not None:
 		event.ends_at = ends_at
+
+	if description is not None:
+		event.description = description
 
 	await session.commit()
 
@@ -84,6 +90,7 @@ async def get_all_events(session: AsyncSession) -> list[Event]:
 	"""Возвращает список всех мероприятий."""
 	result = await session.execute(
 		select(Event)
+		.order_by(Event.starts_at)
 		.options(
 			selectinload(Event.creator)
 		)
@@ -101,6 +108,7 @@ async def get_upcoming_events(session: AsyncSession) -> list[Event]:
 			((Event.starts_at <= now) & (Event.ends_at > now)) |
 			((Event.starts_at <= now) & (Event.ends_at == None))
 		)
+		.order_by(Event.starts_at)
 		.options(selectinload(Event.creator))
 	)
 	return result.scalars().all()
@@ -125,9 +133,10 @@ async def get_active_events(session: AsyncSession) -> list[Event]:
 	result = await session.execute(
 		select(Event)
 		.where(
-			((Event.starts_at <= now) & (Event.ends_at > now)) |
-			((Event.starts_at <= now) & (Event.ends_at == None))
+			((Event.starts_at - timedelta(minutes=30) <= now) & (Event.ends_at + timedelta(minutes=30) > now)) |
+			((Event.starts_at - timedelta(minutes=30) <= now) & (Event.ends_at is None))
 		)
+		.order_by(Event.starts_at)
 		.options(selectinload(Event.creator))
 	)
 	return result.scalars().all()

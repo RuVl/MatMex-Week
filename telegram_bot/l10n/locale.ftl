@@ -1,18 +1,24 @@
-# ===== REGISTRATION =====
+# Userful links
+# MarkdownV2 style:
+# https://core.telegram.org/bots/api#markdownv2-style
+# 
+# HTML style:
+# https://core.telegram.org/bots/api#html-style
+
+# ===== REGISTRATION & PROFILE =====
 hi = Привет, ну как там твоя учеба?
 hi-user = Привет, { $fullname }, ну как там твоя учеба?
 ask-name = Напиши свое ФИО, чтобы ты мог получить заслуженный мерч в конце нашей недели\!
 tell-about-pc = Кстати, цены в магазине зависят от того, состоишь ли ты в профкоме, а мерч мы выдаем по студбилету, так что указывай корректные ФИО
-thanks-name-html = Приятно познакомиться, { $fullname }\!
+thanks-name = Приятно познакомиться, { $fullname }\!
 ask-pc = Ты состоишь в профкоме\?
-ask-pc-profile = Ты точно состоишь в профкоме?
-wrong-name = Неправильный формат ФИО, попробуй еще раз
+ask-pc-profile = 📝 Ты точно состоишь в профкоме\?
+wrong-name = ❌ Неверный формат имени\. Попробуйте ещё раз\.
 send-for-manual-check = Если ты действительно состоишь в Профкоме, то я могу отправить запрос на ручную проверку
 wait-until-checked = Отлично\! Членство в профкоме отправлено на ручную проверку\. Пока не подтвердится, что ты профкомовец, мерч будет без скидки
 ask-to-join = Если хочешь вступить в профком, приходи в кабинет 3528
 ask-valid-answer = Я тебя не понимаю\.\.\.😥
 Выбери один из вариантов
-already-in-pc = Рады видеть тебя среди членов профкома\)
 
 # Registration buttons
 btn-send-for-check = Отправить на ручную проверку
@@ -20,51 +26,53 @@ btn-just-kidding = Нет, я пошутил
 
 # Admin text
 apply-check = Заявка на проверку статуса **Профкомовца**
-    {"*"}*Статус**: { $status }
-    {"*"}*Запросил**: { $fullname } \(@{ $username }\)
-apply-checked = { apply-check }
-    {"*"}*Проверил**: { $verified_by }
-# ===== REGISTRATION =====
-
-
-# ===== ACCOUNT & PROFILE =====
-welcome-account = Добро пожаловать в личный кабинет\!
-    Пользователь: { $fullname }
-    Баланс: { $balance }i
-    Статус: { $in_pc ->
-*[APPROVED] в профкоме
-[REJECTED] заявка не одобрена
-[None] не в профкоме 
-[PENDING] на рассмотрении
+    {"*"}Статус*: { $status }
+    {"*"}Запросил*: { $fullname } { $username ->
+*[Any] \(@{ $username }\)
+[None] {""}
     }
-input-new-name = Введите новое ФИО
-cancel-change-name = Редактирование ФИО отменено
-name-changed = ФИО успешо изменено\! Приятно познакомиться, { $fullname }\!
-already-in-pc = Мы знаем\) Это отмечено в твоем профиле
-deeplink-invalid = Баллы не начислены Ошибка на стороне сервера
+apply-checked = { apply-check }
+    {"*"}Проверил*: { $verified_by }
+
+# Profile text
+profile-title = 📊 Профиль
+welcome-account = Добро пожаловать в личный кабинет\!
+    {"*"}Пользователь*: { $fullname }
+    {"*"}Баланс*: { $balance }i
+    {"*"}В Профкоме*: { $apply_status ->
+[APPROVED] ✅
+*[REJECTED] ❌
+[PENDING] ⏳
+    }
+input-new-name = ✏️ Напишите новое ФИО, например: Иванов Иван Иванович
+name-changed = ✅ Имя изменено на { $fullname }
+apply-approved-clb = Рады видеть тебя среди членов профкома 😇
+deeplink-invalid = Неверный QR код
 
 # Account buttons
-btn-edit-name = Редактировать ФИО
-btn-already-in-pc = Я вообще-то в пк
+btn-edit-name = ✏️ Изменить ФИО
+btn-already-in-pc = Я вообще-то в Профкоме 😎
 
 # Profile messages
 points-awarded = Баллы начислены
 cant-give-points-now = В данный момент нет мероприятий за которые вы можете выдать баллы
 already-received = Вы уже получали данные за это мероприятие
-apply-on-check = Ваша заявка ожидает рассмотрения
-# ===== ACCOUNT & PROFILE =====
+apply-on-check-clb = ⏳ Ваша заявка на проверке. Мы уведомим вас, когда она будет рассмотрена.
+apply-rejected-clb = 🚫 Ваша заявка отклонена. Если это ошибка - обратитесь в поддержку: /support
+# ===== REGISTRATION & PROFILE =====
 
 
 # ===== PROMOCODES =====
-promocode_enter = Введите промокод
+no-promocodes = Нет промокодов
+promocode-enter = Введите промокод
 promocode-error-not-found = Твой промокод недействителен
 promocode-error-deactivated = { promocode-error-not-found }
 promocode-error-expired = { promocode-error-not-found }
 promocode-error-max-uses = { promocode-error-not-found }
 promocode-error-already-activated = Вы уже активировали промокод\!
 promocode-error-user-not-found = Пользователь не найден, нажмите /start
-promocode-activated = Поздравляю\! Промокод добавлен \({ $cost } баллов\)
-    Ваш баланс: { $balance } баллов
+promocode-activated = Поздравляю\! Промокод добавлен \({ $cost }i\)
+    Ваш баланс: { $balance }i
 # ===== PROMOCODES =====
 
 
@@ -75,6 +83,7 @@ support-question = Новый вопрос от { $fullname }\:
     { $question }
     ||{ $metadata }||
 support-sent = Ответ отправлен
+support-sent-error = Ответ не отправлен \(пользователь удалил обращение\)
 cancel-message = Запрос отменён
 # ===== SUPPORT =====
 
@@ -107,6 +116,7 @@ event-value = Мероприятие
     { $event_name }
     Начинается: { $starts_at }
     Заканчивается: { $ends_at }
+    { $desc }
     За посещение начисляется { $event_gives }i
 
 # Event management 
@@ -119,6 +129,8 @@ wrong-points = Неправильный формат начисляемых ба
 wrong-datetime = Неправильный формат времени
 ask-for-event-start-time = Введите, когда начинается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
 ask-for-event-end-time = Введите, когда заканчивается мероприятие \(Формат\: ДД\.ММ\.ГГГГ ЧЧ\:ММ\)
+ask-for-event-description = Введите описание мероприятия \(или отправьте "\-" для пропуска\):
+event-description-too-long = Описание слишком длинное, максимум 1000 символов\.
 event-created = Мероприятие создано\!
 ask-for-event = За какое мероприятие хотите начислить
 # ===== SCHEDULE & EVENTS =====
@@ -135,7 +147,7 @@ item-value = Товар
 
 # Shop management
 edit-shop-menu = Редактирование магазина
-cancel_edit_shop = Редактирование отменено
+cancel-edit-shop = Редактирование отменено
 ask-for-category-create = Введите название категории и прикрепите изображение категории
 category-created = Категория создана
 item-creation = Создание товара
@@ -156,12 +168,12 @@ not-a-number = Пожалуйста введите число
 
 # ===== ADMIN =====
 hello-admin = Показываю меню организатора\. Вы самые лучшие\.\.\.
-back-to-menu = Возвращаю обратно в меню
+back-to-menu = Возвращаю в меню\.\.\.
 edit-events-menu = Редактирование мероприятия
 
 # Admin buttons
 btn-admin-panel = Админ панель
-btn-back-to-menu = В меню
+btn-back-to-menu = ◀️ Назад в меню
 btn-edit-shop = Редактировать магазин
 btn-edit-events = Редактировать мероприятия
 btn-give-rights = Выдать права
@@ -211,6 +223,7 @@ you-have-not-rights = У тебя нет прав
 promocode-too-short = Прокомод слишком короткий \(не менее 5 символов\)
 promocode-too-long = Промокод слишком длинный \(не более 25 символов\)
 promocode-creation-error = Что\-то пошло не так\. Промокод не создан
+show-this-qr = Для активации промокода можно отсканировать данный QR\-код
 # ===== PROMOCODE MANAGEMENT =====
 
 

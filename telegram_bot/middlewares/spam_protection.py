@@ -12,6 +12,7 @@ from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
 from includes import get_redis
+from middlewares import LOGGING_KEY
 
 
 class SpamProtectionMw(BaseMiddleware):
@@ -54,7 +55,7 @@ class SpamProtectionMw(BaseMiddleware):
 		return f"{self.redis_prefix}:ban:{user_id}"
 
 	async def _check_banned(self, user_id: int) -> bool:
-		"""Check if user is currently banned for spam"""
+		"""Check if a user is currently banned for spam"""
 		ban_key = self._get_ban_key(user_id)
 		return await self.redis.exists(ban_key) == 1
 
@@ -98,7 +99,7 @@ class SpamProtectionMw(BaseMiddleware):
 		return is_allowed, count
 
 	async def _handle_excessive_requests(self, user_id: int, count: int):
-		"""Handle a user who is sending excessive requests"""
+		"""Handle a user sending excessive requests"""
 		violation_score = count - self.message_limit
 
 		if violation_score >= self.ban_threshold:
@@ -134,7 +135,7 @@ class SpamProtectionMw(BaseMiddleware):
 			return await handler(event, data)
 
 		# Get logger from data or use default
-		logger = data.get('log', self.logger)
+		logger = data.get(LOGGING_KEY, self.logger)
 		user_id = user.id
 
 		# Check if user is banned

@@ -32,7 +32,7 @@ async def edit_shop_h(msg: types.Message, state: FSMContext, l10n: FluentLocaliz
 	LocalizedTextFilter("btn-cancel"),
 )
 async def cancel_edit_category_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
-	await msg.answer(l10n.format_value("cancel_edit_shop"), reply_markup=edit_shop_kb(l10n))
+	await msg.answer(l10n.format_value("cancel-edit-shop"), reply_markup=edit_shop_kb(l10n))
 	await state.set_state(EditShopActions.EDIT_SHOP)
 
 
@@ -52,7 +52,7 @@ async def cancel_edit_category_h(msg: types.Message, state: FSMContext, l10n: Fl
 )
 async def cancel_edit_item_h(callback: types.CallbackQuery, state: FSMContext, l10n: FluentLocalization):
 	await callback.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-	await callback.message.answer(l10n.format_value("cancel_edit_shop"), reply_markup=edit_shop_kb(l10n))
+	await callback.message.answer(l10n.format_value("cancel-edit-shop"), reply_markup=edit_shop_kb(l10n))
 	await state.set_state(EditShopActions.EDIT_SHOP)
 
 

@@ -49,7 +49,8 @@ async def in_event_h(callback: types.CallbackQuery, callback_data: EventFactory,
 			'event_name': escape_md_v2(event.name),
 			'starts_at': escape_md_v2(starts_at_formatted),
 			'ends_at': escape_md_v2(ends_at_formatted),
-			'event_gives': event.points if hasattr(event, 'points') else 50  # Use event points if available
+			'desc': escape_md_v2(event.description),
+			'event_gives': event.visit_points  # Events always have points
 		}),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id,
