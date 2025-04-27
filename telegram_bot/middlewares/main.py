@@ -1,8 +1,8 @@
 from aiogram import Dispatcher
+from aiogram.utils.chat_action import ChatActionMiddleware
 
-from env import TelegramKeys
 from includes import get_fluent_localization
-from middlewares import ChatActionsMw, DropEmptyCallbackMw, L10N_FORMAT_KEY, L10nMw, LOGGING_KEY, LoggingMw, USER_CACHE_KEY, UserCacheMw
+from middlewares import DropEmptyCallbackMw, L10N_FORMAT_KEY, L10nMw, LOGGING_KEY, LoggingMw, USER_CACHE_KEY, UserCacheMw
 from middlewares.single_message import SingleMessageMw
 
 
@@ -36,6 +36,5 @@ def register_middlewares(dp: Dispatcher):
 	dp.callback_query.middleware(user_cache_mw)
 	dp.shutdown.register(user_cache_mw.close)  # close storage connection
 
-	# Typing by flag typing=True
-	chat_actions_mw = ChatActionsMw(enabled=not TelegramKeys.WITHOUT_TYPING)
-	dp.message.middleware(chat_actions_mw)
+	# Typing
+	dp.message.middleware(ChatActionMiddleware())

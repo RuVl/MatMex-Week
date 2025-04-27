@@ -1,4 +1,4 @@
-from aiogram import F, Router, types
+from aiogram import Router, types
 from aiogram.types import CallbackQuery
 from fluent.runtime import FluentLocalization
 
@@ -6,7 +6,7 @@ from database import async_session
 from database.enums import AdminPrivilege, ApplyStatus
 from database.methods import update_apply_status
 from database.models import User
-from filters import FromBotToAdminFilter, PrivilegeFilter
+from filters import FromBotToAdminFilter, IsSupportReplyFilter, PrivilegeFilter
 from keyboards.callback_factories import PKApplyFactory, SupportFactory
 from keyboards.inline import verification_request_ikb, verified_request_ikb
 from utils import escape_md_v2
@@ -16,29 +16,18 @@ admin_router = Router()  # TODO Check privileges
 admin_router.include_routers(admin_menu_router)
 
 
-# TODO Refactor filter
-@admin_router.message(
-	FromBotToAdminFilter(),
-	F.reply_to_message.text.split("\n")[-1].startswith(SupportFactory.__prefix__)
-)
-async def send_support_h(msg: types.Message, l10n: FluentLocalization):
-	original = msg.reply_to_message
-	data = SupportFactory.unpack(original.text.split('\n')[-1])
-	await msg.bot.send_message(
-		chat_id=data.user_id,
-		text=escape_md_v2(msg.text),
-		reply_to_message_id=data.message_id
-	)
-	await msg.answer(l10n.format_value("support-sent"))
+@admin_router.message(FromBotToAdminFilter(), IsSupportReplyFilter())
+async def send_support_h(msg: types.Message, support_data: SupportFactory, l10n: FluentLocalization):
+	try:
+		await msg.bot.send_message(support_data.user_id, escape_md_v2(msg.text), reply_to_message_id=support_data.message_id)
+	except:
+		await msg.answer(l10n.format_value("support-sent-error"))
+	else:
+		await msg.answer(l10n.format_value("support-sent"))
 
 
 @admin_router.callback_query(PKApplyFactory.filter(), PrivilegeFilter(AdminPrivilege.EDIT_PK_APPLY))
-async def apply_verify_h(
-		clb: CallbackQuery,
-		callback_data: PKApplyFactory,
-		l10n: FluentLocalization,
-		cached_user: User
-):
+async def apply_verify_h(clb: CallbackQuery, callback_data: PKApplyFactory, l10n: FluentLocalization, cached_user: User):
 	match callback_data.decision:
 		case 'approve':
 			status = ApplyStatus.APPROVED

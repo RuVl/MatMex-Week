@@ -21,7 +21,7 @@ from utils.l10n_format import L10nFormat
 
 async def get_account_data(dialog_manager: DialogManager, **_) -> dict[str, Any]:
 	dd = dialog_manager.dialog_data
-	sd = dialog_manager.start_data
+	sd = dialog_manager.start_data or {}
 
 	# Попробуем из dialog_data, потом start_data
 	full_name = dd.get("full_name", sd.get("fullname"))
@@ -136,5 +136,5 @@ account_dialog = Dialog(
 		Back(L10nFormat("btn-cancel"), 'back2profile', show_mode=ShowMode.EDIT),
 		state=AccountActions.NAME_WAITING,
 	),
-	launch_mode=LaunchMode.ROOT,
+	launch_mode=LaunchMode.STANDARD,
 )
