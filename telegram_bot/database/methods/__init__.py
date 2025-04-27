@@ -11,6 +11,7 @@ from .event_privilege_grant import (
 from .merch_category import (create_category, get_all_categories, get_category_by_id, remove_category_by_id)
 from .merch_item import (
 	create_item,
+	get_all_items,
 	get_item_by_id,
 	remove_item_by_id,
 )
@@ -107,6 +108,7 @@ __all__ = [
 
 	# MerchItem methods
 	"create_item",
+	"get_all_items",
 	"get_item_by_id",
 	"remove_item_by_id",
 ]
