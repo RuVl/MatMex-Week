@@ -1,5 +1,5 @@
 from aiogram import Router, types
-from aiogram_dialog import DialogManager, ShowMode
+from aiogram_dialog import DialogManager, ShowMode, StartMode
 
 from database.models import User
 from filters import LocalizedTextFilter
@@ -17,5 +17,6 @@ async def open_profile_h(_: types.Message, cached_user: User, dialog_manager: Di
 			'balance': cached_user.balance,
 			'apply_status': cached_user.apply and cached_user.apply.status
 		},
+		mode=StartMode.RESET_STACK,
 		show_mode=ShowMode.DELETE_AND_SEND
 	)

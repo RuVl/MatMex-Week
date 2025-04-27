@@ -44,6 +44,13 @@ async def get_item_by_id(session: AsyncSession, item_id: int) -> MerchItem | Non
 	return result.scalars().first()
 
 
+async def get_all_items(session: AsyncSession) -> list[MerchItem]:
+	"""Get all merch items from the database"""
+	query = select(MerchItem)
+	result = await session.execute(query)
+	return list(result.scalars().all())
+
+
 async def remove_item_by_id(session: AsyncSession, item_id: int) -> bool:
 	item = await get_item_by_id(session, item_id)
 
