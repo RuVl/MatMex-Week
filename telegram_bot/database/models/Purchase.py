@@ -17,5 +17,5 @@ class Purchase(Base):
 	customer: Mapped['User'] = relationship('User', back_populates="purchases", foreign_keys=[customer_id])
 
 	# Какой мерч купили - no backref (думаю мерчу не должен ссылаться на покупки)
-	merch_id: Mapped[int] = mapped_column(Integer, ForeignKey("merch_items.id"), unique=True, nullable=False, comment="что купили")
+	merch_id: Mapped[int] = mapped_column(Integer, ForeignKey("merch_items.id"), nullable=False, comment="что купили")
 	merch: Mapped['MerchItem'] = relationship('MerchItem', foreign_keys=[merch_id])
