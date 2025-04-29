@@ -1,4 +1,9 @@
+# Env variables
 .env
 .env.dist
 
+# Virtual enviroment
 venv/
+
+# Other
+aiogram_dialog.png

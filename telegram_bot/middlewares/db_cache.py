@@ -49,7 +49,7 @@ class UserCacheMw(BaseMiddleware):
 	def _make_redis_key(self, telegram_id: int) -> str:
 		return f"{self.prefix}:{telegram_id}"
 
-	async def get_db_user(self, telegram_id: int, drop_cache: bool = True, logger: FilteringBoundLogger = None) -> models.User | None:
+	async def get_db_user(self, telegram_id: int, drop_cache: bool = False, logger: FilteringBoundLogger = None) -> models.User | None:
 		"""Get user from cache or database and update cache if needed"""
 		redis_key = self._make_redis_key(telegram_id)
 
@@ -99,7 +99,7 @@ class UserCacheMw(BaseMiddleware):
 			await logger.awarning("Missing user or chat data", has_user=tg_user is not None, has_chat=chat is not None)
 			return await handler(event, data)
 
-		drop_cache = flags.pop(self.drop_cache_flag, False)
+		drop_cache = flags.get(self.drop_cache_flag, False)
 		user = await self.get_db_user(tg_user.id, drop_cache, logger)
 		data[self.middleware_key] = user
 

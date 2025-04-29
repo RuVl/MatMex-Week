@@ -1,6 +1,6 @@
 from typing import Any
 
-from aiogram import types
+from aiogram import F, types
 from aiogram.dispatcher.flags import extract_flags
 from aiogram.fsm.context import FSMContext
 from aiogram_dialog import Dialog, DialogManager, LaunchMode, ShowMode, Window
@@ -35,16 +35,10 @@ async def get_account_data(dialog_manager: DialogManager, **_) -> dict[str, Any]
 	else:
 		user: User = dialog_manager.middleware_data.get(USER_CACHE_KEY)
 
-	apply = user.apply
-	if apply is None:
-		await log.adebug("get-user-apply")
-		async with async_session() as session:
-			apply = await get_user_apply(session, user.id)
-
 	return {
 		"fullname": escape_md_v2(user.full_name),
 		"balance": user.balance,
-		"apply_status": apply.status,
+		"apply_status": getattr(user.apply, 'status', None),
 	}
 
 
@@ -123,7 +117,9 @@ account_dialog = Dialog(
 			Next(L10nFormat("btn-edit-name"), "edit_name"),
 		),
 		Row(
-			Button(L10nFormat("btn-already-in-pc"), "check_pc_status", check_pc_status_h),
+			Button(L10nFormat("btn-already-in-pc", args={
+				"apply_status": "{apply_status}",
+			}), "check_pc_status", check_pc_status_h, when=F['apply_status'] != ApplyStatus.APPROVED),
 		),
 		Row(
 			Cancel(L10nFormat("btn-back-to-menu"), "back2menu"),

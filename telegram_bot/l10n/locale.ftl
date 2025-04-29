@@ -46,19 +46,25 @@ welcome-account = Добро пожаловать в личный кабинет
     }
 input-new-name = ✏️ Напишите новое ФИО, например: Иванов Иван Иванович
 name-changed = ✅ Имя изменено на { $fullname }
-apply-approved-clb = Рады видеть тебя среди членов профкома 😇
 deeplink-invalid = Неверный QR код
 
 # Account buttons
 btn-edit-name = ✏️ Изменить ФИО
-btn-already-in-pc = Я вообще-то в Профкоме 😎
+btn-already-in-pc = { $apply_status ->
+[APPROVED] Легенда 😎
+*[REJECTED] Я вообще-то в Профкоме 🤔
+[PENDING] Проверить статус заявки ⌛
+    } 
 
 # Profile messages
 points-awarded = Баллы начислены
 cant-give-points-now = В данный момент нет мероприятий за которые вы можете выдать баллы
 already-received = Вы уже получали данные за это мероприятие
-apply-on-check-clb = ⏳ Ваша заявка на проверке. Мы уведомим вас, когда она будет рассмотрена.
-apply-rejected-clb = 🚫 Ваша заявка отклонена. Если это ошибка - обратитесь в поддержку: /support
+apply-approved-clb = Рады видеть тебя среди членов профкома 😇
+apply-on-check-clb = ⏳ Ваша заявка на проверке.
+    Вы всегда можете обратиться в поддержку: /support
+apply-rejected-clb = 🚫 Ваша заявка отклонена.
+    Если это ошибка - обратитесь в поддержку: /support
 # ===== REGISTRATION & PROFILE =====
 
 
