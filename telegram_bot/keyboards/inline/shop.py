@@ -60,7 +60,7 @@ def get_item_ikb(l10n, category: MerchCategory, can_delete: bool) -> InlineKeybo
 		if item.in_stock or can_delete:
 			builder.row(
 				InlineKeyboardButton(
-					text=item.name,
+					text=item.full_name(),
 					callback_data=ShopItemFactory(category_id=category.id, item_id=item.id, can_delete=can_delete).pack(),
 				),
 			)

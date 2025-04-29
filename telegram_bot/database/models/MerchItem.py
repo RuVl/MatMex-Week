@@ -24,3 +24,6 @@ class MerchItem(Base):
 
 	category_id: Mapped[int] = mapped_column(Integer, ForeignKey("merch_categories.id"), nullable=False, comment="к какой категории относится")
 	category: Mapped['MerchCategory'] = relationship('MerchCategory', back_populates='merch_items', foreign_keys=[category_id])
+
+	def full_name(self) -> str:
+		return self.name if self.size.value == MerchSize.NONE else f"{self.name} {self.size.value}"

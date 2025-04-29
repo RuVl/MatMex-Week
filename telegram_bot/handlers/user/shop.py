@@ -29,7 +29,7 @@ async def shop_button_h(msg: types.Message, l10n: FluentLocalization):
 			text += f"\n{l10n.format_value('purchases')}\n"
 			for purchase in user.purchases:
 				item = await get_item_by_id(session, purchase.merch_id)
-				text += f"{item.name}: {purchase.quantity}\n"
+				text += f"{item.full_name()}: {purchase.quantity}\n"
 	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.png")
 	kb = await get_category_ikb(l10n, False)
 	await msg.answer_photo(image_from_pc, caption=text, reply_markup=kb)
@@ -59,7 +59,7 @@ async def back_to_categories_h(callback: types.CallbackQuery, callback_data: Sho
 			text += f"\n{l10n.format_value('purchases')}\n"
 			for purchase in user.purchases:
 				item = await get_item_by_id(session, purchase.merch_id)
-				text += f"{item.name}: {purchase.quantity}\n"
+				text += f"{item.full_name()}: {purchase.quantity}\n"
 	category_ikb = await get_category_ikb(l10n, callback_data.can_delete)
 	await callback.bot.edit_message_media(
 		media=InputMediaPhoto(media=image_from_pc, caption=text),
