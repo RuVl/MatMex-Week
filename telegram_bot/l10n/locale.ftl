@@ -154,7 +154,7 @@ item-value = Товар
 are-you-sure = Вы точно хотите приобрести товар\?
 item-not-in-stock = Товар закончился
 item-too-expensive = У вас не хватает денег для покупки
-item-successfully-bought = Товар успешно куплен\!
+item-successfully-bought = Товар успешно куплен!
 item-result-unknown = Что-то пошло не так
 purchases = Приобретенные товары:
 

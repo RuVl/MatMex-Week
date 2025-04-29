@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -14,7 +14,7 @@ async def get_user_purchases(session: AsyncSession, user_id: int) -> list[Purcha
 
 
 async def get_purchase_by_item(session: AsyncSession, user_id: int, item_id: int) -> Purchase | None:
-	query = select(Purchase).where(Purchase.customer_id == user_id and Purchase.merch_id == item_id)
+	query = select(Purchase).where(and_(Purchase.customer_id == user_id, Purchase.merch_id == item_id))
 	result = await session.execute(query)
 	return result.scalar_one_or_none()
 
