@@ -39,6 +39,7 @@ class UserCacheMw(BaseMiddleware):
 		self.redis = get_redis(decode_responses=True)
 		self.prefix = redis_prefix
 		self.ttl_seconds = int(ttl.total_seconds())
+
 		self.middleware_key = middleware_key
 		self.drop_cache_flag = drop_cache_flag
 		self.disable_cache_flag = disable_cache_flag
@@ -61,10 +62,10 @@ class UserCacheMw(BaseMiddleware):
 
 				# Not in cache, get from the database
 				if logger is not None:
-					await logger.adebug("User not found in cache", telegram_id=telegram_id)
+					await logger.adebug("User not found in cache")
 			else:
 				if logger is not None:
-					await logger.adebug("Cache dropped", telegram_id=telegram_id)
+					await logger.adebug("Cache dropped")
 
 			async with async_session() as session:
 				user = await get_user_by_telegram_id(session, telegram_id)
@@ -75,7 +76,7 @@ class UserCacheMw(BaseMiddleware):
 
 		except Exception as e:
 			if logger is not None:
-				await logger.aerror("Error retrieving user", telegram_id=telegram_id, error=str(e))
+				await logger.aerror("Error retrieving user", error=str(e))
 			return None
 
 	async def __call__(
@@ -98,7 +99,7 @@ class UserCacheMw(BaseMiddleware):
 			await logger.awarning("Missing user or chat data", has_user=tg_user is not None, has_chat=chat is not None)
 			return await handler(event, data)
 
-		drop_cache = flags.get(self.drop_cache_flag, False)
+		drop_cache = flags.pop(self.drop_cache_flag, False)
 		user = await self.get_db_user(tg_user.id, drop_cache, logger)
 		data[self.middleware_key] = user
 

@@ -38,3 +38,9 @@ class User(Base):
 	event_privileges: Mapped[list['EventPrivilegeGrant']] = relationship('EventPrivilegeGrant', back_populates='responsible',
 		foreign_keys='EventPrivilegeGrant.responsible_id'
 	)
+
+	def __str__(self):
+		name = f'{self.full_name} - {self.telegram_id}'
+		if self.telegram_username is not None:
+			name += f' (@{self.telegram_username})'
+		return f'{name}, balance:{self.balance}'

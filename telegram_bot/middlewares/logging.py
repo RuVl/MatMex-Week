@@ -1,12 +1,12 @@
 import time
 import traceback
 import types
-from typing import Any, Awaitable, Callable, Dict, Optional
+from typing import Any, Awaitable, Callable
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.middlewares.user_context import EVENT_FROM_USER_KEY
 from aiogram.fsm.context import FSMContext
-from aiogram.types import TelegramObject, User
+from aiogram.types import TelegramObject
 from structlog import get_logger
 from structlog.typing import FilteringBoundLogger
 
@@ -20,15 +20,21 @@ class LoggingMw(BaseMiddleware):
 		self.patch_fsm = patch_fsm
 
 	@staticmethod
-	def get_user_context(user: Optional[User]) -> dict:
+	def get_logging_context(data: dict[str, Any], handler_name: str | None = None) -> dict:
 		"""Creates a context dictionary with user information for logging."""
+		tg_user = data.get(EVENT_FROM_USER_KEY)
 		context = {}
-		if user:
+
+		if tg_user is not None:
 			context.update({
-				"user_id": user.id,
-				"username": user.username,
-				"telegram_name": f"{user.first_name} {user.last_name or ''}".strip(),
+				"telegram_id": tg_user.id,
+				"username": tg_user.username,
+				"telegram_name": f"{tg_user.first_name} {tg_user.last_name or ''}".strip(),
 			})
+
+		if handler_name is not None:
+			context.update(handler_name=handler_name)
+
 		return context
 
 	def patch_fsm_methods(self, fsm: FSMContext, log: FilteringBoundLogger):
@@ -47,17 +53,10 @@ class LoggingMw(BaseMiddleware):
 
 	async def __call__(
 			self,
-			handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+			handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
 			event: TelegramObject,
-			data: Dict[str, Any],
+			data: dict[str, Any],
 	) -> Any:
-		telegram_user = data.get(EVENT_FROM_USER_KEY)
-		user_context = self.get_user_context(telegram_user)
-
-		# Create child logger with user context
-		log = self.logger.bind(**user_context)
-		data[self.middleware_key] = log
-
 		# Get handler name for logging
 		handler_obj = data.get("handler")
 		handler_name = (
@@ -66,8 +65,13 @@ class LoggingMw(BaseMiddleware):
 			getattr(handler, "__name__", str(handler))
 		)
 
+		# Create child logger with user context
+		user_context = self.get_logging_context(data, handler_name)
+		log = self.logger.bind(**user_context)
+		data[self.middleware_key] = log
+
 		# Log handler call
-		await log.adebug("handler-called", handler=handler_name)
+		await log.adebug("handler-called")
 
 		# Add logging to FSM state changes
 		state: FSMContext = data.get("state")
@@ -83,7 +87,7 @@ class LoggingMw(BaseMiddleware):
 			execution_time = round(end - start, 3)
 
 			# Log successful completion
-			await log.adebug("handler-completed", handler=handler_name, execution_time=execution_time)
+			await log.adebug("handler-completed", execution_time=execution_time)
 			return result
 
 		except Exception as e:
