@@ -150,6 +150,13 @@ item-value = Товар
     Цена: { $full_price }
     Цена по скидке: { $discount_price }
     На складе: { $available_count }
+    { $are_you_sure }
+are-you-sure = Вы точно хотите приобрести товар\?
+item-not-in-stock = Товар закончился
+item-too-expensive = У вас не хватает денег для покупки
+item-successfully-bought = Товар успешно куплен\!
+item-result-unknown = Что-то пошло не так
+purchases = Приобретенные товары:
 
 # Shop management
 edit-shop-menu = Редактирование магазина
@@ -251,6 +258,7 @@ btn-my-code = Мой код
 btn-enter-promocode = Ввести Промокод
 btn-profile = Профиль
 btn-shop = Магазин
+btn-buy = Купить
 
 # Placeholders
 placeholder-menu = Выберите элемент меню
