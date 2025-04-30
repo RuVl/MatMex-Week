@@ -37,6 +37,13 @@ from .user import (
 	user_exist_with_telegram_id,
 )
 
+from .purchase import (
+	get_user_purchases,
+	get_purchase_by_item,
+	add_purchase,
+	buy_item,
+)
+
 __all__ = [
 	# User methods
 	"create_user",
@@ -111,4 +118,10 @@ __all__ = [
 	"get_all_items",
 	"get_item_by_id",
 	"remove_item_by_id",
+
+	# Purchase methods
+	"get_user_purchases",
+	"get_purchase_by_item",
+	"add_purchase",
+	"buy_item",
 ]
