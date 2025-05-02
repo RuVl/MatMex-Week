@@ -84,7 +84,6 @@ async def choose_item_h(callback: types.CallbackQuery, callback_data: ShopItemFa
 					"full_price": item.full_price,
 					"discount_price": item.discount_price,
 					"available_count": item.available_count,
-					"are_you_sure": "",
 				},
 			),
 		),
@@ -109,7 +108,7 @@ async def is_sure_buy_item_h(callback: types.CallbackQuery, callback_data: IsSur
 					"full_price": item.full_price,
 					"discount_price": item.discount_price,
 					"available_count": item.available_count,
-					"are_you_sure": l10n.format_value("are-you-sure"),
+					"are_you_sure": True,
 				},
 			),
 		),
@@ -127,7 +126,7 @@ async def buy_item_h(callback: types.CallbackQuery, callback_data: BuyItemFactor
 	result_mapping = {
 		"item_not_in_stock": "item-not-in-stock",
 		"too_expensive": "item-too-expensive",
-		"successfuly_bought": "item-successfully-bought",
+		"successfully_bought": "item-successfully-bought",
 	}
 
 	result_key = result_mapping.get(result_code, "item-result-unknown")
@@ -143,7 +142,6 @@ async def buy_item_h(callback: types.CallbackQuery, callback_data: BuyItemFactor
 					"full_price": item.full_price,
 					"discount_price": item.discount_price,
 					"available_count": item.available_count,
-					"are_you_sure": "",
 				},
 			),
 		),

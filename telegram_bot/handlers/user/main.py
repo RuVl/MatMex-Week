@@ -21,6 +21,7 @@ from handlers.user.schedule import schedule_router
 from handlers.user.shop import shop_router
 from keyboards.callback_factories import EventToGrantFactory
 from keyboards.inline import active_events_ikb
+from utils import escape_md_v2
 
 user_router = Router()
 user_router.include_routers(
@@ -57,7 +58,7 @@ async def give_event_points_h(msg: types.Message, command: CommandObject, cached
 		success, error_code, cost = await activate_promocode(session, str(command.args), cached_user.id)
 
 		if success:
-			await msg.answer(l10n.format_value("promocode-activated", args={"cost": cost, "balance": cached_user.balance}))
+			await msg.answer(l10n.format_value("promocode-activated", args={"cost": cost, "balance": escape_md_v2(cached_user.balance)}))
 			return
 		elif error_code != "not_found":  # Если не нашли - смотрим пользователя
 			# Map error codes to localization keys

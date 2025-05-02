@@ -1,6 +1,18 @@
 from pathlib import Path
 
 from fluent.runtime import FluentLocalization, FluentResourceLoader
+from fluent.runtime.types import FluentNone
+
+
+def show_if_not_empty(value, prefix=''):
+	if not value or isinstance(value, FluentNone):
+		return ""  # nothing to render
+	return prefix + str(value)
+
+def show_if_true(value, text):
+	if value in [1, True, "1", "true", "True"]:
+		return text
+	return ""
 
 
 def get_fluent_localization() -> FluentLocalization:
@@ -26,5 +38,9 @@ def get_fluent_localization() -> FluentLocalization:
 	return FluentLocalization(
 		locales=["ru"],
 		resource_ids=[str(locale_file.absolute())],
+		functions={
+			'SHOW_IF_NOT_EMPTY': show_if_not_empty,
+			'SHOW_IF_TRUE': show_if_true,
+		},
 		resource_loader=l10n_loader
 	)

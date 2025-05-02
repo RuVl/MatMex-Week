@@ -55,4 +55,4 @@ async def buy_item(session: AsyncSession, user_tg_id: int, item_id: int) -> str:
 	if item.available_count == 0:
 		item.in_stock = False
 	await session.commit()
-	return "successfuly_bought"
+	return "successfully_bought"

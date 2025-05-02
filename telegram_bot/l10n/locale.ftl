@@ -18,7 +18,7 @@ send-for-manual-check = Если ты действительно состоиш�
 wait-until-checked = Отлично\! Членство в профкоме отправлено на ручную проверку\. Пока не подтвердится, что ты профкомовец, мерч будет без скидки
 ask-to-join = Если хочешь вступить в профком, приходи в кабинет 3528
 ask-valid-answer = Я тебя не понимаю\.\.\.😥
-Выбери один из вариантов
+    Выбери один из вариантов
 
 # Registration buttons
 btn-send-for-check = Отправить на ручную проверку
@@ -121,8 +121,8 @@ schedule-text-html = 🎉 65-я Неделя Матмеха
 event-value = Мероприятие
     { $event_name }
     Начинается: { $starts_at }
-    Заканчивается: { $ends_at }
-    { $desc }
+    { SHOW_IF_TRUE($are_you_sure, "Вы точно хотите приобрести товар\\?") }
+    Заканчивается: { $ends_at }{ SHOW_IF_NOT_EMPTY($desc, "\\n") }
     За посещение начисляется { $event_gives }i
 
 # Event management 
@@ -150,8 +150,7 @@ item-value = Товар
     Цена: { $full_price }
     Цена по скидке: { $discount_price }
     На складе: { $available_count }
-    { $are_you_sure }
-are-you-sure = Вы точно хотите приобрести товар\?
+    { SHOW_IF_TRUE($are_you_sure, "Вы точно хотите приобрести товар\\?") }
 item-not-in-stock = Товар закончился
 item-too-expensive = У вас не хватает денег для покупки
 item-successfully-bought = Товар успешно куплен!

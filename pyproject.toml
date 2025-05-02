@@ -1,6 +1,6 @@
 [tool.black]
 line-length = 88
-target-version = ['py311']
+target-version = ['py312']
 skip-string-normalization = true
 skip-magic-trailing-comma = true
 use-tabs = true
@@ -21,7 +21,7 @@ sort_order = "natural"
 [tool.ruff]
 line-length = 120
 indent-width = 1
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.format]
 quote-style = "preserve"
@@ -34,5 +34,5 @@ ignore = ["W191"]
 
 [tool.pyright]
 include = ["."]
-pythonVersion = "3.11"
+pythonVersion = "3.12"
 typeCheckingMode = "basic"

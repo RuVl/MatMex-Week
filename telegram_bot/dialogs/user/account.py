@@ -37,7 +37,7 @@ async def get_account_data(dialog_manager: DialogManager, **_) -> dict[str, Any]
 
 	return {
 		"fullname": escape_md_v2(user.full_name),
-		"balance": user.balance,
+		"balance": escape_md_v2(user.balance),
 		"apply_status": getattr(user.apply, 'status', None),
 	}
 
