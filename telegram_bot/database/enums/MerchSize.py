@@ -7,6 +7,7 @@ class MerchSize(enum.StrEnum, boundary=enum.STRICT):
 	XXS = "XXS"
 	XS = "XS"
 	S = "S"
+	M = 'M'
 	L = "L"
 	XL = "XL"
 	XXL = "XXL"
