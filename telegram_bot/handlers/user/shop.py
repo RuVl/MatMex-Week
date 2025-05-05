@@ -73,8 +73,9 @@ async def choose_item_h(callback: types.CallbackQuery, callback_data: ShopItemFa
 			caption=l10n.format_value(
 				"item-value",
 				args={
-					"item_name": escape_md_v2(item.name),
-					"item_size": item.size,
+					"name": escape_md_v2(item.name),
+					"description": escape_md_v2(item.description),
+					"size": item.size,
 					"full_price": item.full_price,
 					"discount_price": item.discount_price,
 					"available_count": item.available_count,
@@ -97,8 +98,9 @@ async def is_sure_buy_item_h(callback: types.CallbackQuery, callback_data: IsSur
 			caption=l10n.format_value(
 				"item-value",
 				args={
-					"item_name": escape_md_v2(item.name),
-					"item_size": item.size,
+					"name": escape_md_v2(item.name),
+					"description": escape_md_v2(item.description),
+					"size": item.size,
 					"full_price": item.full_price,
 					"discount_price": item.discount_price,
 					"available_count": item.available_count,
@@ -131,8 +133,9 @@ async def buy_item_h(callback: types.CallbackQuery, callback_data: BuyItemFactor
 			caption=l10n.format_value(
 				"item-value",
 				args={
-					"item_name": escape_md_v2(item.name),
-					"item_size": item.size,
+					"name": escape_md_v2(item.name),
+					"description": escape_md_v2(item.description),
+					"size": item.size,
 					"full_price": item.full_price,
 					"discount_price": item.discount_price,
 					"available_count": item.available_count,

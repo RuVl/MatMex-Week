@@ -68,11 +68,11 @@ async def ask_for_event_start_time_h(msg: types.Message, state: FSMContext, l10n
 
 	starts_at = msg.text.strip()
 	if dateparser.parse(starts_at) is None:
-		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+		await msg.delete()
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
 
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	await msg.delete()
 	await msg.bot.edit_message_text(
 		l10n.format_value("ask-for-event-end-time"),
 		reply_markup=cancel_ikb(l10n),
@@ -91,7 +91,7 @@ async def ask_for_event_end_time_h(msg: types.Message, state: FSMContext, l10n: 
 
 	ends_at = msg.text.strip()
 	if dateparser.parse(ends_at) is None:
-		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+		await msg.delete()
 		await msg.answer(l10n.format_value("wrong-datetime"))
 		return
 

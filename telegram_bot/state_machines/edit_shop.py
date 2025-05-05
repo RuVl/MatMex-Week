@@ -8,6 +8,7 @@ class EditShopActions(StatesGroup):
 
 	CREATE_ITEM = State()
 	CHOOSE_ITEM_NAME = State()
+	CHOOSE_ITEM_DESCRIPTION = State()
 	CHOOSE_ITEM_IMAGE = State()
 	CHOOSE_ITEM_SIZE = State()
 	CHOOSE_ITEM_FULL_PRICE = State()

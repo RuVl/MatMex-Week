@@ -5,7 +5,7 @@ from fluent.runtime.types import FluentNone
 
 
 def show_if_not_empty(value, prefix=''):
-	if not value or isinstance(value, FluentNone):
+	if not value or isinstance(value, FluentNone) or value == 'None':
 		return ""  # nothing to render
 	return prefix + str(value)
 

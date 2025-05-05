@@ -145,11 +145,11 @@ ask-for-event = За какое мероприятие хотите начисл
 # ===== SHOP =====
 shop-hello = Магазин
 choose-item-name = Выберите товар
-item-value = { $item_name }
-    { $item_size ->
+item-value = { $name }{ SHOW_IF_NOT_EMPTY($description, "\\n") }
+    { $size ->
 [NONE] {""}
 *[other] {""}
-    Размер: { $item_size }
+    Размер: { $size }
     }
     Цена: { $full_price }
     Цена по скидке: { $discount_price }
@@ -171,6 +171,7 @@ no-photo = Фото не прикреплено, попробуйте еще р�
 no-text = У категории нет названия, попробуйте еще раз
 ask-for-category = Выберите категорию
 ask-for-item-name = Введите название товара
+ask-for-item-description = Введите описание товара \("\-" чтобы оставить без описания\)
 ask-for-item-size = Укажите размер товара
 ask-for-item-full-price = Введите цену товара
 ask-for-item-discount-price = Введите цену товара по скидке
