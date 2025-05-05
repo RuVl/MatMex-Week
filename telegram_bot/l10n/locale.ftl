@@ -143,7 +143,8 @@ ask-for-event = За какое мероприятие хотите начисл
 
 
 # ===== SHOP =====
-shop-hello = Магазин в разработке
+shop-hello = Магазин
+choose-item-name = Выберите товар
 item-value = Товар
     Название: { $item_name }
     Размер: { $item_size }

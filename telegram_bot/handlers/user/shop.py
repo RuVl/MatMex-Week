@@ -41,7 +41,7 @@ async def choose_category_h(callback: types.CallbackQuery, callback_data: ShopCa
 		category = await get_category_by_id(session, callback_data.category_id)
 
 	await callback.bot.edit_message_media(
-		media=InputMediaPhoto(media=FSInputFile(category.image_path), caption=l10n.format_value("ask-for-item-name")),
+		media=InputMediaPhoto(media=FSInputFile(category.image_path), caption=l10n.format_value("choose-item-name")),
 		reply_markup=get_item_ikb(l10n, category, callback_data.can_delete),
 		chat_id=callback.message.chat.id,
 		message_id=callback.message.message_id
