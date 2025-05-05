@@ -145,9 +145,12 @@ ask-for-event = За какое мероприятие хотите начисл
 # ===== SHOP =====
 shop-hello = Магазин
 choose-item-name = Выберите товар
-item-value = Товар
-    Название: { $item_name }
-    Размер: { $item_size }
+item-value = { $item_name }
+    { $item_size ->
+        [NONE] {""}
+       *[other] {""}
+       Размер: { $item_size }
+    }
     Цена: { $full_price }
     Цена по скидке: { $discount_price }
     На складе: { $available_count }
