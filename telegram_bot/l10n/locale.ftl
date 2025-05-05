@@ -146,7 +146,6 @@ ask-for-event = За какое мероприятие хотите начисл
 shop-hello = Магазин
 choose-item-name = Выберите товар
 item-value = { $name }{ SHOW_IF_NOT_EMPTY($description, "\\n") }
-
     { $size ->
 [NONE] {""}
 *[other] {""}
