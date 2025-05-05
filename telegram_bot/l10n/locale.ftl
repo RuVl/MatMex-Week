@@ -147,9 +147,9 @@ shop-hello = Магазин
 choose-item-name = Выберите товар
 item-value = { $item_name }
     { $item_size ->
-        [NONE] {""}
-       *[other] {""}
-       Размер: { $item_size }
+[NONE] {""}
+*[other] {""}
+    Размер: { $item_size }
     }
     Цена: { $full_price }
     Цена по скидке: { $discount_price }

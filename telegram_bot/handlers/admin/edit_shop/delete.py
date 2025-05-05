@@ -1,7 +1,7 @@
 from aiogram import Router, types
 from fluent.runtime import FluentLocalization
 
-from config import MEDIA_DIR
+from config import SHOP_IMAGE
 from database import async_session
 from database.methods import get_category_by_id, remove_category_by_id, remove_item_by_id
 from filters.main import LocalizedTextFilter
@@ -15,7 +15,7 @@ delete_router = Router()
 @delete_router.message(EditShopActions.EDIT_SHOP, LocalizedTextFilter("btn-delete-item-or-category"))
 async def delete_category_btn_h(msg: types.Message, l10n: FluentLocalization):
 	text = l10n.format_value("shop-hello")
-	image_from_pc = types.FSInputFile(MEDIA_DIR / "shop_mock.png")
+	image_from_pc = types.FSInputFile(SHOP_IMAGE)
 	category_ikb = await get_category_ikb(l10n, True)
 	await msg.answer_photo(image_from_pc, caption=text, reply_markup=category_ikb)
 
@@ -43,7 +43,7 @@ async def delete_category_h(callback: types.CallbackQuery, callback_data: ShopDe
 		if callback_data.can_delete:
 			await remove_category_by_id(session, callback_data.category_id)
 
-	image_from_pc = types.FSInputFile(MEDIA_DIR / "shop_mock.png")
+	image_from_pc = types.FSInputFile(SHOP_IMAGE)
 	category_ikb = await get_category_ikb(l10n, callback_data.can_delete)
 	await callback.bot.edit_message_media(
 		media=types.InputMediaPhoto(media=image_from_pc, caption=l10n.format_value("shop-hello")),

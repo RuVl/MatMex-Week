@@ -2,18 +2,12 @@ from aiogram import Router, types
 from aiogram.types import FSInputFile, InputMediaPhoto
 from fluent.runtime import FluentLocalization
 
-from config import MEDIA_DIR
+from config import SHOP_IMAGE
 from database import async_session
-from database.methods import get_category_by_id, get_item_by_id, get_user_purchases, get_user_by_telegram_id, buy_item
+from database.methods import buy_item, get_category_by_id, get_item_by_id, get_user_by_telegram_id, get_user_purchases
 from filters import LocalizedTextFilter
-from keyboards.callback_factories import (
-	ShopBackToCategoriesFactory,
-	ShopCategoryFactory,
-	ShopItemFactory,
-	IsSureBuyItemFactory,
-	BuyItemFactory,
-)
-from keyboards.inline import item_actions_ikb, get_category_ikb, get_item_ikb, yes_no_buy_ikb
+from keyboards.callback_factories import (BuyItemFactory, IsSureBuyItemFactory, ShopBackToCategoriesFactory, ShopCategoryFactory, ShopItemFactory)
+from keyboards.inline import get_category_ikb, get_item_ikb, item_actions_ikb, yes_no_buy_ikb
 from utils import escape_md_v2
 
 shop_router = Router()
@@ -30,7 +24,7 @@ async def shop_button_h(msg: types.Message, l10n: FluentLocalization):
 			for purchase in user.purchases:
 				item = await get_item_by_id(session, purchase.merch_id)
 				text += f"{item.full_name()}: {purchase.quantity}\n"
-	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.png")
+	image_from_pc = FSInputFile(SHOP_IMAGE)
 	kb = await get_category_ikb(l10n, False)
 	await msg.answer_photo(image_from_pc, caption=text, reply_markup=kb)
 
@@ -50,7 +44,7 @@ async def choose_category_h(callback: types.CallbackQuery, callback_data: ShopCa
 
 @shop_router.callback_query(ShopBackToCategoriesFactory.filter())
 async def back_to_categories_h(callback: types.CallbackQuery, callback_data: ShopBackToCategoriesFactory, l10n: FluentLocalization):
-	image_from_pc = FSInputFile(MEDIA_DIR / "shop_mock.png")
+	image_from_pc = FSInputFile(SHOP_IMAGE)
 	text = l10n.format_value("shop-hello")
 	async with async_session() as session:
 		user = await get_user_by_telegram_id(session, callback.from_user.id)
