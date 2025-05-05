@@ -9,6 +9,7 @@ from database.models import MerchItem
 async def create_item(
 		session: AsyncSession,
 		name: str,
+		description: str | None,
 		image_path: str,
 		size: str,
 		full_price: float,
@@ -19,6 +20,7 @@ async def create_item(
 ) -> MerchItem:
 	item = MerchItem(
 		name=name,
+		description=description,
 		image_path=image_path,
 		size=size,
 		full_price=full_price,

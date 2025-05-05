@@ -76,14 +76,33 @@ async def create_item_h(callback: types.CallbackQuery, callback_data: EditShopCa
 @create_router.message(EditShopActions.CHOOSE_ITEM_NAME, F.text)
 async def ask_for_item_name_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	await msg.delete()
+	await msg.bot.edit_message_text(
+		l10n.format_value("ask-for-item-description"),
+		reply_markup=get_item_size_ikb(l10n),
+		chat_id=msg.chat.id,
+		message_id=state_data.get("shop_message_id")
+	)
+	await state.update_data(item_name=msg.text)
+	await state.set_state(EditShopActions.CHOOSE_ITEM_DESCRIPTION)
+
+
+@create_router.message(EditShopActions.CHOOSE_ITEM_DESCRIPTION, F.text)
+async def ask_for_item_description_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
+	if msg.text == '-':
+		await state.update_data(item_description=None)
+		await state.set_state(EditShopActions.CHOOSE_ITEM_SIZE)
+		return
+	
+	state_data = await state.get_data()
+	await msg.delete()
 	await msg.bot.edit_message_text(
 		l10n.format_value("ask-for-item-size"),
 		reply_markup=get_item_size_ikb(l10n),
 		chat_id=msg.chat.id,
 		message_id=state_data.get("shop_message_id")
 	)
-	await state.update_data(item_name=msg.text)
+	await state.update_data(item_description=msg.text)
 	await state.set_state(EditShopActions.CHOOSE_ITEM_SIZE)
 
 
@@ -104,10 +123,10 @@ async def ask_for_item_size_h(callback: types.CallbackQuery, state: FSMContext, 
 async def ask_for_item_full_price_h(msg: types.message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 	if not msg.text.isdigit():
-		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+		await msg.delete()
 		await msg.answer(l10n.format_value("not-a-number"))
 		return
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	await msg.delete()
 	await msg.bot.edit_message_text(
 		l10n.format_value("ask-for-item-discount-price"),
 		reply_markup=cancel_ikb(l10n),
@@ -122,10 +141,10 @@ async def ask_for_item_full_price_h(msg: types.message, state: FSMContext, l10n:
 async def ask_for_item_discount_price_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 	if not msg.text.isdigit():
-		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+		await msg.delete()
 		await msg.answer(l10n.format_value("not-a-number"))
 		return
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	await msg.delete()
 	await msg.bot.edit_message_text(
 		l10n.format_value("ask-for-item-available-count"),
 		reply_markup=cancel_ikb(l10n),
@@ -140,10 +159,10 @@ async def ask_for_item_discount_price_h(msg: types.Message, state: FSMContext, l
 async def ask_for_item_available_count_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 	if not msg.text.isdigit():
-		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+		await msg.delete()
 		await msg.answer(l10n.format_value("not-a-number"))
 		return
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	await msg.delete()
 	await msg.bot.edit_message_text(
 		l10n.format_value("ask-for-item-in-stock"),
 		reply_markup=yes_no_cancel_ikb(l10n),
@@ -174,7 +193,7 @@ async def ask_for_item_in_stock_h(callback: types.CallbackQuery, state: FSMConte
 async def ask_for_item_image_h(msg: types.Message, state: FSMContext, l10n: FluentLocalization):
 	state_data = await state.get_data()
 	if not msg.photo:
-		await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+		await msg.delete()
 		await msg.answer(l10n.format_value("no-photo"))
 		return
 	save_folder = MEDIA_DIR / "merch_items"
@@ -186,6 +205,7 @@ async def ask_for_item_image_h(msg: types.Message, state: FSMContext, l10n: Flue
 		await create_item(
 			session=session,
 			name=state_data.get("item_name"),
+			description=state_data.get("item_description"),
 			image_path=str(save_location),
 			size=state_data.get("item_size"),
 			full_price=float(state_data.get("item_full_price")),
@@ -194,7 +214,7 @@ async def ask_for_item_image_h(msg: types.Message, state: FSMContext, l10n: Flue
 			in_stock=bool(state_data.get("item_in_stock")),
 			category_id=int(state_data.get("category_id"))
 		)
-	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+	await msg.delete()
 	await msg.bot.delete_message(chat_id=msg.chat.id, message_id=state_data.get("shop_message_id"))
 	await msg.answer(l10n.format_value("item-created"), reply_markup=edit_shop_kb(l10n))
 	await state.clear()

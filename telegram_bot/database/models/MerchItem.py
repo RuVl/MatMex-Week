@@ -14,6 +14,7 @@ class MerchItem(Base):
 	image_path: Mapped[str] = mapped_column(String(255), nullable=False)
 
 	name: Mapped[str] = mapped_column(String(255), nullable=False, comment="название товара")
+	description: Mapped[str | None] = mapped_column(String(255), nullable=False, comment="описание товара")
 	size: Mapped[MerchSize] = mapped_column(postgresql.ENUM(MerchSize), nullable=False, comment="размер товара")
 
 	full_price: Mapped[int] = mapped_column(Integer, nullable=False, comment="цена без скидки")
