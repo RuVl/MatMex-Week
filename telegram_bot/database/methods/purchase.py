@@ -33,26 +33,44 @@ async def add_purchase(session: AsyncSession, customer_id: int, item_id: int, pr
 	return purchase
 
 
-async def buy_item(session: AsyncSession, user_tg_id: int, item_id: int) -> str:
+async def buy_item(session: AsyncSession, user_tg_id: int, item_id: int) -> tuple[str, Purchase | None]:
 	# TODO: нужен енум по но мы до этого строками делали
 	item = await get_item_by_id(session, item_id)
 	query = select(User).where(User.telegram_id == user_tg_id).options(selectinload(User.apply))
 	result = await session.execute(query)
 	user = result.scalar_one_or_none()
 	if item is None:
-		return "no_such_item"
+		return "no_such_item" | None
 	if user is None:
-		return "no_such_user"
+		return "no_such_user" | None
 	if not item.in_stock or item.available_count == 0:  # для безопасности
-		return "item_not_in_stock"
+		return "item_not_in_stock" | None
 	price = item.discount_price if user.apply and user.apply.status == ApplyStatus.APPROVED else item.full_price
 	if price > user.balance:
-		return "too_expensive"
+		return "too_expensive" | None
 
 	item.available_count -= 1
 	user.balance -= price
-	await add_purchase(session, user.id, item.id, price)
+	purchase = await add_purchase(session, user.id, item.id, price)
 	if item.available_count == 0:
 		item.in_stock = False
 	await session.commit()
-	return "successfully_bought"
+	return "successfully_bought", purchase
+
+
+async def update_purchase_status(session: AsyncSession, purchase_id: int, status: ApplyStatus) -> Purchase:
+	"""Обновляет статус заявки."""
+	purchase = await session.get(
+		Purchase,
+		purchase_id,
+		options=[
+			selectinload(Purchase.customer),
+			selectinload(Purchase.merch),
+		],
+	)
+	if purchase:
+		purchase.status = status
+		await session.commit()
+		return purchase
+	else:
+		raise ValueError(f"Покупка с id {apply_id} не найдена")

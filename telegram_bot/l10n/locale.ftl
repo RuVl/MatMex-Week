@@ -34,6 +34,22 @@ apply-check = Заявка на проверку статуса **Профком
 apply-checked = { apply-check }
     {"*"}Проверил*: { $verified_by }
 
+new-purchase = 
+    {"*"}Товар*: { $itemname }
+    {"*"}Куплено пользователем*: { $fullname } { $username ->
+*[Any] \(@{ $username }\)
+[None] {""}
+    }
+purchase-check = Подтвердите выдачу товара: 
+    { new-purchase }
+purchase-checked = 
+    { $status ->  
+        *[APPROVED] Товар выдан:
+        [REJECTED] Товар не выдан:
+    }
+    { new-purchase }
+    {"*"}Проверил*: { $verified_by }
+
 # Profile text
 profile-title = 📊 Профиль
 welcome-account = Добро пожаловать в личный кабинет\!

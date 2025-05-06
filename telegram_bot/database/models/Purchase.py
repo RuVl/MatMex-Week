@@ -1,6 +1,8 @@
 from sqlalchemy import ForeignKey, Integer
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from database.enums import ApplyStatus
 from database.models import Base, MerchItem, User
 
 
@@ -9,6 +11,9 @@ class Purchase(Base):
 	__table_args__ = {"comment": "Информация о покупках пользователя"}
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
+	status: Mapped[ApplyStatus] = mapped_column(
+		postgresql.ENUM(ApplyStatus), default=ApplyStatus.PENDING.value, nullable=True, comment="статус покупки"
+	)
 	quantity: Mapped[int] = mapped_column(Integer, nullable=False, comment="количество экземпляров")
 	total_cost: Mapped[int] = mapped_column(Integer, nullable=False, comment="стоимость покупки")
 

@@ -5,9 +5,11 @@ from fluent.runtime import FluentLocalization
 from config import SHOP_IMAGE
 from database import async_session
 from database.methods import buy_item, get_category_by_id, get_item_by_id, get_user_by_telegram_id, get_user_purchases
+from env import TelegramKeys
 from filters import LocalizedTextFilter
 from keyboards.callback_factories import (BuyItemFactory, IsSureBuyItemFactory, ShopBackToCategoriesFactory, ShopCategoryFactory, ShopItemFactory)
-from keyboards.inline import get_category_ikb, get_item_ikb, item_actions_ikb, yes_no_buy_ikb
+from keyboards.inline import item_actions_ikb, get_category_ikb, get_item_ikb, purchase_request_ikb, yes_no_buy_ikb
+
 from utils import escape_md_v2
 
 shop_router = Router()
@@ -118,7 +120,8 @@ async def is_sure_buy_item_h(callback: types.CallbackQuery, callback_data: IsSur
 async def buy_item_h(callback: types.CallbackQuery, callback_data: BuyItemFactory, l10n: FluentLocalization):
 	async with async_session() as session:
 		item = await get_item_by_id(session, callback_data.item_id)
-		result_code = await buy_item(session, callback.from_user.id, callback_data.item_id)
+		result_code, purchase = await buy_item(session, callback.from_user.id, callback_data.item_id)
+		user = await get_user_by_telegram_id(session, callback.from_user.id)
 	result_mapping = {
 		"item_not_in_stock": "item-not-in-stock",
 		"too_expensive": "item-too-expensive",
@@ -127,6 +130,21 @@ async def buy_item_h(callback: types.CallbackQuery, callback_data: BuyItemFactor
 
 	result_key = result_mapping.get(result_code, "item-result-unknown")
 	await callback.answer(l10n.format_value(result_key))
+	if purchase is not None:
+		await callback.bot.send_message(
+			TelegramKeys.ADMIN_CHAT_ID,
+			l10n.format_value(
+				"purchase-check",
+				args={
+					'status': purchase.status,
+					'itemname': escape_md_v2(item.full_name()),
+					'fullname': escape_md_v2(user.full_name),
+					'username': escape_md_v2(user.telegram_username) or 'None',
+					'verified_by': None,
+				},
+			),
+			reply_markup=purchase_request_ikb(l10n, purchase_id=purchase.id),
+		)
 	await callback.bot.edit_message_media(
 		media=InputMediaPhoto(
 			media=FSInputFile(item.image_path),
