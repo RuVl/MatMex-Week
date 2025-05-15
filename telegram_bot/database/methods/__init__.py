@@ -42,6 +42,7 @@ from .purchase import (
 	get_purchase_by_item,
 	add_purchase,
 	buy_item,
+	update_purchase_status,
 )
 
 __all__ = [
@@ -124,4 +125,5 @@ __all__ = [
 	"get_purchase_by_item",
 	"add_purchase",
 	"buy_item",
+	"update_purchase_status",
 ]

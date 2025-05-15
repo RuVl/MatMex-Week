@@ -6,7 +6,7 @@ from database import async_session
 from database.enums import AdminPrivilege
 from database.methods import get_active_events, get_all_events, get_user_event_grants
 from database.models import EventPrivilegeGrant, User
-from keyboards.callback_factories import EventPrivilegeButtonFactory, EventToGrantFactory, PKApplyFactory, PrivilegeButtonFactory, UserFactory
+from keyboards.callback_factories import EventPrivilegeButtonFactory, EventToGrantFactory, PKApplyFactory, PrivilegeButtonFactory, PurchaseApplyFactory, UserFactory
 
 
 def verification_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeyboardMarkup:
@@ -31,6 +31,34 @@ def verified_request_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeybo
 			callback_data=PKApplyFactory(apply_id=apply_id, decision='review').pack()
 		)
 	]])
+
+
+def purchase_request_ikb(l10n: FluentLocalization, purchase_id: int) -> InlineKeyboardMarkup:
+	builder = InlineKeyboardBuilder()
+	builder.row(
+		InlineKeyboardButton(
+			text=l10n.format_value("btn-approve-apply"),
+			callback_data=PurchaseApplyFactory(purchase_id=purchase_id, decision='approve').pack(),
+		),
+		InlineKeyboardButton(
+			text=l10n.format_value("btn-decline-apply"),
+			callback_data=PurchaseApplyFactory(purchase_id=purchase_id, decision='reject').pack(),
+		),
+	)
+	return builder.as_markup()
+
+
+def purchase_given_ikb(l10n: FluentLocalization, apply_id: int) -> InlineKeyboardMarkup:
+	return InlineKeyboardMarkup(
+		inline_keyboard=[
+			[
+				InlineKeyboardButton(
+					text=l10n.format_value("btn-review-apply"),
+					callback_data=PurchaseApplyFactory(purchase_id=apply_id, decision='review').pack(),
+				)
+			]
+		]
+	)
 
 
 privilege_names = dict([
