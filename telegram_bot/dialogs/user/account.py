@@ -3,7 +3,7 @@ from typing import Any
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from aiogram_dialog import Dialog, DialogManager, LaunchMode, ShowMode, Window
-from aiogram_dialog.widgets.input import MessageInput, TextInput
+from aiogram_dialog.widgets.input import TextInput
 from aiogram_dialog.widgets.kbd import Back, Button, Cancel, Next, Row
 from fluent.runtime import FluentLocalization
 
@@ -77,7 +77,7 @@ async def edit_name_h(_: types.Message, __: TextInput, dialog_manager: DialogMan
 	await dialog_manager.back(ShowMode.EDIT)
 
 
-async def wrong_name_h(message: types.Message, _: MessageInput, dialog_manager: DialogManager, error: ValueError):
+async def wrong_name_h(message: types.Message, _: TextInput, dialog_manager: DialogManager, error: ValueError):
 	l10n = dialog_manager.middleware_data.get(L10N_FORMAT_KEY)
 	log = dialog_manager.middleware_data.get(LOGGING_KEY)
 
